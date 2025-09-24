@@ -1,5 +1,14 @@
 <template>
   <div class="container-fluid">
+    <AppLoader 
+      v-if="showLoader"
+      :logo-url="'/images/logos/logo-black.svg'"
+      :logo-alt="'Esfera Logo'"
+      :show-percent="false"
+      :animation-type="'default'"
+      @loading-complete="onLoadingComplete"
+      @animation-complete="onAnimationComplete"
+    />
     <div class="row">
       <div class="col-12">
         <section class="full-banner">
@@ -189,10 +198,23 @@
           </div>
         </section>
         <section class="section-portfolio-gallery">
-          <div class="row">
-            <div class="col-12">
-              <div class="portfolio-gallery-content">
-                <div class="portfolio-gallery-content-item">
+          <AppMagneticCursor
+            text="Scroll"
+            :size="130"
+            background-color="rgba(0, 0, 0, 0.1)"
+            text-color="#FFFFFF"
+            backdrop-blur="12px"
+            :follow-speed="0.12"
+            :enter-duration="0.4"
+            :offset-x="50"
+            :offset-y="50"
+            :use-viewport-position="true"
+            enter-ease="back.out(1.5)"
+          >
+            <div class="row">
+              <div class="col-12">
+                <div class="portfolio-gallery-content">
+                  <div class="portfolio-gallery-content-item">
                   <div class="case-content-item-background">
                     <img src="/images/cases-background.jpg" alt="Blabs" />
                     <img src="/images/cases-background-2.jpg" alt="Blabs" />
@@ -242,9 +264,10 @@
                     </div>
                   </div>
                 </div>
+                </div>
               </div>
             </div>
-          </div>
+          </AppMagneticCursor>
         </section>
       </div>
     </div>
@@ -254,8 +277,43 @@
 <script setup>
 import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide } from 'vue3-carousel'
+import { useFirstVisit } from '~/composables/useFirstVisit'
+import { useAnimateNumbers } from '~/composables/useAnimateNumbers'
+import AppLoader from '~/components/AppLoader.vue'
+
+// Page meta configuration
+definePageMeta({
+  layout: 'default',
+  pageTransition: {
+    name: 'fade-slide',
+    mode: 'out-in'
+  }
+})
 
 const { gsap, ScrollTrigger } = useGsap()
+const { checkFirstVisit, checkDirectNavigation, resetFirstVisit, forceLoader } = useFirstVisit()
+const { animateNumbers } = useAnimateNumbers()
+
+// AppLoader state
+const showLoader = ref(false)
+
+// For testing - you can call this in browser console
+if (process.client) {
+  window.resetHomeVisit = () => {
+    resetFirstVisit('home')
+    console.log('Session reset - refresh page to see loader')
+  }
+  
+  window.forceLoaderNext = () => {
+    forceLoader()
+    console.log('Next navigation will show loader')
+  }
+  
+  window.showLoaderNow = () => {
+    showLoader.value = true
+    console.log('Loader forced to show immediately')
+  }
+}
 
 const baseClients = [
   '/images/clients/Corteva.png',
@@ -264,7 +322,6 @@ const baseClients = [
   '/images/clients/PortosParana.png'
 ]
 
-// Criamos múltiplas cópias para loop suave
 const clients = [...baseClients, ...baseClients, ...baseClients]
 
 const carouselConfig = {
@@ -279,23 +336,35 @@ const carouselConfig = {
   }
 }
 
-// Implementação manual de autoplay suave para ambos os carousels
 const carouselRef1 = ref(null)
 const carouselRef2 = ref(null)
 let autoplayInterval1 = null
 let autoplayInterval2 = null
 
-onMounted(() => {
+// AppLoader callbacks
+const onLoadingComplete = () => {
+  // Counter reached 100
+  console.log('Loading complete')
+}
+
+const onAnimationComplete = () => {
+  // Loader finished, start home animations
+  showLoader.value = false
+  startHomeAnimations()
+}
+
+
+const startHomeAnimations = () => {
   if (process.client) {
     nextTick(() => {
       startAutoplay1()
       startAutoplay2()
-      animateNumbers()
       animateTitleLines()
       animateVideoImage()
       animateAwards()
       setupEsferaHover()
       setupPortfolioGalleryReveal()
+      animateNumbers()
       
       // Refresh ScrollTrigger on resize for responsiveness
       window.addEventListener('resize', () => {
@@ -303,6 +372,28 @@ onMounted(() => {
       })
     })
   }
+}
+
+onMounted(() => {
+  // Check if this is a direct navigation (typed URL, refresh, external link)
+  const shouldShowLoader = checkDirectNavigation()
+  
+  console.log('=== Navigation Analysis ===')
+  console.log('Direct navigation detected:', shouldShowLoader)
+  console.log('Performance navigation:', window.performance?.getEntriesByType?.('navigation')?.[0])
+  console.log('Document referrer:', document.referrer)
+  console.log('Current origin:', window.location.origin)
+  console.log('Session storage:', sessionStorage.getItem('esfera-session-started'))
+  
+  if (shouldShowLoader) {
+    console.log('🚀 Showing AppLoader - Direct navigation detected')
+    showLoader.value = true
+  } else {
+    console.log('⚡ Skipping AppLoader - Internal navigation')
+    startHomeAnimations()
+  }
+  
+  console.log('Final showLoader.value:', showLoader.value)
 })
 
 onUnmounted(() => {
@@ -351,62 +442,16 @@ const startAutoplay2 = () => {
   }, 3000)
 }
 
-const stopAutoplay1 = () => {
-  if (autoplayInterval1) {
-    clearInterval(autoplayInterval1)
-    autoplayInterval1 = null
-  }
-}
-
-const stopAutoplay2 = () => {
-  if (autoplayInterval2) {
-    clearInterval(autoplayInterval2)
-    autoplayInterval2 = null
-  }
-}
-
-const animateNumbers = () => {
-  const numberElements = document.querySelectorAll('.big-number')
-  
-  numberElements.forEach(element => {
-    const finalValue = parseInt(element.textContent.replace(/[^\d]/g, ''))
-    
-    if (finalValue) {
-      gsap.set(element, { textContent: 0 })
-      
-      ScrollTrigger.create({
-        trigger: element,
-        start: "top 80%",
-        once: true,
-        onEnter: () => {
-          gsap.to(element, {
-            textContent: finalValue,
-            duration: 2,
-            ease: "power2.out",
-            snap: { textContent: 1 },
-            onUpdate: function() {
-              const currentValue = Math.round(this.targets()[0].textContent)
-              element.textContent = currentValue.toLocaleString('pt-BR')
-            }
-          })
-        }
-      })
-    }
-  })
-}
-
 const animateTitleLines = () => {
   const titleLines = document.querySelectorAll('.full-banner h1 .line')
   
   if (titleLines.length === 0) return
   
-  // Define o estado inicial das linhas
   gsap.set(titleLines, {
     y: -25,
     opacity: 0
   })
   
-  // Cria a animação sequencial
   const tl = gsap.timeline({
     delay: 0.5
   })
@@ -508,22 +553,18 @@ const setupPortfolioGalleryReveal = () => {
   const galleryContent = document.querySelector('.portfolio-gallery-content')
   const portfolioItem = document.querySelector('.portfolio-gallery-content-item')
   
-  // Elementos de background (duas imagens dentro de .case-content-item-background)
   const backgroundContainer = document.querySelector('.case-content-item-background')
   const gal1Background = backgroundContainer?.querySelector('img:nth-child(1)')
   const gal2Background = backgroundContainer?.querySelector('img:nth-child(2)')
   
-  // Elementos de imagem central (duas imagens dentro de .case-content-image-container)
   const imageContainer = document.querySelector('.case-content-image-container')
   const gal1Image = imageContainer?.querySelector('img:nth-child(1)')
   const gal2Image = imageContainer?.querySelector('img:nth-child(2)')
   
-  // Elementos de texto (todos os .animated-text-container da página)
   const textContainers = document.querySelectorAll('.case-content-text')
   const gal1TextContainers = []
   const gal2TextContainers = []
   
-  // Separar textos gal1 e gal2 de todos os containers
   textContainers.forEach(container => {
     const firstText = container.querySelector('.animated-text-container:nth-child(1)')
     const secondText = container.querySelector('.animated-text-container:nth-child(2)')
@@ -533,7 +574,6 @@ const setupPortfolioGalleryReveal = () => {
   
   if (!gallerySection || !galleryContent || !portfolioItem || !gal1Background || !gal2Background || !gal1Image || !gal2Image) return
 
-  // Setup inicial: gal2 elementos ocultos com clip-path
   gsap.set(gal2Background, {
     clipPath: 'inset(100% 0 0 0)',
     zIndex: 2
@@ -543,7 +583,6 @@ const setupPortfolioGalleryReveal = () => {
     zIndex: 1
   })
   
-  // Setup inicial imagens: sobreposição + clip-path
   gsap.set(gal2Image, {
     clipPath: 'inset(100% 0 0 0)',
     zIndex: 2,
@@ -559,7 +598,6 @@ const setupPortfolioGalleryReveal = () => {
     scale: 'none'
   })
   
-  // Setup inicial textos: sobreposição + clip-path
   gal2TextContainers.forEach(textContainer => {
     gsap.set(textContainer, {
       clipPath: 'inset(100% 0 0 0)',
@@ -585,46 +623,18 @@ const setupPortfolioGalleryReveal = () => {
     end: "bottom bottom",
     pin: galleryContent,
     pinSpacing: false,
-    scrub: 4,
+    scrub: 1,
     invalidateOnRefresh: true,
-    refreshPriority: -1,
     onUpdate: (self) => {
       const progress = self.progress
       
-      if (progress <= 0.25) {
-        // Fase 1: gal1 elementos visíveis, gal2 elementos ocultos
-        gsap.set(gal2Background, { clipPath: 'inset(100% 0 0 0)' })
-        gsap.set(gal2Image, { 
-          clipPath: 'inset(100% 0 0 0)',
-          transform: 'translate3d(0px, 0px, 0px)'
-        })
-        gsap.set(gal1Image, { 
-          transform: 'translate3d(0px, 0px, 0px)'
-        })
-        
-        // Textos: gal1 visíveis, gal2 ocultos
-        gal2TextContainers.forEach(textContainer => {
-          gsap.set(textContainer, { 
-            clipPath: 'inset(100% 0 0 0)',
-            transform: 'translate3d(0px, 0px, 0px)'
-          })
-        })
-        gal1TextContainers.forEach(textContainer => {
-          gsap.set(textContainer, { 
-            transform: 'translate3d(0px, 0px, 0px)'
-          })
-        })
-        
-      } else if (progress <= 0.75) {
-        // Fase 2: Reveal simultâneo + movimento de todos os elementos
-        const revealProgress = (progress - 0.25) / 0.5
+      if (progress <= 0.8) {
+        const revealProgress = progress / 0.8
         const clipValue = 100 - (revealProgress * 100)
-        const moveDistance = revealProgress * 30 // 30px de movimento sutil para textos
+        const moveDistance = revealProgress * 30
         
-        // Backgrounds
         gsap.set(gal2Background, { clipPath: `inset(${clipValue}% 0 0 0)` })
         
-        // Imagens: reveal + movimento
         gsap.set(gal2Image, { 
           clipPath: `inset(${clipValue}% 0 0 0)`,
           transform: `translate3d(0px, ${40 - (revealProgress * 40)}px, 0px)`
@@ -633,7 +643,6 @@ const setupPortfolioGalleryReveal = () => {
           transform: `translate3d(0px, -${revealProgress * 40}px, 0px)`
         })
         
-        // Textos: reveal + movimento
         gal2TextContainers.forEach(textContainer => {
           gsap.set(textContainer, { 
             clipPath: `inset(${clipValue}% 0 0 0)`,
@@ -647,7 +656,6 @@ const setupPortfolioGalleryReveal = () => {
         })
         
       } else {
-        // Fase 3: gal2 elementos totalmente revelados
         gsap.set(gal2Background, { clipPath: 'inset(0% 0 0 0)' })
         gsap.set(gal2Image, { 
           clipPath: 'inset(0% 0 0 0)',
@@ -657,7 +665,6 @@ const setupPortfolioGalleryReveal = () => {
           transform: 'translate3d(0px, -40px, 0px)'
         })
         
-        // Textos: gal2 totalmente revelados
         gal2TextContainers.forEach(textContainer => {
           gsap.set(textContainer, { 
             clipPath: 'inset(0% 0 0 0)',
@@ -674,9 +681,6 @@ const setupPortfolioGalleryReveal = () => {
   })
 }
 
-definePageMeta({
-  layout: 'default'
-})
 </script>
 
 <style scoped>
@@ -1088,8 +1092,11 @@ definePageMeta({
 }
 
 .section-portfolio-gallery {
-  margin-bottom: 100px;
-  height: 300vh;
+  height: 200vh;
+
+  .col-12 {
+    padding: 0;
+  }
 
   .portfolio-gallery-content {
     display: flex;
@@ -1130,7 +1137,7 @@ definePageMeta({
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border-radius: 10px;
+    border-radius: 0px;
     position: absolute;
     top: 0;
     left: 0;
@@ -1154,7 +1161,7 @@ definePageMeta({
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 0px;
     }
     
     .case-content-item-background img:nth-child(1) {
@@ -1167,7 +1174,7 @@ definePageMeta({
     }
 
     .case-content-container {
-      border-radius: 10px;
+      border-radius: 0px;
       display: flex;
       flex-direction: row;
       height: 100%;
