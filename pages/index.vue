@@ -1,14 +1,9 @@
 <template>
+  <AppIntro 
+    v-if="showIntroAnimation" 
+    @intro-complete="onIntroComplete"
+  />
   <div class="container-fluid">
-    <AppLoader 
-      v-if="showLoader"
-      :logo-url="'/images/logos/logo-black.svg'"
-      :logo-alt="'Esfera Logo'"
-      :show-percent="false"
-      :animation-type="'default'"
-      @loading-complete="onLoadingComplete"
-      @animation-complete="onAnimationComplete"
-    />
     <div class="row">
       <div class="col-12">
         <section class="full-banner">
@@ -279,7 +274,6 @@ import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide } from 'vue3-carousel'
 import { useFirstVisit } from '~/composables/useFirstVisit'
 import { useAnimateNumbers } from '~/composables/useAnimateNumbers'
-import AppLoader from '~/components/AppLoader.vue'
 
 // Page meta configuration
 definePageMeta({
@@ -291,28 +285,49 @@ definePageMeta({
 })
 
 const { gsap, ScrollTrigger } = useGsap()
-const { checkFirstVisit, checkDirectNavigation, resetFirstVisit, forceLoader } = useFirstVisit()
+const {  checkDirectNavigation, resetFirstVisit, forceLoader } = useFirstVisit()
 const { animateNumbers } = useAnimateNumbers()
 
-// AppLoader state
-const showLoader = ref(false)
+const showIntroAnimation = ref(false)
+
 
 // For testing - you can call this in browser console
 if (process.client) {
   window.resetHomeVisit = () => {
     resetFirstVisit('home')
-    console.log('Session reset - refresh page to see loader')
   }
   
   window.forceLoaderNext = () => {
     forceLoader()
-    console.log('Next navigation will show loader')
   }
   
   window.showLoaderNow = () => {
-    showLoader.value = true
-    console.log('Loader forced to show immediately')
+    window.dispatchEvent(new CustomEvent('requestAppLoader'))
   }
+  
+  // Debug function to reset gallery
+  window.resetGallery = () => {
+    // Kill all ScrollTriggers
+    ScrollTrigger.getAll().forEach(t => t.kill())
+    
+    // Clear all GSAP inline styles
+    gsap.set("*", { clearProps: "all" })
+    
+    // Force refresh
+    ScrollTrigger.refresh(true)
+    
+    // Recreate gallery
+    setupPortfolioGalleryReveal()
+    
+    console.log('Gallery reset complete')
+  }
+  
+  // Listen for AppLoader completion
+  window.addEventListener('appLoaderAnimationComplete', () => {
+    showedLoader = true
+    // Show intro animation after AppLoader completes
+    showIntroAnimation.value = true
+  })
 }
 
 const baseClients = [
@@ -341,18 +356,12 @@ const carouselRef2 = ref(null)
 let autoplayInterval1 = null
 let autoplayInterval2 = null
 
-// AppLoader callbacks
-const onLoadingComplete = () => {
-  // Counter reached 100
-  console.log('Loading complete')
-}
 
-const onAnimationComplete = () => {
-  // Loader finished, start home animations
-  showLoader.value = false
+
+const onIntroComplete = () => {
+  showIntroAnimation.value = false
   startHomeAnimations()
 }
-
 
 const startHomeAnimations = () => {
   if (process.client) {
@@ -362,39 +371,44 @@ const startHomeAnimations = () => {
       animateTitleLines()
       animateVideoImage()
       animateAwards()
-      setupEsferaHover()
       setupPortfolioGalleryReveal()
       animateNumbers()
       
-      // Refresh ScrollTrigger on resize for responsiveness
+      // Refresh ScrollTrigger on resize for responsiveness (but not gallery)
       window.addEventListener('resize', () => {
-        ScrollTrigger.refresh()
+        // Only refresh non-gallery ScrollTriggers
+        const allTriggers = ScrollTrigger.getAll()
+        allTriggers.forEach(trigger => {
+          if (!trigger.vars || !trigger.vars.trigger) {
+            trigger.refresh()
+            return
+          }
+          
+          // Check if trigger element is the gallery section
+          const triggerElement = typeof trigger.vars.trigger === 'string' 
+            ? document.querySelector(trigger.vars.trigger) 
+            : trigger.vars.trigger
+            
+          if (!triggerElement || !triggerElement.classList || !triggerElement.classList.contains('section-portfolio-gallery')) {
+            trigger.refresh()
+          }
+        })
       })
     })
   }
 }
 
 onMounted(() => {
-  // Check if this is a direct navigation (typed URL, refresh, external link)
-  const shouldShowLoader = checkDirectNavigation()
-  
-  console.log('=== Navigation Analysis ===')
-  console.log('Direct navigation detected:', shouldShowLoader)
-  console.log('Performance navigation:', window.performance?.getEntriesByType?.('navigation')?.[0])
-  console.log('Document referrer:', document.referrer)
-  console.log('Current origin:', window.location.origin)
-  console.log('Session storage:', sessionStorage.getItem('esfera-session-started'))
-  
-  if (shouldShowLoader) {
-    console.log('🚀 Showing AppLoader - Direct navigation detected')
-    showLoader.value = true
-  } else {
-    console.log('⚡ Skipping AppLoader - Internal navigation')
-    startHomeAnimations()
-  }
-  
-  console.log('Final showLoader.value:', showLoader.value)
+  setTimeout(() => {
+    if (!showedLoader) {
+      // No AppLoader, start home animations directly
+      startHomeAnimations()
+    }
+    // If AppLoader is running, it will trigger the intro animation
+  }, 100)
 })
+
+let showedLoader = false
 
 onUnmounted(() => {
   if (autoplayInterval1) {
@@ -404,11 +418,24 @@ onUnmounted(() => {
     clearInterval(autoplayInterval2)
   }
   
-  // Remove resize listener
   if (process.client) {
+    // Remove resize listener
     window.removeEventListener('resize', () => {
       ScrollTrigger.refresh()
     })
+    
+    // Kill gallery-specific ScrollTriggers
+    const galleryTriggers = ScrollTrigger.getAll().filter(trigger => {
+      if (!trigger.vars || !trigger.vars.trigger) return false
+      
+      const triggerElement = typeof trigger.vars.trigger === 'string' 
+        ? document.querySelector(trigger.vars.trigger) 
+        : trigger.vars.trigger
+        
+      return triggerElement && triggerElement.classList && triggerElement.classList.contains('section-portfolio-gallery')
+    })
+    
+    galleryTriggers.forEach(trigger => trigger.kill())
   }
 })
 
@@ -526,29 +553,22 @@ const animateAwards = () => {
   })
 }
 
-const setupEsferaHover = () => {
-  const esfera = document.querySelector('.full-banner h1 .esfera')
-  const esferaBt = document.querySelector('.full-banner h1 .esfera_bt')
-
-  if (!esfera || !esferaBt) return
-
-  gsap.set(esferaBt, {
-    clipPath: 'inset(0 100% 0 0)',
-    autoAlpha: 0,
-    x: -50,
-    opacity: 0,
-    filter: 'blur(10px)'
-  })
-
-  const tl = gsap.timeline({ paused: true })
-  tl.to(esferaBt, { autoAlpha: 1, duration: 0.05 }, 0)
-    .to(esferaBt, { clipPath: 'inset(0 0% 0 0)', x: 0, duration: 0.35, ease: 'power2.out', opacity: 1, filter: 'blur(0px)' }, 0)
-
-  esfera.addEventListener('mouseenter', () => tl.play())
-  esfera.addEventListener('mouseleave', () => tl.reverse())
-}
-
 const setupPortfolioGalleryReveal = () => {
+  // Kill any existing gallery ScrollTriggers first
+  ScrollTrigger.getAll().forEach(trigger => {
+    if (trigger.vars && trigger.vars.trigger) {
+      const triggerEl = typeof trigger.vars.trigger === 'string' 
+        ? document.querySelector(trigger.vars.trigger) 
+        : trigger.vars.trigger
+      if (triggerEl && triggerEl.classList && triggerEl.classList.contains('section-portfolio-gallery')) {
+        trigger.kill()
+      }
+    }
+  })
+  
+  // Force refresh
+  ScrollTrigger.refresh(true)
+  
   const gallerySection = document.querySelector('.section-portfolio-gallery')
   const galleryContent = document.querySelector('.portfolio-gallery-content')
   const portfolioItem = document.querySelector('.portfolio-gallery-content-item')
@@ -617,16 +637,30 @@ const setupPortfolioGalleryReveal = () => {
     })
   })
 
-  ScrollTrigger.create({
+  // Create ScrollTrigger with minimal configuration
+  const st = ScrollTrigger.create({
     trigger: gallerySection,
     start: "top top",
     end: "bottom bottom",
     pin: galleryContent,
     pinSpacing: false,
     scrub: 1,
-    invalidateOnRefresh: true,
+    onEnter: () => {
+      console.log('onEnter - scrolling down')
+    },
+    onLeave: () => {
+      console.log('onLeave - reached bottom')
+    },
+    onEnterBack: () => {
+      console.log('onEnterBack - scrolling up')
+    },
+    onLeaveBack: () => {
+      console.log('onLeaveBack - reached top')
+    },
     onUpdate: (self) => {
       const progress = self.progress
+      
+      // gsap.set(galleryContent, { clearProps: "transform" })
       
       if (progress <= 0.8) {
         const revealProgress = progress / 0.8
@@ -719,6 +753,9 @@ const setupPortfolioGalleryReveal = () => {
       opacity: 0;
       transform: translateX(-50px);
       position: absolute;
+      filter: blur(10px);
+      transition: all 0.3s ease;
+      cursor: pointer;
 
       .esfera_bt_text {
         margin-right: 10px;
@@ -747,6 +784,7 @@ const setupPortfolioGalleryReveal = () => {
     .esfera {
       font-weight: var(--font-weight-semibold);
       position: relative;
+      cursor: pointer;
 
       &::after {
         content: '';
@@ -756,6 +794,14 @@ const setupPortfolioGalleryReveal = () => {
         width: 100%;
         height: 3px;
         background-color: var(--color-yellow);
+      }
+
+      &:hover {
+        .esfera_bt {
+          opacity: 1;
+          transform: translateX(0px);
+          filter: blur(0px);
+        }
       }
     }
   }
@@ -824,7 +870,7 @@ const setupPortfolioGalleryReveal = () => {
   align-items: center;
   width: 100%;
   align-self: center;
-  min-height: 128px;
+  min-height: 170px;
 }
 
 .full-banner-events-content {
@@ -1092,7 +1138,8 @@ const setupPortfolioGalleryReveal = () => {
 }
 
 .section-portfolio-gallery {
-  height: 200vh;
+  height: 300vh;
+  position: relative;
 
   .col-12 {
     padding: 0;
@@ -1108,6 +1155,8 @@ const setupPortfolioGalleryReveal = () => {
     gap: 100px;
     justify-content: center;
     position: relative;
+    top: 0;
+    left: 0;
   }
 
   @media (max-width: 768px) {

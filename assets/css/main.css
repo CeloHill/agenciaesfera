@@ -3,11 +3,6 @@
 /* Garantir comportamento correto de scroll */
 html {
   scroll-behavior: auto !important;
-  overflow-x: hidden;
-}
-
-body {
-  overflow-x: hidden;
 }
 
 :root {
@@ -41,7 +36,6 @@ html, body {
   font-family: var(--font-family);
   background-color: var(--color-white);
   color: var(--color-black);
-  overflow-x: hidden;
 }
 
 h1 {

@@ -78,8 +78,6 @@ export const useAnimateNumbers = () => {
         })
       }
     })
-    
-    console.log(`animateNumbers: Initialized ${numberElements.length} elements with selector "${selector}"`)
   }
   
   /**
@@ -141,8 +139,6 @@ export const useAnimateNumbers = () => {
         })
       }
     })
-    
-    console.log(`animateNumbersImmediately: Started animation for ${numberElements.length} elements`)
   }
   
   /**

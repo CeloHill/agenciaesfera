@@ -1,120 +1,182 @@
 <template>
   <div ref="layoutRef" class="layout d-flex flex-column min-vh-100">
-    <AppNavigation />
-    <AppHeader />
-    <main class="main-content flex-grow-1 w-100">
-      <slot />
-    </main>
-    <AppFooter />
+    <AppLoader 
+      v-if="showLoader"
+      :logo-url="'/images/logos/logo-black.svg'"
+      :logo-alt="'Esfera Logo'"
+      :show-percent="false"
+      :animation-type="'default'"
+      @loading-complete="onLoadingComplete"
+      @animation-complete="onAnimationComplete"
+    />
+    <div :class="{ 'page-hidden': isPageHidden }">
+      <AppNavigation />
+      <AppHeader />
+      <main class="main-content flex-grow-1 w-100">
+        <slot />
+      </main>
+      <AppFooter />
+    </div>
   </div>
 </template>
 
 <script setup>
 const { gsap, ScrollTrigger } = useGsap()
 const layoutRef = ref(null)
+const showLoader = ref(false)
+const isPageHidden = ref(true)
 
-onMounted(() => {
-  if (process.client && gsap && ScrollTrigger) {
+// AppLoader callbacks
+const onLoadingComplete = () => {
+  console.log('Loading complete')
+}
+
+const onAnimationComplete = () => {
+  showLoader.value = false
+  isPageHidden.value = false
+  
+  // No scroll locking needed
+  
+  // Notify page that loader is complete
+  window.dispatchEvent(new CustomEvent('appLoaderAnimationComplete'))
+}
+
+// Listen for pages requesting AppLoader
+if (process.client) {
+  window.addEventListener('requestAppLoader', () => {
+    showLoader.value = true
+    isPageHidden.value = true
     
-    // Ensure layout always starts with white background
-    gsap.set(layoutRef.value, {
-      backgroundColor: "#ffffff"
-    })
+    // No scroll locking needed
+  })
+}
+
+onMounted(async () => {
+  if (process.client) {
+    // Import the useFirstVisit composable to check navigation
+    const { useFirstVisit } = await import('~/composables/useFirstVisit')
+    const { checkDirectNavigation } = useFirstVisit()
     
-    // Ensure page always starts at top
-    window.scrollTo(0, 0)
+    // Check if we should show AppLoader on direct navigation
+    const shouldShowLoader = checkDirectNavigation()
     
-    nextTick(() => {
-      // ScrollTrigger configuration for color changes
-      const scrollColorTrigger = ScrollTrigger.create({
-        trigger: "body",
-        start: "top top",
-        end: "500px top",
-        scrub: 1, // Smooth animation following scroll
-        onUpdate: (self) => {
-        const progress = self.progress
-        
-        const bgColor = gsap.utils.interpolate("#ffffff", "#1d1d1b", progress)
-        const textColor = gsap.utils.interpolate("#000000", "#ffffff", progress)
-        
-        gsap.set(layoutRef.value, {
-          backgroundColor: bgColor
-        })
-        
-        gsap.set("h1:not(.no-color-change), h2:not(.no-color-change)", {
-          color: textColor
-        })
-        
-        gsap.set(".full-banner-content p:not(.no-color-change), .full-banner-content span:not(.no-color-change)", {
-          color: textColor
-        })
-        
-        gsap.set(".award-text-title", {
-          color: textColor
-        })
-        
-        gsap.set(".color-change-text:not(.no-color-change)", {
-          color: textColor
-        })
-        
-        gsap.set(".big-number.color-change-text, .big-number-plus.color-change-text", {
-          color: textColor
-        })
-        
-        gsap.set(".clients-title:not(.no-color-change)", {
-          color: textColor
-        })
-        
-        window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
-          detail: { progress }
-        }))
-      }
-    })
+    if (shouldShowLoader) {
+      showLoader.value = true
+      isPageHidden.value = true
+      
+      // No scroll locking needed
+    } else {
+      isPageHidden.value = false
+      
+      // No scroll management needed
+      
+      // Dispatch immediate visibility event for components to animate
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('pageVisibleImmediately'))
+      }, 100)
+    }
     
-    ScrollTrigger.refresh()
-    
-    const forceInitialState = () => {
+    if (gsap && ScrollTrigger) {
+      // Ensure layout always starts with white background
       gsap.set(layoutRef.value, {
         backgroundColor: "#ffffff"
       })
-      gsap.set("h1:not(.no-color-change), h2:not(.no-color-change)", {
-        color: "#000000"
-      })
-      gsap.set(".full-banner-content p:not(.no-color-change), .full-banner-content span:not(.no-color-change)", {
-        color: "#000000"
-      })
-      gsap.set(".award-text-title", {
-        color: "#000000"
-      })
-      gsap.set(".color-change-text:not(.no-color-change)", {
-        color: "#000000"
-      })
-      gsap.set(".big-number.color-change-text, .big-number-plus.color-change-text", {
-        color: "#000000"
-      })
-      gsap.set(".clients-title:not(.no-color-change)", {
-        color: "#000000"
+      
+      // Ensure page always starts at top
+      window.scrollTo(0, 0)
+    
+      nextTick(() => {
+        // ScrollTrigger configuration for color changes
+        const scrollColorTrigger = ScrollTrigger.create({
+          trigger: "body",
+          start: "top top",
+          end: "500px top",
+          scrub: 1, // Smooth animation following scroll
+          onUpdate: (self) => {
+            const progress = self.progress
+            
+            const bgColor = gsap.utils.interpolate("#ffffff", "#1d1d1b", progress)
+            const textColor = gsap.utils.interpolate("#000000", "#ffffff", progress)
+            
+            gsap.set(layoutRef.value, {
+              backgroundColor: bgColor
+            })
+            
+            gsap.set("h1:not(.no-color-change), h2:not(.no-color-change)", {
+              color: textColor
+            })
+            
+            gsap.set(".full-banner-content p:not(.no-color-change), .full-banner-content span:not(.no-color-change)", {
+              color: textColor
+            })
+            
+            gsap.set(".award-text-title", {
+              color: textColor
+            })
+            
+            gsap.set(".color-change-text:not(.no-color-change)", {
+              color: textColor
+            })
+            
+            gsap.set(".big-number.color-change-text, .big-number-plus.color-change-text", {
+              color: textColor
+            })
+            
+            gsap.set(".clients-title:not(.no-color-change)", {
+              color: textColor
+            })
+            
+            window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+              detail: { progress }
+            }))
+          }
       })
       
-      window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
-        detail: { progress: 0 }
-      }))
-    }
-    
-    if (window.scrollY === 0) {
-      forceInitialState()
-    }
-    
-    const handleScroll = () => {
+      ScrollTrigger.refresh()
+      
+      const forceInitialState = () => {
+        gsap.set(layoutRef.value, {
+          backgroundColor: "#ffffff"
+        })
+        gsap.set("h1:not(.no-color-change), h2:not(.no-color-change)", {
+          color: "#000000"
+        })
+        gsap.set(".full-banner-content p:not(.no-color-change), .full-banner-content span:not(.no-color-change)", {
+          color: "#000000"
+        })
+        gsap.set(".award-text-title", {
+          color: "#000000"
+        })
+        gsap.set(".color-change-text:not(.no-color-change)", {
+          color: "#000000"
+        })
+        gsap.set(".big-number.color-change-text, .big-number-plus.color-change-text", {
+          color: "#000000"
+        })
+        gsap.set(".clients-title:not(.no-color-change)", {
+          color: "#000000"
+        })
+        
+        window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+          detail: { progress: 0 }
+        }))
+      }
+      
       if (window.scrollY === 0) {
         forceInitialState()
       }
+      
+      const handleScroll = () => {
+        if (window.scrollY === 0) {
+          forceInitialState()
+        }
+      }
+      
+      window.addEventListener('scroll', handleScroll, { passive: true })
+      layoutRef.value._scrollHandler = handleScroll
+      
+      })
     }
-    
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    layoutRef.value._scrollHandler = handleScroll
-    
-    })
   }
 })
 
@@ -125,7 +187,14 @@ onUnmounted(() => {
     }
     
     if (ScrollTrigger) {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+      // Kill only the color transition ScrollTrigger, not all triggers
+      const allTriggers = ScrollTrigger.getAll()
+      allTriggers.forEach(trigger => {
+        // Only kill triggers that are not from pages (like the gallery)
+        if (!trigger.vars || !trigger.vars.trigger || !trigger.vars.trigger.classList.contains('section-portfolio-gallery')) {
+          trigger.kill()
+        }
+      })
     }
     
     if (layoutRef.value) {
@@ -141,6 +210,11 @@ onUnmounted(() => {
 .layout {
   background-color: var(--color-white);
   transition: background-color 0.1s ease;
+}
+
+.page-hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 </style>
 

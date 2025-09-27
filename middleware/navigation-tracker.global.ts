@@ -3,7 +3,6 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (import.meta.client) {
     // If we're navigating from one route to another (not initial page load)
     if (from && from.path !== to.path) {
-      console.log('🔄 Nuxt internal navigation:', from.path, '→', to.path)
       
       // Mark that this is internal navigation
       sessionStorage.setItem('nuxt-navigating', 'true')
@@ -18,7 +17,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
         }, 100)
       }
     } else if (!from) {
-      console.log('🚀 Initial page load:', to.path)
+      console.log('Initial page load:', to.path)
     }
   }
 })

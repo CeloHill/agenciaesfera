@@ -61,7 +61,7 @@
     </div>
   </div>
   
-  <div class="navigation-button">
+  <div ref="navigationButtonRef" class="navigation-button">
     <button ref="buttonMenuRef" class="button-menu" @click="toggleMenu">
       <span class="navigation-button-text">menu</span>
       <span class="navigation-button-icon" :class="{ 'is-open': isMenuOpen }">
@@ -77,6 +77,7 @@
 const { gsap } = useGsap()
 const isMenuOpen = ref(false)
 const buttonMenuRef = ref(null)
+const navigationButtonRef = ref(null)
 
 const animateTextTransition = (newText) => {
   if (!buttonMenuRef.value) return
@@ -129,6 +130,53 @@ const closeMenu = () => {
     isMenuOpen.value = false
   }
 }
+
+onMounted(() => {
+  if (process.client && gsap) {
+    nextTick(() => {
+      // Always start navigation hidden below viewport
+      gsap.set(navigationButtonRef.value, {
+        y: 150,
+        opacity: 0
+      })
+      
+      // Listen for page visibility to animate navigation up
+      window.addEventListener('appLoaderAnimationComplete', () => {
+        gsap.to(navigationButtonRef.value, {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power2.out",
+          delay: 0.5
+        })
+      })
+      
+      // Listen for immediate page visibility (no loader)
+      window.addEventListener('pageVisibleImmediately', () => {
+        gsap.to(navigationButtonRef.value, {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power2.out",
+          delay: 0.3
+        })
+      })
+    })
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('appLoaderAnimationComplete', () => {})
+    window.removeEventListener('pageVisibleImmediately', () => {})
+    
+    if (navigationButtonRef.value) {
+      gsap.set(navigationButtonRef.value, {
+        clearProps: "y,opacity"
+      })
+    }
+  }
+})
 </script>
 
 <style scoped>
@@ -138,7 +186,7 @@ const closeMenu = () => {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 999;
+  z-index: 10002;
   pointer-events: none;
 }
 
@@ -181,7 +229,7 @@ const closeMenu = () => {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 10003;
 }
 
 .navigation-button .button-menu {

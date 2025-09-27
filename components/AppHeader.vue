@@ -1,5 +1,5 @@
 <template>
-  <header class="header">
+  <header ref="headerRef" class="header">
     <div class="header-content">
       <NuxtLink to="/" class="header-logo">
         <img 
@@ -49,6 +49,34 @@ onMounted(() => {
       
       initMagneticEffect()
       
+      // Always start header hidden
+      gsap.set(headerRef.value, {
+        y: -100,
+        opacity: 0
+      })
+      
+      // Listen for page visibility to animate header down
+      window.addEventListener('appLoaderAnimationComplete', () => {
+        gsap.to(headerRef.value, {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power2.out",
+          delay: 0.3
+        })
+      })
+      
+      // Listen for immediate page visibility (no loader)
+      window.addEventListener('pageVisibleImmediately', () => {
+        gsap.to(headerRef.value, {
+          y: 0,
+          opacity: 1,
+          duration: 1.2,
+          ease: "power2.out",
+          delay: 0.1
+        })
+      })
+      
       window.addEventListener('colorTransitionUpdate', (event) => {
         const progress = event.detail.progress
         
@@ -66,6 +94,19 @@ onMounted(() => {
           }
         }
       })
+      
+      // Listen for intro animation completion to reset state
+      window.addEventListener('introAnimationComplete', () => {
+        // Reset logo filter to default (will be controlled by scroll again)
+        gsap.set(logoRef.value, {
+          filter: `invert(0)`
+        })
+        
+        // Reset button class
+        if (buttonRef.value) {
+          buttonRef.value.classList.remove('white')
+        }
+      })
     })
   }
 })
@@ -73,6 +114,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (process.client) {
     window.removeEventListener('colorTransitionUpdate', () => {})
+    window.removeEventListener('appLoaderAnimationComplete', () => {})
+    window.removeEventListener('pageVisibleImmediately', () => {})
+    window.removeEventListener('introAnimationComplete', () => {})
     
     if (logoRef.value) {
       gsap.set(logoRef.value, {
@@ -83,21 +127,26 @@ onUnmounted(() => {
     if (buttonRef.value) {
       buttonRef.value.classList.remove('white')
     }
+    
+    if (headerRef.value) {
+      gsap.set(headerRef.value, {
+        clearProps: "y,opacity"
+      })
+    }
   }
 })
+
 </script>
 
 <style scoped>
 .header {
-  /* background-color: rgba(255, 255, 255, 0.5); */
   position: fixed;
   top: 0px;
   left: 0;
   width: 100%;
-  z-index: 10;
-  /* backdrop-filter: blur(7px); */
-  transition: background-color 0.1s ease;
+  z-index: 10001;
   padding-top: 50px;
+  transform: translateY(-100vh);
 }
 
 .header-content {

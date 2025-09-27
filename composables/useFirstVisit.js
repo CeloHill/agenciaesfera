@@ -6,7 +6,6 @@ export const useFirstVisit = () => {
     const nuxtNavigating = window.__NUXT_NAVIGATING__ || sessionStorage.getItem('nuxt-navigating')
     
     if (nuxtNavigating) {
-      console.log('Nuxt internal navigation detected - skipping loader')
       sessionStorage.removeItem('nuxt-navigating')
       return false
     }
@@ -15,8 +14,6 @@ export const useFirstVisit = () => {
     const navigation = window.performance?.getEntriesByType?.('navigation')?.[0]
     
     if (navigation) {
-      console.log('Navigation type:', navigation.type)
-      
       // Always show loader for page refresh
       if (navigation.type === 'reload') {
         return true
@@ -27,15 +24,11 @@ export const useFirstVisit = () => {
         const referrer = document.referrer
         const currentDomain = window.location.origin
         
-        console.log('Referrer:', referrer)
-        console.log('Current domain:', currentDomain)
-        
         // Check if referrer is from same domain but different than current page
         if (referrer && referrer.startsWith(currentDomain)) {
           // This is likely internal navigation - check session state
           const sessionStarted = sessionStorage.getItem('esfera-session-started')
           if (sessionStarted) {
-            console.log('Internal navigation detected via referrer')
             return false // Don't show loader for internal navigation
           }
         }

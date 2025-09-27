@@ -135,10 +135,10 @@ const currentProgress = ref(0)
 
 // Variables
 let counterAnimation = null
+const currentBackgroundColor = ref(props.backgroundColor)
 
-// Computed Styles
 const loaderStyles = computed(() => ({
-  backgroundColor: props.backgroundColor
+  backgroundColor: currentBackgroundColor.value
 }))
 
 const logoContainerStyles = computed(() => ({
@@ -225,32 +225,65 @@ const animateLoaderExit = () => {
   return new Promise((resolve) => {
     const timeline = gsap.timeline()
     
+    const bgColorObj = { 
+      opacity: 1 
+    }
+    
     switch (props.animationType) {
       case 'fade':
-        // Simple fade out
-        timeline.to(".loader-content", {
-          duration: 1,
-          opacity: 0,
-          ease: "power2.out"
-        })
+        // Simple fade out with background
+        timeline
+          .to(".loader-content", {
+            duration: 1,
+            opacity: 0,
+            ease: "power2.out"
+          }, 0)
+          .to(bgColorObj, {
+            duration: 1.2,
+            opacity: 0,
+            ease: "power2.out",
+            onUpdate: () => {
+              // Extract RGB values from background color
+              const hex = props.backgroundColor
+              const r = parseInt(hex.slice(1, 3), 16)
+              const g = parseInt(hex.slice(3, 5), 16)
+              const b = parseInt(hex.slice(5, 7), 16)
+              currentBackgroundColor.value = `rgba(${r}, ${g}, ${b}, ${bgColorObj.opacity})`
+            }
+          }, 0.2)
         break
         
       case 'slide':
-        // Slide down
-        timeline.to(".loader-content", {
-          duration: 1,
-          y: "100vh",
-          opacity: 0,
-          ease: "power2.in"
-        })
+        // Slide down with background
+        timeline
+          .to(".loader-content", {
+            duration: 1,
+            y: "100vh",
+            opacity: 0,
+            ease: "power2.in"
+          }, 0)
+          .to(bgColorObj, {
+            duration: 1.2,
+            opacity: 0,
+            ease: "power2.out",
+            onUpdate: () => {
+              const hex = props.backgroundColor
+              const r = parseInt(hex.slice(1, 3), 16)
+              const g = parseInt(hex.slice(3, 5), 16)
+              const b = parseInt(hex.slice(5, 7), 16)
+              currentBackgroundColor.value = `rgba(${r}, ${g}, ${b}, ${bgColorObj.opacity})`
+            }
+          }, 0.3)
         break
         
       default:
-        // Original animation (default)
+        // Original animation (default) with background
         timeline
           .to(".counter", {
             duration: 1,
-            y: "50vh",
+            y: "5vh",
+            filter: "blur(6px)",
+            scale: 0.3,
             opacity: 0,
             ease: "power2.out"
           }, 0)
@@ -268,7 +301,7 @@ const animateLoaderExit = () => {
         if (props.logoUrl) {
           timeline.to(".logo-container img", {
             duration: 1.2,
-            y: "-150px",
+            filter: "blur(6px)",
             scale: 0.3,
             opacity: 0,
             ease: "power2.out"
@@ -284,6 +317,21 @@ const animateLoaderExit = () => {
             ease: "power2.out"
           }, 0.5)
         }
+        
+        // Animate background opacity
+        timeline.to(bgColorObj, {
+          duration: 1.5,
+          opacity: 0,
+          ease: "power2.out",
+          onUpdate: () => {
+            // Convert hex to rgba with animated opacity
+            const hex = props.backgroundColor
+            const r = parseInt(hex.slice(1, 3), 16)
+            const g = parseInt(hex.slice(3, 5), 16)
+            const b = parseInt(hex.slice(5, 7), 16)
+            currentBackgroundColor.value = `rgba(${r}, ${g}, ${b}, ${bgColorObj.opacity})`
+          }
+        }, 0.7)
         break
     }
     
@@ -292,6 +340,11 @@ const animateLoaderExit = () => {
       emit('animation-complete', {
         animationType: props.animationType
       })
+      
+      // Dispatch global event to show page
+      if (process.client) {
+        window.dispatchEvent(new CustomEvent('appLoaderComplete'))
+      }
       
       // Hide loader after animation
       setTimeout(() => {

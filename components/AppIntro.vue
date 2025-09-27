@@ -1,16 +1,6 @@
 <template>
-  <div class="intro-page">
-    <AppLoader 
-      :logo-url="'/images/logos/logo-black.svg'"
-      :logo-alt="'Esfera Logo'"
-      :show-percent="false"
-      :animation-type="'default'"
-      @loading-complete="onLoadingComplete"
-      @animation-complete="onAnimationComplete"
-    />
-    <AppNavigation />
-    <AppHeader />
-    <div class="banner-container" ref="containerRef" v-show="showBanner">
+  <div class="intro-overlay" v-show="showIntro">
+    <div class="banner-container" ref="containerRef">
       <!-- Screen 1: Intro Experience -->
       <div class="screen screen-1" ref="screen1">
         <div class="intro-content">
@@ -45,33 +35,23 @@ const { gsap } = useGsap()
 
 const emit = defineEmits(['intro-complete'])
 
+const showIntro = ref(false)
 const containerRef = ref(null)
 const screen1 = ref(null)
-const showBanner = ref(false)
 
 let mainTimeline = null
 let textSliderTimeline = null
 let sliderTimeout = null
 
-// AppLoader callbacks
-const onLoadingComplete = () => {
-  console.log('Loading complete - Counter reached 100')
-}
-
-const onAnimationComplete = () => {
-  showBanner.value = true
-  
-  nextTick(() => {
-    startSequentialAnimation()
-  })
-}
-
 const hideIntro = () => {
-  gsap.to(".intro-page", {
+  gsap.to(".intro-overlay", {
     duration: 0.5,
     opacity: 0,
     ease: "power2.out",
     onComplete: () => {
+      // Reset AppHeader state and dispatch event to clear intro-specific styling
+      window.dispatchEvent(new CustomEvent('introAnimationComplete'))
+      showIntro.value = false
       emit('intro-complete')
     }
   })
@@ -95,7 +75,14 @@ const startSequentialAnimation = () => {
     .to(".screen-1", {
       duration: 1,
       backgroundColor: "#1d1d1b",
-      ease: "power2.inOut"
+      ease: "power2.inOut",
+      onUpdate: function() {
+        const progress = this.progress()
+        // Dispatch color transition event for AppHeader
+        window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+          detail: { progress }
+        }))
+      }
     }, "phase1Complete")
     .addLabel("phase2Complete")
     
@@ -257,28 +244,32 @@ const animateTextSlider = () => {
   })
 }
 
-
+const startIntro = () => {
+  showIntro.value = true
+  
+  nextTick(() => {
+    // Ensure video container starts invisible
+    gsap.set(".video-intro-container", {
+      height: 0,
+      opacity: 0
+    })
+    
+    // Ensure navigation and header start hidden
+    gsap.set(".navigation-button", {
+      transform: "translateY(100vh)"
+    })
+    gsap.set(".header", {
+      transform: "translateY(-100vh)"
+    })
+    
+    // Start animation immediately since AppLoader already completed
+    startSequentialAnimation()
+  })
+}
 
 onMounted(() => {
-  // AppLoader will control the initial sequence
-  // We just prepare elements in initial state
-  if (process.client) {
-    nextTick(() => {
-      // Ensure video container starts invisible
-      gsap.set(".video-intro-container", {
-        height: 0,
-        opacity: 0
-      })
-      
-      // Ensure navigation and header start hidden
-      gsap.set(".navigation-button", {
-        transform: "translateY(100vh)"
-      })
-      gsap.set(".header", {
-        transform: "translateY(-100vh)"
-      })
-    })
-  }
+  // Start intro immediately when component mounts
+  startIntro()
 })
 
 onUnmounted(() => {
@@ -293,19 +284,21 @@ onUnmounted(() => {
   }
 })
 
-// Configure without layout
-definePageMeta({
-  layout: false
+// Expose startIntro method for parent component
+defineExpose({
+  startIntro
 })
 </script>
 
 <style scoped>
-
-.intro-page {
-  position: relative;
+.intro-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  z-index: 9999;
+  background: #FFFFFF;
 }
 
 .banner-container {
@@ -317,7 +310,6 @@ definePageMeta({
   display: flex;
   z-index: 1000;
 }
-
 
 .screen {
   width: 100vw;
@@ -332,13 +324,11 @@ definePageMeta({
   background: #FFFFFF;
 }
 
-
 .intro-content {
   position: relative;
   width: 100%;
   height: 100%;
 }
-
 
 .video-intro-container {
   position: absolute;
@@ -364,7 +354,6 @@ definePageMeta({
     width: 100%;
     height: 100%;
   }  
-
 }
 
 .video-intro-text {
@@ -449,20 +438,15 @@ definePageMeta({
     height: 2px;
     bottom: -10px;
     background-color: var(--color-yellow);
-
   }
-}
-
-.video-intro-text-highlight {
-  color: var(--color-yellow);
 }
 
 /* Styles for AppNavigation in intro */
 :deep(.navigation-overlay) {
-  z-index: 1002;
+  z-index: 10002;
 }
 :deep(.navigation-button) {
-  z-index: 10001;
+  z-index: 10003;
   transform: translateY(100vh); /* Starts hidden below screen */
   transition: none; /* Remove CSS transitions for GSAP control */
 }
@@ -471,7 +455,7 @@ definePageMeta({
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1001;
+  z-index: 10001;
   transform: translateY(-100vh); /* Starts hidden above screen */
   transition: none; /* Remove CSS transitions for GSAP control */
 }
