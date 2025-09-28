@@ -344,6 +344,8 @@ const animateLoaderExit = () => {
       // Dispatch global event to show page
       if (process.client) {
         window.dispatchEvent(new CustomEvent('appLoaderComplete'))
+        // Dispatch specific event to start AppIntro
+        window.dispatchEvent(new CustomEvent('startAppIntro'))
       }
       
       // Hide loader after animation

@@ -85,21 +85,18 @@ const animateTextTransition = (newText) => {
   const textElement = buttonMenuRef.value.querySelector('.navigation-button-text')
   if (!textElement) return
   
-  // Primeira fase: texto atual sobe e desaparece
   gsap.to(textElement, {
     y: -30,
     opacity: 0,
     duration: 0.5,
     ease: "power2.in",
     onComplete: () => {
-      // Segunda fase: altera o texto e posiciona por baixo
       textElement.textContent = newText
       gsap.set(textElement, { 
         y: 30,
         opacity: 0 
       })
       
-      // Terceira fase: novo texto sobe para o centro
       gsap.to(textElement, {
         y: 0,
         opacity: 1,
@@ -114,10 +111,8 @@ const toggleMenu = () => {
   const newState = !isMenuOpen.value
   
   if (newState) {
-    // Abrindo menu: "menu" → "fechar"
     animateTextTransition('fechar')
   } else {
-    // Fechando menu: "fechar" → "menu"
     animateTextTransition('menu')
   }
   
@@ -134,13 +129,11 @@ const closeMenu = () => {
 onMounted(() => {
   if (process.client && gsap) {
     nextTick(() => {
-      // Always start navigation hidden below viewport
       gsap.set(navigationButtonRef.value, {
         y: 150,
         opacity: 0
       })
       
-      // Listen for page visibility to animate navigation up
       window.addEventListener('appLoaderAnimationComplete', () => {
         gsap.to(navigationButtonRef.value, {
           y: 0,
@@ -151,7 +144,6 @@ onMounted(() => {
         })
       })
       
-      // Listen for immediate page visibility (no loader)
       window.addEventListener('pageVisibleImmediately', () => {
         gsap.to(navigationButtonRef.value, {
           y: 0,

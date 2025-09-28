@@ -1,8 +1,9 @@
 export const useGsap = () => {
-  const { $gsap, $ScrollTrigger } = useNuxtApp()
+  const { $gsap, $ScrollTrigger, $Flip } = useNuxtApp()
   
   return {
     gsap: $gsap,
-    ScrollTrigger: $ScrollTrigger
+    ScrollTrigger: $ScrollTrigger,
+    Flip: $Flip
   }
 }

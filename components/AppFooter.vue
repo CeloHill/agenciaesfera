@@ -82,30 +82,20 @@ const animateFooterElements = () => {
   
   if (addressPhoneContainer) {
     gsap.set(addressPhoneContainer, { 
-      y: -50,
       opacity: 0,
-      filter: "blur(10px)",
-      transform: "translateX(-140px)",
-      scale: 0.5
     })
     
     gsap.set(socialIcons, { 
-      y: -150,
+      y: -50,
       opacity: 0,
-      filter: "blur(10px)",
-      transform: "translateX(-25px)",
-      scale: 0.5
     })
 
     gsap.set(logoEsfera, { 
-      y: -150,
       opacity: 0,
-      filter: "blur(10px)"
     })
 
     gsap.set(iconEsfera, { 
       opacity: 0,
-      filter: "blur(10px)"
     })
 
     ScrollTrigger.create({
@@ -118,9 +108,6 @@ const animateFooterElements = () => {
           duration: 1.0,
           ease: "power2.out",
           opacity: 1, 
-          filter: "blur(0px)",
-          transform: "translateX(0px)",
-          scale: 1
         })
         
         gsap.to(socialIcons, {
@@ -128,34 +115,25 @@ const animateFooterElements = () => {
           duration: 1.8,
           ease: "power2.out",
           opacity: 1,
-          filter: "blur(0px)",
-          transform: "translateX(0px)",
-          scale: 1
         })
 
         gsap.to(logoEsfera, {
           y: 0,
           duration: 1.8,
           opacity: 1,
-          filter: "blur(0px)"
         })
 
         gsap.to(iconEsfera, {
           duration: 1.8,
           opacity: 1,
-          filter: "blur(0px)"
         })
-      }
+      } 
     })
   }
   
   if (navigation) {
     gsap.set(navigation, { 
-      x: -500,
-      y: -70,
       opacity: 0,
-      filter: "blur(10px)",
-      scale: 0.5
     })
     
     ScrollTrigger.create({
@@ -168,8 +146,6 @@ const animateFooterElements = () => {
           y: 0,
           duration: 2.1,
           opacity: 1,
-          filter: "blur(0px)",
-          scale: 1,
           ease: "power2.out",
           delay: 0.2
         })
@@ -356,8 +332,8 @@ const animateFooterElements = () => {
   z-index: 1;
 
   .icon-image {
-    width: 350px;
-    height: 350px;
+    width: 347px;
+    height: 347px;
     opacity: 0.1;
     background: url('/images/logos/icon-black.svg') center/cover no-repeat;
     position: relative;
@@ -372,7 +348,6 @@ const animateFooterElements = () => {
       background: linear-gradient(50deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 1) 62%, rgba(255, 255, 255, 0) 100%);
       background-size: 200% 100%;
       pointer-events: none;
-      animation: gradientShift 15s linear infinite;
       filter:blur(20px);
       border-radius: 50%;
     }

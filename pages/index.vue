@@ -1,11 +1,13 @@
 <template>
-  <AppIntro 
-    v-if="showIntroAnimation" 
-    @intro-complete="onIntroComplete"
-  />
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-12">
+  <div>
+    <AppIntro 
+      v-show="showIntroAnimation" 
+      @intro-complete="onIntroComplete"
+      @video-flip-request="onVideoFlipRequest"
+    />
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
         <section class="full-banner">
           <div class="full-banner-content">
             <div class="full-banner-content-left">
@@ -17,8 +19,8 @@
               </h1>
             </div>
             <div class="full-banner-content-right">
-              <div class="video-image-container">
-                <video class="video-bg" src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
+              <div class="video-image-container flip-receive-container">
+                <video class="video-bg initial-video" src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
               </div>
             </div>
           </div>
@@ -90,7 +92,29 @@
             </div>
             <div class="col-md-6 col-sm-12">
               <div class="badge-clients">
-                <img src="/icons/badge-clients.png"></img>
+                <div class="animated-circle">
+                  <img src="/images/logos/icon-white.svg" class="animated-circle-icon"></img>
+                  <div class="animated-circle-text">
+                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                      <defs>
+                        <path id="circle" d="M 100, 100 m -80, 0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0" />
+                      </defs>
+                      <text font-size="16" fill="white" font-weight="400">
+                        <textPath href="#circle">
+                          nossos números • nossos números • nossos números • nossos números • nossos números •
+                        </textPath>
+                        <animateTransform 
+                          attributeName="transform" 
+                          attributeType="XML" 
+                          type="rotate" 
+                          from="0 100 100" 
+                          to="360 100 100" 
+                          dur="20s" 
+                          repeatCount="indefinite"/>
+                      </text>
+                    </svg>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -267,6 +291,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script setup>
@@ -284,12 +309,20 @@ definePageMeta({
   }
 })
 
-const { gsap, ScrollTrigger } = useGsap()
+const { gsap, ScrollTrigger, Flip } = useGsap()
 const {  checkDirectNavigation, resetFirstVisit, forceLoader } = useFirstVisit()
 const { animateNumbers } = useAnimateNumbers()
 
 const showIntroAnimation = ref(false)
+const shouldShowIntro = ref(false)
 
+// Check if we should show intro based on AppLoader logic
+const checkIfShouldShowIntro = () => {
+  if (process.client) {
+    const shouldShowLoader = checkDirectNavigation()
+    shouldShowIntro.value = shouldShowLoader
+  }
+}
 
 // For testing - you can call this in browser console
 if (process.client) {
@@ -307,26 +340,44 @@ if (process.client) {
   
   // Debug function to reset gallery
   window.resetGallery = () => {
-    // Kill all ScrollTriggers
     ScrollTrigger.getAll().forEach(t => t.kill())
     
-    // Clear all GSAP inline styles
     gsap.set("*", { clearProps: "all" })
     
-    // Force refresh
     ScrollTrigger.refresh(true)
     
-    // Recreate gallery
     setupPortfolioGalleryReveal()
-    
-    console.log('Gallery reset complete')
   }
   
-  // Listen for AppLoader completion
+  window.triggerFlipAnimation = () => {
+    onVideoFlipRequest(true)
+  }
+  
+  window.startPageAnimations = () => {
+    startHomeAnimations()
+  }
+  
   window.addEventListener('appLoaderAnimationComplete', () => {
     showedLoader = true
-    // Show intro animation after AppLoader completes
-    showIntroAnimation.value = true
+    if (shouldShowIntro.value) {
+      setTimeout(() => {
+        showIntroAnimation.value = true
+      }, 100)
+    } else {
+      startHomeAnimations()
+    }
+  })
+  
+  window.addEventListener('startAppIntro', () => {
+    if (shouldShowIntro.value) {
+      showIntroAnimation.value = true
+    }
+  })
+  
+  window.addEventListener('pageVisibleImmediately', () => {
+    if (!shouldShowIntro.value) {
+      startHomeAnimations()
+    }
   })
 }
 
@@ -358,6 +409,110 @@ let autoplayInterval2 = null
 
 
 
+const onVideoFlipRequest = (introElement) => {
+  if (!introElement) return
+  
+  nextTick(() => {
+    const targetContainer = document.querySelector('.flip-receive-container')
+    if (!targetContainer) return
+    
+    // Get the entire intro overlay element
+    const introOverlay = document.querySelector('.intro-overlay')
+    if (!introOverlay) return
+    
+    // Fade out slide-2 text and video-intro-text before Flip
+    const slide2Elements = introOverlay.querySelectorAll('.slide-2')
+    const videoIntroText = introOverlay.querySelector('.video-intro-text')
+    const videoBgIntro = introOverlay.querySelector('.video-bg-intro')
+    
+    if (slide2Elements.length > 0 || videoIntroText || videoBgIntro) {
+      const elementsToFade = [...slide2Elements]
+      if (videoIntroText) {
+        elementsToFade.push(videoIntroText)
+      }
+      
+      // Create timeline for simultaneous animations
+      const tl = gsap.timeline({
+        onComplete: () => {
+          // Start Flip animation after animations complete
+          startFlipAnimation()
+        }
+      })
+      
+      // Fade out texts
+      if (elementsToFade.length > 0) {
+        tl.to(elementsToFade, {
+          duration: 0.5,
+          opacity: 0,
+          ease: "power2.out"
+        }, 0)
+      }
+      
+      // Fade in video-bg-intro
+      if (videoBgIntro) {
+        tl.to(videoBgIntro, {
+          duration: 0.5,
+          opacity: 1,
+          ease: "power2.out"
+        }, 0)
+      }
+    } else {
+      // Start Flip immediately if no elements found
+      startFlipAnimation()
+    }
+    
+    function startFlipAnimation() {
+      // Create Flip state of the intro overlay
+      const state = Flip.getState(introOverlay)
+      
+      // Move intro overlay to target container
+      targetContainer.appendChild(introOverlay)
+      
+      // Apply Flip animation with border-radius transition
+      Flip.from(state, {
+        duration: 1,
+        ease: "power2.inOut",
+        scale: false,
+        onUpdate: function() {
+          const progress = this.progress()
+          const borderRadius = progress * 400 // 0 to 400px
+          
+          // Apply border-radius to elements during Flip
+          gsap.set(introOverlay, { borderRadius: `${borderRadius}px` })
+          gsap.set(introOverlay.querySelector('.screen'), { borderRadius: `${borderRadius}px` })
+          gsap.set(introOverlay.querySelector('.video-intro-container'), { borderRadius: `${borderRadius}px` })
+        },
+        onComplete: () => {
+          // Hide the initial video
+          const initialVideo = document.querySelector('.video-bg.initial-video')
+          if (initialVideo) {
+            initialVideo.style.display = 'none'
+          }
+          
+          // Move intro-overlay back to its original position and make it visible
+          if (introOverlay) {
+            introOverlay.style.display = 'block'
+            introOverlay.style.opacity = '1'
+            introOverlay.style.position = 'absolute'
+            introOverlay.style.top = '0'
+            introOverlay.style.left = '0'
+            introOverlay.style.width = '100%'
+            introOverlay.style.height = '100%'
+            introOverlay.style.zIndex = '9999'
+          }
+          
+          // Reset AppHeader state and dispatch event to clear intro-specific styling
+          window.dispatchEvent(new CustomEvent('introAnimationComplete'))
+          // Start page animations without hiding intro
+          setTimeout(() => {
+            startHomeAnimations()
+          }, 100)
+        }
+      })
+    }
+  })
+}
+
 const onIntroComplete = () => {
   showIntroAnimation.value = false
   startHomeAnimations()
@@ -373,6 +528,7 @@ const startHomeAnimations = () => {
       animateAwards()
       setupPortfolioGalleryReveal()
       animateNumbers()
+      setupColorTransitions()
       
       // Refresh ScrollTrigger on resize for responsiveness (but not gallery)
       window.addEventListener('resize', () => {
@@ -399,9 +555,12 @@ const startHomeAnimations = () => {
 }
 
 onMounted(() => {
+  // Check if we should show intro based on AppLoader logic
+  checkIfShouldShowIntro()
+  
   setTimeout(() => {
-    if (!showedLoader) {
-      // No AppLoader, start home animations directly
+    if (!showedLoader && !shouldShowIntro.value) {
+      // No AppLoader and no intro needed, start home animations directly
       startHomeAnimations()
     }
     // If AppLoader is running, it will trigger the intro animation
@@ -419,6 +578,15 @@ onUnmounted(() => {
   }
   
   if (process.client) {
+    // Clean up color transition ScrollTrigger
+    const layout = document.querySelector('.layout')
+    if (layout && layout._scrollColorTrigger) {
+      layout._scrollColorTrigger.kill()
+    }
+    if (layout && layout._scrollHandler) {
+      window.removeEventListener('scroll', layout._scrollHandler)
+    }
+    
     // Remove resize listener
     window.removeEventListener('resize', () => {
       ScrollTrigger.refresh()
@@ -553,6 +721,106 @@ const animateAwards = () => {
   })
 }
 
+const setupColorTransitions = () => {
+  const layout = document.querySelector('.layout')
+  if (!layout) return
+  
+  // Create timeline for color transitions
+  const colorTimeline = gsap.timeline({
+    paused: true,
+    defaults: {
+      duration: 1,
+      ease: "none"
+    }
+  })
+  
+  // Define all elements once
+  const textElements = [
+    "h1:not(.no-color-change)",
+    "h2:not(.no-color-change)", 
+    ".full-banner-content p:not(.no-color-change)",
+    ".full-banner-content span:not(.no-color-change)",
+    ".award-text-title",
+    ".color-change-text:not(.no-color-change)",
+    ".big-number.color-change-text",
+    ".big-number-plus.color-change-text",
+    ".clients-title:not(.no-color-change)"
+  ].join(", ")
+  
+  // Create the color animation timeline
+  colorTimeline
+    .to(layout, {
+      backgroundColor: "#1d1d1b",
+      duration: 1
+    }, 0)
+    .to(textElements, {
+      color: "#ffffff",
+      duration: 1
+    }, 0)
+  
+  // ScrollTrigger configuration for color changes
+  const scrollColorTrigger = ScrollTrigger.create({
+    trigger: "body",
+    start: "top top",
+    end: "500px top",
+    scrub: 0.5,
+    animation: colorTimeline,
+    onUpdate: (self) => {
+      // Dispatch event for AppHeader
+      window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+        detail: { progress: self.progress }
+      }))
+    }
+  })
+  
+  // Force initial state
+  const forceInitialState = () => {
+    gsap.set(layout, {
+      backgroundColor: "#ffffff"
+    })
+    gsap.set("h1:not(.no-color-change), h2:not(.no-color-change)", {
+      color: "#000000"
+    })
+    gsap.set(".full-banner-content p:not(.no-color-change), .full-banner-content span:not(.no-color-change)", {
+      color: "#000000"
+    })
+    gsap.set(".award-text-title", {
+      color: "#000000"
+    })
+    gsap.set(".color-change-text:not(.no-color-change)", {
+      color: "#000000"
+    })
+    gsap.set(".big-number.color-change-text, .big-number-plus.color-change-text", {
+      color: "#000000"
+    })
+    gsap.set(".clients-title:not(.no-color-change)", {
+      color: "#000000"
+    })
+    
+    window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+      detail: { progress: 0 }
+    }))
+  }
+  
+  // Apply initial state
+  if (window.scrollY === 0) {
+    forceInitialState()
+  }
+  
+  // Handle scroll to reset state
+  const handleScroll = () => {
+    if (window.scrollY === 0) {
+      forceInitialState()
+    }
+  }
+  
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  
+  // Store reference for cleanup
+  layout._scrollHandler = handleScroll
+  layout._scrollColorTrigger = scrollColorTrigger
+}
+
 const setupPortfolioGalleryReveal = () => {
   // Kill any existing gallery ScrollTriggers first
   ScrollTrigger.getAll().forEach(trigger => {
@@ -646,16 +914,12 @@ const setupPortfolioGalleryReveal = () => {
     pinSpacing: false,
     scrub: 1,
     onEnter: () => {
-      console.log('onEnter - scrolling down')
     },
     onLeave: () => {
-      console.log('onLeave - reached bottom')
     },
     onEnterBack: () => {
-      console.log('onEnterBack - scrolling up')
     },
     onLeaveBack: () => {
-      console.log('onLeaveBack - reached top')
     },
     onUpdate: (self) => {
       const progress = self.progress
@@ -718,6 +982,36 @@ const setupPortfolioGalleryReveal = () => {
 </script>
 
 <style scoped>
+.animated-circle {
+  width: 100%;
+  padding-top: 100%;
+  background-color: #313131;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+
+  .animated-circle-text {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .animated-circle-icon {
+    position: absolute;
+    left: 50%;
+    width: 25%;
+    height: 26%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
 .full-banner {
   position: relative;
   width: 100%;
@@ -737,6 +1031,8 @@ const setupPortfolioGalleryReveal = () => {
       display: block;
       overflow: visible;
       padding: 2px 0;
+      opacity: 0;
+      transform: translateY(-25px);
     }
 
     .esfera_bt {
@@ -847,7 +1143,7 @@ const setupPortfolioGalleryReveal = () => {
 
 .video-image-container {
   border-radius: 400px;
-  overflow: hidden;
+  /* overflow: hidden; */
   max-width: 1000px;
   position: relative;
   padding-top: 35%;
@@ -862,6 +1158,7 @@ const setupPortfolioGalleryReveal = () => {
   position: absolute;
   top: 0;
   left: 0;
+  border-radius: 400px;
 }
 
 .full-banner-events {
@@ -892,6 +1189,8 @@ const setupPortfolioGalleryReveal = () => {
   align-items: center;
   justify-content: space-between;
   width: 200px;
+  opacity: 0;
+  filter: blur(10px);
 }
 
 .award-icon-left {
@@ -945,12 +1244,7 @@ const setupPortfolioGalleryReveal = () => {
   }
 
   .badge-clients {
-    width: 210px;
-    
-    img {
-      width: 210px;
-      height: 210px;
-    }
+    width: 170px;
   }
 
   p {

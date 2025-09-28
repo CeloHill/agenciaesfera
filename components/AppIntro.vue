@@ -33,7 +33,7 @@ import { useGsap } from '~/composables/useGsap'
 
 const { gsap } = useGsap()
 
-const emit = defineEmits(['intro-complete'])
+const emit = defineEmits(['intro-complete', 'video-flip-request'])
 
 const showIntro = ref(false)
 const containerRef = ref(null)
@@ -42,6 +42,11 @@ const screen1 = ref(null)
 let mainTimeline = null
 let textSliderTimeline = null
 let sliderTimeout = null
+
+const requestVideoFlip = () => {
+  // Request parent to handle the flip
+  emit('video-flip-request', true)
+}
 
 const hideIntro = () => {
   gsap.to(".intro-overlay", {
@@ -99,6 +104,7 @@ const startSequentialAnimation = () => {
       opacity: 1,
       ease: "power2.inOut"
     }, "phase2Complete")
+    .to({}, { duration: 3 }, "phase2Complete")
     .addLabel("phase3Complete")
     
   // Phase 4: Video expansion and text movement (1 second)
@@ -106,8 +112,8 @@ const startSequentialAnimation = () => {
     .to(".video-intro-container", {
       duration: 1,
       x: 0,
-      width: "100vw",
-      height: "100vh",
+      width: "100%",
+      height: "100%",
       top: "0px",
       left: "0px",
       ease: "power2.inOut"
@@ -126,7 +132,7 @@ const startSequentialAnimation = () => {
     }, "phase3Complete")
     .to(".navigation-button", {
       duration: 1,
-      transform: "translateY(0)",
+      transform: "translate(-50%, 0)",
       ease: "power2.out"
     }, "phase3Complete")
     .to(".header", {
@@ -138,9 +144,8 @@ const startSequentialAnimation = () => {
     
   mainTimeline.call(() => {
     animateTextSlider().then(() => {
-      // Wait a bit after slider and hide intro
       setTimeout(() => {
-        hideIntro()
+        requestVideoFlip()
       }, 1000)
     })
   }, null, "phase4Complete+=0.5")
@@ -238,6 +243,7 @@ const animateTextSlider = () => {
         opacity: 1,
         ease: "power2.out"
       }, "+=0.2")
+      .to({}, { duration: 6 }, "exit")
       .call(() => {
         resolve()
       })
@@ -248,6 +254,9 @@ const startIntro = () => {
   showIntro.value = true
   
   nextTick(() => {
+    // Dispatch event to disable ScrollTrigger during intro
+    window.dispatchEvent(new CustomEvent('introAnimationStart'))
+    
     // Ensure video container starts invisible
     gsap.set(".video-intro-container", {
       height: 0,
@@ -256,7 +265,7 @@ const startIntro = () => {
     
     // Ensure navigation and header start hidden
     gsap.set(".navigation-button", {
-      transform: "translateY(100vh)"
+      transform: "translate(-50%, 100vh)"
     })
     gsap.set(".header", {
       transform: "translateY(-100vh)"
@@ -268,8 +277,12 @@ const startIntro = () => {
 }
 
 onMounted(() => {
-  // Start intro immediately when component mounts
-  startIntro()
+  // Listen for AppLoader completion event
+  if (process.client) {
+    window.addEventListener('startAppIntro', () => {
+      startIntro()
+    })
+  }
 })
 
 onUnmounted(() => {
@@ -292,11 +305,11 @@ defineExpose({
 
 <style scoped>
 .intro-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   z-index: 9999;
   background: #FFFFFF;
 }
@@ -305,19 +318,21 @@ defineExpose({
   position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   display: flex;
   z-index: 1000;
 }
 
 .screen {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
+  position: absolute;
 }
 
 .screen-1 {
