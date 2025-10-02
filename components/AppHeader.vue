@@ -1,14 +1,16 @@
 <template>
   <header ref="headerRef" class="header">
     <div class="header-content">
-      <NuxtLink to="/" class="header-logo">
-        <img 
-          ref="logoRef" 
-          src="/images/logos/icon-black.svg" 
-          alt="Agência Esfera" 
-          class="logo-image"
-        >
-      </NuxtLink>
+      <div ref="logoContainerRef" class="header-logo-wrapper">
+        <NuxtLink to="/" class="header-logo">
+          <img 
+            ref="logoRef" 
+            src="/images/logos/icon-black.svg" 
+            alt="Agência Esfera" 
+            class="logo-image"
+          >
+        </NuxtLink>
+      </div>
       <button ref="buttonRef" class="button">
         <span class="magnetic-text">let's talk</span>
       </button>
@@ -25,11 +27,20 @@ const logoRef = ref(null)
 
 const { 
   elementRef: buttonRef, 
-  initMagneticEffect 
+  initMagneticEffect: initButtonMagnetic
 } = useMagneticEffect({
   maxDistance: 150,
   intensity: 0.6,
   textAnimation: true
+})
+
+const { 
+  elementRef: logoContainerRef, 
+  initMagneticEffect: initLogoMagnetic
+} = useMagneticEffect({
+  maxDistance: 100,
+  intensity: 0.4,
+  textAnimation: false
 })
 
 
@@ -47,7 +58,8 @@ onMounted(() => {
         buttonRef.value.classList.remove('white')
       }
       
-      initMagneticEffect()
+      initButtonMagnetic()
+      initLogoMagnetic()
       
       // Always start header hidden
       gsap.set(headerRef.value, {
@@ -74,6 +86,16 @@ onMounted(() => {
           duration: 1.2,
           ease: "power2.out",
           delay: 0.1
+        })
+      })
+      
+      // Listen for video expand start (AppIntro)
+      window.addEventListener('videoExpandStart', () => {
+        gsap.to(headerRef.value, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out"
         })
       })
       
@@ -117,6 +139,7 @@ onUnmounted(() => {
     window.removeEventListener('appLoaderAnimationComplete', () => {})
     window.removeEventListener('pageVisibleImmediately', () => {})
     window.removeEventListener('introAnimationComplete', () => {})
+    window.removeEventListener('videoExpandStart', () => {})
     
     if (logoRef.value) {
       gsap.set(logoRef.value, {
@@ -154,6 +177,13 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   padding: 20px var(--body-horizontal-padding);
+}
+
+.header-logo-wrapper {
+  cursor: pointer;
+  will-change: transform;
+  transform-origin: center;
+  transition: all 0s ease;
 }
 
 .header-logo {
@@ -213,6 +243,12 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .header {
     padding-top: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding-top: 0px;
   }
 }
 </style>

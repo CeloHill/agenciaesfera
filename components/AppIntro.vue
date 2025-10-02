@@ -7,7 +7,7 @@
           <div class="intro-text-slider">
             <div class="slide-1">
               <div class="slide-1-text-1">Eventos corporativos para </div>
-              <div class="slide-1-text-2">impulsionar <span class="video-intro-text-highlight">seu sucesso</span></div>
+              <div class="slide-1-text-2"><span class="animated-text-1">impulsionar </span><span class="video-intro-text-highlight animated-text-2">seu sucesso</span></div>
             </div>
             <div class="slide-2">
               <div class="slide-2-text-1">Inovação é movimento </div>
@@ -30,8 +30,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { useGsap } from '~/composables/useGsap'
+import { useScrollLock } from '~/composables/useScrollLock'
 
 const { gsap } = useGsap()
+const { lockScroll, unlockScroll } = useScrollLock()
 
 const emit = defineEmits(['intro-complete', 'video-flip-request'])
 
@@ -44,6 +46,9 @@ let textSliderTimeline = null
 let sliderTimeout = null
 
 const requestVideoFlip = () => {
+  // Unlock scroll when video flip is requested (end of intro animation)
+  unlockScroll()
+  
   // Request parent to handle the flip
   emit('video-flip-request', true)
 }
@@ -65,12 +70,12 @@ const hideIntro = () => {
 const startSequentialAnimation = () => {
   mainTimeline = gsap.timeline()
   
-  // Phase 1: Video container appears (1 second)
+  // Phase 1: Video container appears from center (1 second)
   mainTimeline
     .to(".video-intro-container", {
       duration: 1,
-      height: "330px",
       opacity: 1,
+      scale: 1,
       ease: "power2.out"
     })
     .addLabel("phase1Complete")
@@ -109,6 +114,12 @@ const startSequentialAnimation = () => {
     
   // Phase 4: Video expansion and text movement (1 second)
   mainTimeline
+    .call(() => {
+      // Dispatch event when video starts expanding (header and navigation should appear)
+      if (process.client) {
+        window.dispatchEvent(new CustomEvent('videoExpandStart'))
+      }
+    }, null, "phase3Complete")
     .to(".video-intro-container", {
       duration: 1,
       x: 0,
@@ -129,16 +140,6 @@ const startSequentialAnimation = () => {
       y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 100,
       scale: 0.6,
       ease: "power2.inOut"
-    }, "phase3Complete")
-    .to(".navigation-button", {
-      duration: 1,
-      transform: "translate(-50%, 0)",
-      ease: "power2.out"
-    }, "phase3Complete")
-    .to(".header", {
-      duration: 1,
-      transform: "translateY(0)",
-      ease: "power2.out"
     }, "phase3Complete")
     .addLabel("phase4Complete")
     
@@ -198,9 +199,11 @@ const animateTextSlider = () => {
       scale: 1,
       opacity: 1
     })
-    gsap.set(".slide-1 .video-intro-text-highlight", {
-      opacity: 0
-    })
+    // typing prep: hide both parts of slide-1-text-2
+    const t1 = document.querySelector('.slide-1-text-2 .animated-text-1')
+    const t2 = document.querySelector('.slide-1-text-2 .animated-text-2')
+    if (t1) t1.style.opacity = '0'
+    if (t2) t2.style.opacity = '0'
     
     // Phase 1: Slide-1 enters from left to center
     textSliderTimeline
@@ -211,11 +214,19 @@ const animateTextSlider = () => {
         ease: "power2.out"
       })
       .call(() => {
-        // Phase 2: Typing effect on highlight
-        const highlightElement = document.querySelector('.video-intro-text-highlight')
-        if (highlightElement) {
-          const originalText = highlightElement.textContent
-          createTypingEffect(originalText, highlightElement)
+        // Phase 2: Typing effect on both parts
+        const part1 = document.querySelector('.slide-1-text-2 .animated-text-1')
+        const part2 = document.querySelector('.slide-1-text-2 .animated-text-2')
+        if (part1 && part2) {
+          const text1 = part1.textContent
+          const text2 = part2.textContent
+          part1.textContent = ''
+          part2.textContent = ''
+          const tlTyping = gsap.timeline()
+          tlTyping.call(() => { gsap.set(part1, { opacity: 1 }) })
+            .to(part1, { text: text1, duration: Math.max(0.6, text1.length * 0.03), ease: 'none' })
+            .call(() => { gsap.set(part2, { opacity: 1 }) })
+            .to(part2, { text: text2, duration: Math.max(0.6, text2.length * 0.03), ease: 'none' })
         }
       })
       .addLabel("typing")
@@ -254,13 +265,17 @@ const startIntro = () => {
   showIntro.value = true
   
   nextTick(() => {
+    // Ensure scroll remains locked during intro
+    lockScroll()
+    
     // Dispatch event to disable ScrollTrigger during intro
     window.dispatchEvent(new CustomEvent('introAnimationStart'))
     
-    // Ensure video container starts invisible
+    // Ensure video container starts invisible and scaled down from center
     gsap.set(".video-intro-container", {
-      height: 0,
-      opacity: 0
+      height: "330px",
+      opacity: 0,
+      scale: 0
     })
     
     // Ensure navigation and header start hidden
@@ -310,6 +325,7 @@ defineExpose({
   left: 0;
   width: 100%;
   height: 100%;
+  max-height: 100vh;
   z-index: 9999;
   background: #FFFFFF;
 }
@@ -350,11 +366,12 @@ defineExpose({
   top: calc(50% - 165px);
   left: calc(50% - 125px);
   width: 240px;
-  height: 0;
+  height: 330px;
   opacity: 0;
   border-radius: 6px;
   overflow: hidden;
   background-color: #000;
+  transform-origin: center center;
 
   .video-bg-intro {
     width: 100%;
@@ -389,7 +406,7 @@ defineExpose({
 
 .intro-text-slider {
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;

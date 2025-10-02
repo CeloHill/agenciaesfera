@@ -12,10 +12,10 @@
           <div class="full-banner-content">
             <div class="full-banner-content-left">
               <h1>
-                <span class="line line-1">Na <span class="esfera">Esfera<span class="esfera_bt"><span class="esfera_bt_text">sobre nós</span> <span class="arrow-right"><img src="/icons/arrow1.png"></img></span></span></span></span>
-                <span class="line line-2">trabalhamos</span>
-                <span class="line line-3">com energia,</span>
-                <span class="line line-4">paixão e respeito</span>
+                <span class="line line-1"><span class="line-inner">Na <span class="esfera">Esfera<span class="esfera_bt"><span class="esfera_bt_text">sobre nós</span> <span class="arrow-right"><img src="/icons/arrow1.png"></img></span></span></span></span></span>
+                <span class="line line-2"><span class="line-inner">trabalhamos</span></span>
+                <span class="line line-3"><span class="line-inner">com energia,</span></span>
+                <span class="line line-4"><span class="line-inner">paixão e respeito</span></span>
               </h1>
             </div>
             <div class="full-banner-content-right">
@@ -86,9 +86,9 @@
           </div>
         </section>
         <section class="section-numbers-text">
-          <div class="row section-numbers-text-content">
+            <div class="row section-numbers-text-content">
             <div class="col-md-6 col-sm-12">
-              <p class="color-change-text"><span class="highlight no-color-change">Seu evento, é a nossa missão</span> e a gente soma números com expertise e mostra resultados com orgulho.</p>
+              <p class="color-change-text typing-animation-text"><span class="highlight no-color-change animated-text-1">Seu evento, é a nossa missão</span><span class="animated-text-2"> e a gente soma números com expertise e mostra resultados com orgulho.</span></p>
             </div>
             <div class="col-md-6 col-sm-12">
               <div class="badge-clients">
@@ -218,7 +218,7 @@
         </section>
         <section class="section-portfolio-gallery">
           <AppMagneticCursor
-            text="Scroll"
+            text="Ver Mais"
             :size="130"
             background-color="rgba(0, 0, 0, 0.1)"
             text-color="#FFFFFF"
@@ -230,6 +230,7 @@
             :use-viewport-position="true"
             enter-ease="back.out(1.5)"
           >
+            <NuxtLink to="/projetos">
             <div class="row">
               <div class="col-12">
                 <div class="portfolio-gallery-content">
@@ -286,6 +287,7 @@
                 </div>
               </div>
             </div>
+            </NuxtLink>
           </AppMagneticCursor>
         </section>
       </div>
@@ -299,6 +301,7 @@ import 'vue3-carousel/dist/carousel.css'
 import { Carousel, Slide } from 'vue3-carousel'
 import { useFirstVisit } from '~/composables/useFirstVisit'
 import { useAnimateNumbers } from '~/composables/useAnimateNumbers'
+import { useScrollLock } from '~/composables/useScrollLock'
 
 // Page meta configuration
 definePageMeta({
@@ -312,6 +315,7 @@ definePageMeta({
 const { gsap, ScrollTrigger, Flip } = useGsap()
 const {  checkDirectNavigation, resetFirstVisit, forceLoader } = useFirstVisit()
 const { animateNumbers } = useAnimateNumbers()
+const { unlockScroll } = useScrollLock()
 
 const showIntroAnimation = ref(false)
 const shouldShowIntro = ref(false)
@@ -475,7 +479,8 @@ const onVideoFlipRequest = (introElement) => {
         scale: false,
         onUpdate: function() {
           const progress = this.progress()
-          const borderRadius = progress * 400 // 0 to 400px
+          const isMobile = window.innerWidth <= 576
+          const borderRadius = isMobile ? progress * 20 : progress * 400 // 0 to 20px on mobile, 0 to 400px on desktop
           
           // Apply border-radius to elements during Flip
           gsap.set(introOverlay, { borderRadius: `${borderRadius}px` })
@@ -500,6 +505,8 @@ const onVideoFlipRequest = (introElement) => {
             introOverlay.style.height = '100%'
             introOverlay.style.zIndex = '9999'
           }
+          
+          // Scroll is already unlocked by AppIntro when video flip is requested
           
           // Reset AppHeader state and dispatch event to clear intro-specific styling
           window.dispatchEvent(new CustomEvent('introAnimationComplete'))
@@ -526,6 +533,7 @@ const startHomeAnimations = () => {
       animateTitleLines()
       animateVideoImage()
       animateAwards()
+      animateMissionTyping()
       setupPortfolioGalleryReveal()
       animateNumbers()
       setupColorTransitions()
@@ -638,23 +646,21 @@ const startAutoplay2 = () => {
 }
 
 const animateTitleLines = () => {
-  const titleLines = document.querySelectorAll('.full-banner h1 .line')
+  const lineInners = document.querySelectorAll('.full-banner h1 .line .line-inner')
   
-  if (titleLines.length === 0) return
+  if (lineInners.length === 0) return
   
-  gsap.set(titleLines, {
-    y: -25,
-    opacity: 0
+  gsap.set(lineInners, {
+    y: 75,
   })
   
   const tl = gsap.timeline({
     delay: 0.5
   })
   
-  titleLines.forEach((line, index) => {
-    tl.to(line, {
+  lineInners.forEach((lineInner, index) => {
+    tl.to(lineInner, {
       y: 0,
-      opacity: 1,
       duration: 0.8,
       ease: "power2.out"
     }, index * 0.2)
@@ -687,19 +693,12 @@ const animateVideoImage = () => {
 
 const animateAwards = () => {
   const awardContainers = document.querySelectorAll('.award-container')
-  const videoContainer = document.querySelector('.video-image-container')
   
-  if (awardContainers.length === 0 || !videoContainer) return
+  if (awardContainers.length === 0) return
   
   gsap.set(awardContainers, {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    x: '-50%',
-    y: '-50%',
     opacity: 0,
-    filter: 'blur(10px)',
-    zIndex: 10
+    filter: 'blur(10px)'
   })
   
   const tl = gsap.timeline({
@@ -708,16 +707,42 @@ const animateAwards = () => {
   
   awardContainers.forEach((award, index) => {
     tl.to(award, {
-      position: 'static',
-      top: 'auto',
-      left: 'auto',
-      x: 0,
-      y: 0,
       opacity: 1,
       filter: 'blur(0px)',
       duration: 0.8,
       ease: "power2.out"
     }, index * 0.2)
+  })
+}
+
+const animateMissionTyping = () => {
+  const paragraph = document.querySelector('.typing-animation-text')
+  if (!paragraph || paragraph._typingInit) return
+  paragraph._typingInit = true
+  const part1 = paragraph.querySelector('.animated-text-1')
+  const part2 = paragraph.querySelector('.animated-text-2')
+  if (!part1 || !part2) return
+  const tl = gsap.timeline({ paused: true })
+  const text1 = part1.textContent
+  const text2 = part2.textContent
+  part1.textContent = ''
+  part2.textContent = ''
+  paragraph.style.opacity = '1'
+  tl.to(part1, {
+    text: text1,
+    duration: Math.max(0.8, text1.length * 0.03),
+    ease: 'none'
+  })
+  tl.to(part2, {
+    text: text2,
+    duration: Math.max(0.8, text2.length * 0.03),
+    ease: 'none'
+  }, ">")
+  ScrollTrigger.create({
+    trigger: paragraph,
+    start: 'top 80%',
+    once: true,
+    onEnter: () => tl.play()
   })
 }
 
@@ -982,6 +1007,10 @@ const setupPortfolioGalleryReveal = () => {
 </script>
 
 <style scoped>
+.typing-animation-text {
+  opacity: 0;
+}
+
 .animated-circle {
   width: 100%;
   padding-top: 100%;
@@ -1029,10 +1058,13 @@ const setupPortfolioGalleryReveal = () => {
 
     .line {
       display: block;
-      overflow: visible;
+      overflow: hidden;
       padding: 2px 0;
-      opacity: 0;
-      transform: translateY(-25px);
+
+      .line-inner {
+        transform: translate(0px, 70px);
+        display: block;
+      }
     }
 
     .esfera_bt {
@@ -1041,13 +1073,13 @@ const setupPortfolioGalleryReveal = () => {
       padding: 0.4em 1.3em;
       padding-right: 0.4em;
       border-radius: 50px;
-      font-size: 0.5em;
+      font-size: 0.35em;
       font-weight: var(--font-weight-regular);
       line-height: 1.1;
       margin-left: 20px;
       display: inline-flex;
       opacity: 0;
-      transform: translateX(-50px);
+      transform: translate(-50px, 10px);
       position: absolute;
       filter: blur(10px);
       transition: all 0.3s ease;
@@ -1095,7 +1127,7 @@ const setupPortfolioGalleryReveal = () => {
       &:hover {
         .esfera_bt {
           opacity: 1;
-          transform: translateX(0px);
+          transform: translate(0px, 10px);
           filter: blur(0px);
         }
       }
@@ -1220,6 +1252,7 @@ const setupPortfolioGalleryReveal = () => {
     font-size: 20px;
     font-weight: var(--font-weight-semibold);
     line-height: 1.1;
+    margin-top: 5px;
   }
 }
 
@@ -1250,6 +1283,7 @@ const setupPortfolioGalleryReveal = () => {
   p {
     font-size: 34px;
   }
+
 }
 
 .number-container {
@@ -1351,8 +1385,21 @@ const setupPortfolioGalleryReveal = () => {
 
 @media (max-width: 576px) {
   .section-clients .carousel-section {
-    height: 200px;
+    height: 40px;
     padding: 15px;
+  }
+  .full-banner-content {
+    flex-direction: column-reverse;
+  }
+  
+  .video-image-container {
+    padding-top: 100%;
+    max-height: none;
+    border-radius: 20px !important;
+  }
+
+  .video-bg {
+    border-radius: 20px !important;
   }
 }
 
@@ -1676,12 +1723,44 @@ const setupPortfolioGalleryReveal = () => {
     font-size: clamp(20px, 7vw, 90px) !important;
   }
 
-  .clients-title {
-    text-align: center;
+  .clients-description .align-right{
+    text-align: left !important;
   }
 
-  .clients-description .align-right{
-    text-align: center !important;
+  .full-banner-events {
+    justify-content: center !important;
+  }
+
+  .animated-circle {
+    width: 50% !important;
+    padding-top: 50% !important;
+  }
+
+  .badge-clients {
+    margin-top: 60px !important;
+  }
+
+  .clients-content {
+    margin-top: 60px !important;
+  }
+
+  .case-content-container {
+    flex-direction: column-reverse !important;
+  }
+  .case-content-image {
+    height: 40% !important;
+  }
+
+  .case-content-image-container {
+    width: 60vw !important;
+    height: 60vw !important;
+  }
+  .case-content-container .case-content-text:last-of-type .animated-text-container {
+    flex-direction: row-reverse !important;
+  }
+
+  .section-numbers-content {
+    width: initial !important;
   }
 }
 

@@ -20,7 +20,9 @@
         <div class="nav-right">
           <div class="nav-video-placeholder">
             <div class="video-image-container">
-              <video class="video-bg" src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
+              <a data-fancybox href="/videos/video-intro-esfera.mp4" class="video-fancybox-trigger" aria-label="assistir ao vídeo">
+                <video class="video-bg" src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
+              </a>
             </div>
             <span class="video-text">
               <div>
@@ -42,14 +44,14 @@
         </div>
         
         <div class="nav-social">
-          <a href="#" class="social-link">
+          <a href="https://www.linkedin.com/company/agencia-esfera" class="social-link">
             <span class="social-icon">
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M4.15625 18H0.523438V6.32031H4.15625V18ZM2.32031 4.75781C1.1875 4.75781 0.25 3.78125 0.25 2.60938C0.25 1.00781 1.96875 -0.0078125 3.375 0.8125C4.03906 1.16406 4.42969 1.86719 4.42969 2.60938C4.42969 3.78125 3.49219 4.75781 2.32031 4.75781ZM17.7109 18H14.1172V12.3359C14.1172 10.9688 14.0781 9.25 12.2031 9.25C10.3281 9.25 10.0547 10.6953 10.0547 12.2188V18H6.42188V6.32031H9.89844V7.92188H9.9375C10.4453 7.02344 11.6172 6.04688 13.375 6.04688C17.0469 6.04688 17.75 8.46875 17.75 11.5938V18H17.7109Z" fill="currentColor"/>
               </svg>
             </span>
           </a>
-          <a href="#" class="social-link">
+          <a href="https://www.instagram.com/agencia_esfera/" class="social-link">
             <span class="social-icon">
               <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 5.00781C11.4609 5.00781 13.4922 7.03906 13.4922 9.5C13.4922 12 11.4609 13.9922 9 13.9922C6.5 13.9922 4.50781 12 4.50781 9.5C4.50781 7.03906 6.5 5.00781 9 5.00781ZM9 12.4297C10.6016 12.4297 11.8906 11.1406 11.8906 9.5C11.8906 7.89844 10.6016 6.60938 9 6.60938C7.35938 6.60938 6.07031 7.89844 6.07031 9.5C6.07031 11.1406 7.39844 12.4297 9 12.4297ZM14.7031 4.85156C14.7031 4.26562 14.2344 3.79688 13.6484 3.79688C13.0625 3.79688 12.5938 4.26562 12.5938 4.85156C12.5938 5.4375 13.0625 5.90625 13.6484 5.90625C14.2344 5.90625 14.7031 5.4375 14.7031 4.85156ZM17.6719 5.90625C17.75 7.35156 17.75 11.6875 17.6719 13.1328C17.5938 14.5391 17.2812 15.75 16.2656 16.8047C15.25 17.8203 14 18.1328 12.5938 18.2109C11.1484 18.2891 6.8125 18.2891 5.36719 18.2109C3.96094 18.1328 2.75 17.8203 1.69531 16.8047C0.679688 15.75 0.367188 14.5391 0.289062 13.1328C0.210938 11.6875 0.210938 7.35156 0.289062 5.90625C0.367188 4.5 0.679688 3.25 1.69531 2.23438C2.75 1.21875 3.96094 0.90625 5.36719 0.828125C6.8125 0.75 11.1484 0.75 12.5938 0.828125C14 0.90625 15.25 1.21875 16.2656 2.23438C17.2812 3.25 17.5938 4.5 17.6719 5.90625ZM15.7969 14.6562C16.2656 13.5234 16.1484 10.7891 16.1484 9.5C16.1484 8.25 16.2656 5.51562 15.7969 4.34375C15.4844 3.60156 14.8984 2.97656 14.1562 2.70312C12.9844 2.23438 10.25 2.35156 9 2.35156C7.71094 2.35156 4.97656 2.23438 3.84375 2.70312C3.0625 3.01562 2.47656 3.60156 2.16406 4.34375C1.69531 5.51562 1.8125 8.25 1.8125 9.5C1.8125 10.7891 1.69531 13.5234 2.16406 14.6562C2.47656 15.4375 3.0625 16.0234 3.84375 16.3359C4.97656 16.8047 7.71094 16.6875 9 16.6875C10.25 16.6875 12.9844 16.8047 14.1562 16.3359C14.8984 16.0234 15.5234 15.4375 15.7969 14.6562Z" fill="currentColor"/>
@@ -62,22 +64,35 @@
   </div>
   
   <div ref="navigationButtonRef" class="navigation-button">
-    <button ref="buttonMenuRef" class="button-menu" @click="toggleMenu">
-      <span class="navigation-button-text">menu</span>
-      <span class="navigation-button-icon" :class="{ 'is-open': isMenuOpen }">
-        <span class="navigation-button-icon-line"></span>
-        <span class="navigation-button-icon-line"></span>
-        <span class="navigation-button-icon-line"></span>
-      </span>
-    </button>
+    <div ref="magneticButtonRef" class="button-menu-magnetic">
+      <button ref="buttonMenuRef" class="button-menu" @click="toggleMenu">
+        <span class="navigation-button-text">menu</span>
+        <span class="navigation-button-icon" :class="{ 'is-open': isMenuOpen }">
+          <span class="navigation-button-icon-line"></span>
+          <span class="navigation-button-icon-line"></span>
+          <span class="navigation-button-icon-line"></span>
+        </span>
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { useMagneticEffect } from '~/composables/useMagneticEffect'
+
 const { gsap } = useGsap()
 const isMenuOpen = ref(false)
 const buttonMenuRef = ref(null)
 const navigationButtonRef = ref(null)
+
+const { 
+  elementRef: magneticButtonRef, 
+  initMagneticEffect 
+} = useMagneticEffect({
+  maxDistance: 120,
+  intensity: 0.5,
+  textAnimation: false
+})
 
 const animateTextTransition = (newText) => {
   if (!buttonMenuRef.value) return
@@ -129,6 +144,9 @@ const closeMenu = () => {
 onMounted(() => {
   if (process.client && gsap) {
     nextTick(() => {
+      // Initialize magnetic effect
+      initMagneticEffect()
+      
       gsap.set(navigationButtonRef.value, {
         y: 150,
         opacity: 0
@@ -153,6 +171,16 @@ onMounted(() => {
           delay: 0.3
         })
       })
+      
+      // Listen for video expand start (AppIntro)
+      window.addEventListener('videoExpandStart', () => {
+        gsap.to(navigationButtonRef.value, {
+          y: 0,
+          opacity: 1,
+          duration: 1,
+          ease: "power2.out"
+        })
+      })
     })
   }
 })
@@ -161,6 +189,7 @@ onUnmounted(() => {
   if (process.client) {
     window.removeEventListener('appLoaderAnimationComplete', () => {})
     window.removeEventListener('pageVisibleImmediately', () => {})
+    window.removeEventListener('videoExpandStart', () => {})
     
     if (navigationButtonRef.value) {
       gsap.set(navigationButtonRef.value, {
@@ -187,29 +216,26 @@ onUnmounted(() => {
 }
 
 .navigation-container {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  width: 54px;
-  height: 54px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
   background-color: var(--color-white);
-  border-radius: 50%;
-  transform: translateX(-50%);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
+  opacity: 1;
+  z-index: 10002;
 }
 
 .navigation-overlay.is-open .navigation-container {
-  width: 200%;
-  height: 200%;
-  bottom: 0;
-  left: 50%;
-  transform: translate(-50%, 25%);
-  opacity: 1;
+  transform: translateY(0);
 }
 
 .navigation-button {
@@ -222,6 +248,12 @@ onUnmounted(() => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10003;
+}
+
+.navigation-button .button-menu-magnetic {
+  will-change: transform;
+  transform-origin: center;
+  transition: all 0s ease;
 }
 
 .navigation-button .button-menu {
@@ -322,7 +354,7 @@ onUnmounted(() => {
   padding: 0 40px;
   display: flex;
   opacity: 0;
-  transition: all 0.4s ease 0.8s;
+  transition: opacity 0.2s ease 0.4s;
 }
 
 .navigation-overlay.is-open .nav-content {
@@ -471,8 +503,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-start;
   opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.4s ease 1.4s;
+  transition: opacity 0.2s ease 0.7s;
   align-items: flex-end;
   position: relative;
   padding-top: 40%;
@@ -488,6 +519,12 @@ onUnmounted(() => {
     opacity: 0.5;
     z-index: 1;
     
+    .video-fancybox-trigger {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
     .video-bg {
       position: absolute;
       inset: 0;
@@ -500,7 +537,6 @@ onUnmounted(() => {
 
 .navigation-overlay.is-open .nav-video-placeholder {
   opacity: 1;
-  transform: translateY(0);
 }
 
 .video-text {
@@ -517,7 +553,7 @@ onUnmounted(() => {
 
 .nav-footer {
   position: absolute;
-  bottom: 54vh;
+  bottom: 5%;
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
@@ -526,7 +562,7 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   opacity: 0;
-  transition: all 0.4s ease 1.3s;
+  transition: opacity 0.2s ease 0.65s;
   flex-direction: column;
   gap: 40px;
   margin-bottom: 70px;
@@ -538,20 +574,61 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .nav-content {
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
     gap: 50px;
     width: 100%;
+    top: 40%;
   }
 
   .nav-left {
-    align-items: center;
     width: 100%;
   }
 
   .nav-right {
     gap: 50px;
     width: 80vw;
+  }
+
+  .nav-footer {
+    bottom: 40px !important;
+  }
+  .nav-subtitle {
+    transform: translateY(-4px);
+  }
+}
+
+@media (max-width: 576px) {
+  .navigation-button {
+    transform: scale(0.8) !important;
+    left: 30% !important;
+    bottom: 0 !important;
+  }
+}
+
+/* Celular na horizontal */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .navigation-button {
+    transform: scale(0.8) !important;
+    left: 41% !important;
+    bottom: 0 !important;
+  }
+
+  .nav-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 50px;
+    width: 100%;
+    top: 30%;
+  }
+
+  .nav-footer {
+    bottom: -20px !important;
+    gap: 10px !important;
+  }
+
+  .nav-video-placeholder {
+    padding-top: 28% !important;
   }
 }
 

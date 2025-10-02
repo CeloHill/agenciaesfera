@@ -22,6 +22,7 @@
 
 <script setup>
 const { gsap, ScrollTrigger } = useGsap()
+const { lockScroll, unlockScroll } = useScrollLock()
 const layoutRef = ref(null)
 const showLoader = ref(false)
 const isPageHidden = ref(true)
@@ -36,11 +37,11 @@ const onAnimationComplete = () => {
   showLoader.value = false
   isPageHidden.value = false
   
-  // No scroll locking needed
+  // Unlock scroll when AppLoader completes
+  unlockScroll()
   
-  setTimeout(() => {
-    window.dispatchEvent(new CustomEvent('appLoaderAnimationComplete'))
-  }, 50)
+  // AppLoader itself will dispatch appropriate events based on page type
+  // No need to dispatch appLoaderAnimationComplete here
 }
 
 // Listen for pages requesting AppLoader
@@ -48,6 +49,9 @@ if (process.client) {
   window.addEventListener('requestAppLoader', () => {
     showLoader.value = true
     isPageHidden.value = true
+    
+    // Lock scroll when AppLoader is requested
+    lockScroll()
   })
 }
 
@@ -64,11 +68,13 @@ onMounted(async () => {
       showLoader.value = true
       isPageHidden.value = true
       
-      // No scroll locking needed
+      // Lock scroll when AppLoader starts
+      lockScroll()
     } else {
       isPageHidden.value = false
       
-      // No scroll management needed
+      // Ensure scroll is unlocked for direct navigation
+      unlockScroll()
       
       // Dispatch immediate visibility event for components to animate
       setTimeout(() => {

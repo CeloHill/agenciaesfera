@@ -278,15 +278,22 @@ const animateLoaderExit = () => {
         
       default:
         // Original animation (default) with background
+        // Animate counter and logo simultaneously
         timeline
           .to(".counter", {
             duration: 1,
-            y: "5vh",
-            filter: "blur(6px)",
-            scale: 0.3,
             opacity: 0,
             ease: "power2.out"
           }, 0)
+        
+        // Animate logo at the same time if exists
+        if (props.logoUrl) {
+          timeline.to(".logo-container img", {
+            duration: 1,
+            opacity: 0,
+            ease: "power2.out"
+          }, 0)
+        }
         
         // Animate progress bar if it exists
         if (props.showProgressBar) {
@@ -295,17 +302,6 @@ const animateLoaderExit = () => {
             opacity: 0,
             ease: "power2.out"
           }, 0.2)
-        }
-          
-        // Animate logo if exists
-        if (props.logoUrl) {
-          timeline.to(".logo-container img", {
-            duration: 1.2,
-            filter: "blur(6px)",
-            scale: 0.3,
-            opacity: 0,
-            ease: "power2.out"
-          }, 0.3)
         }
         
         // Animate texts if exist
@@ -317,35 +313,30 @@ const animateLoaderExit = () => {
             ease: "power2.out"
           }, 0.5)
         }
-        
-        // Animate background opacity
-        timeline.to(bgColorObj, {
-          duration: 1.5,
-          opacity: 0,
-          ease: "power2.out",
-          onUpdate: () => {
-            // Convert hex to rgba with animated opacity
-            const hex = props.backgroundColor
-            const r = parseInt(hex.slice(1, 3), 16)
-            const g = parseInt(hex.slice(3, 5), 16)
-            const b = parseInt(hex.slice(5, 7), 16)
-            currentBackgroundColor.value = `rgba(${r}, ${g}, ${b}, ${bgColorObj.opacity})`
-          }
-        }, 0.7)
         break
     }
     
     timeline.call(() => {
-      // Emit event when animation complete
       emit('animation-complete', {
         animationType: props.animationType
       })
       
-      // Dispatch global event to show page
+      // Dispatch global events to show page
       if (process.client) {
+        // Always dispatch base event for layout/default.vue
         window.dispatchEvent(new CustomEvent('appLoaderComplete'))
-        // Dispatch specific event to start AppIntro
-        window.dispatchEvent(new CustomEvent('startAppIntro'))
+        
+        // Check if AppIntro should start (index page only)
+        const isIndexPage = window.location.pathname === '/' || window.location.pathname === '/index'
+        
+        if (isIndexPage) {
+          // Start AppIntro (will handle header/navigation timing via videoExpandStart)
+          window.dispatchEvent(new CustomEvent('startAppIntro'))
+          // Do NOT dispatch appLoaderAnimationComplete for index page
+        } else {
+          // For other pages, show header/navigation immediately
+          window.dispatchEvent(new CustomEvent('appLoaderAnimationComplete'))
+        }
       }
       
       // Hide loader after animation
