@@ -171,56 +171,37 @@
           </div>
           <div class="row">
             <div class="col-12">
-              <div class="carousel-section">
-                <ClientOnly>
-                  <Carousel 
-                    ref="carouselRef1"
-                    v-bind="carouselConfig" 
-                    class="clients-carousel"
-                  >
-                    <Slide v-for="(src, i) in clients" :key="i">
-                      <div class="full-banner-clients-list-content-carousel-item">
-                        <img :src="src" alt="" class="client-logo" />
-                      </div>
-                    </Slide>
-                  </Carousel>
-                  <template #fallback>
-                    <div class="carousel-loading">
-                      <div class="full-banner-clients-list-content-carousel-item" v-for="(src, i) in baseClients" :key="i">
-                        <img :src="src" alt="" class="client-logo" />
-                      </div>
+              <div class="new-carousel-section">
+                <div class="marquee" ref="marqueeRef">
+                  <div class="marquee-track" ref="marqueeTrack">
+                    <div class="marquee-item" v-for="(src, i) in baseClients" :key="'m-a-'+i">
+                      <img :src="src" alt="" class="client-logo" draggable="false" />
                     </div>
-                  </template>
-                </ClientOnly>
+                    <div class="marquee-item" v-for="(src, i) in baseClients" :key="'m-b-'+i">
+                      <img :src="src" alt="" class="client-logo" draggable="false" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-12">
-              <div class="carousel-section">
-                <ClientOnly>
-                  <Carousel 
-                    ref="carouselRef2"
-                    v-bind="carouselConfig" 
-                    class="clients-carousel"
-                  >
-                    <Slide v-for="(src, i) in clients" :key="i">
-                      <div class="full-banner-clients-list-content-carousel-item">
-                        <img :src="src" alt="" class="client-logo" />
-                      </div>
-                    </Slide>
-                  </Carousel>
-                  <template #fallback>
-                    <div class="carousel-loading">
-                      <div class="full-banner-clients-list-content-carousel-item" v-for="(src, i) in baseClients" :key="i">
-                        <img :src="src" alt="" class="client-logo" />
-                      </div>
+              <div class="new-carousel-section">
+                <div class="marquee" ref="marqueeRef">
+                  <div class="marquee-track" ref="marqueeTrack">
+                    <div class="marquee-item" v-for="(src, i) in baseClients" :key="'m-a-'+i">
+                      <img :src="src" alt="" class="client-logo" draggable="false" />
                     </div>
-                  </template>
-                </ClientOnly>
+                    <div class="marquee-item" v-for="(src, i) in baseClients" :key="'m-b-'+i">
+                      <img :src="src" alt="" class="client-logo" draggable="false" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+          
         </section>
         <section class="section-portfolio-gallery">
           <AppMagneticCursor
@@ -303,8 +284,6 @@
 </template>
 
 <script setup>
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide } from 'vue3-carousel'
 import { useFirstVisit } from '~/composables/useFirstVisit'
 import { useAnimateNumbers } from '~/composables/useAnimateNumbers'
 import { useScrollLock } from '~/composables/useScrollLock'
@@ -398,24 +377,7 @@ const baseClients = [
   '/images/clients/PortosParana.png'
 ]
 
-const clients = [...baseClients, ...baseClients, ...baseClients]
-
-const carouselConfig = {
-  itemsToShow: 4,
-  wrapAround: false,
-  snapAlign: 'start',
-  transition: 300,
-  breakpoints: {
-    768: { itemsToShow: 6 },
-    480: { itemsToShow: 4 },
-    320: { itemsToShow: 3 }
-  }
-}
-
-const carouselRef1 = ref(null)
-const carouselRef2 = ref(null)
-let autoplayInterval1 = null
-let autoplayInterval2 = null
+ 
 
 let flipScrollTrigger = null
 
@@ -564,8 +526,7 @@ const onIntroComplete = () => {
 const startHomeAnimations = () => {
   if (process.client) {
     nextTick(() => {
-      startAutoplay1()
-      startAutoplay2()
+      initClientsMarquee()
       animateTitleLines()
       animateVideoImage()
       animateAwards()
@@ -614,11 +575,16 @@ onMounted(() => {
 let showedLoader = false
 
 onUnmounted(() => {
-  if (autoplayInterval1) {
-    clearInterval(autoplayInterval1)
+  if (marqueeResizeHandler) {
+    window.removeEventListener('resize', marqueeResizeHandler)
   }
-  if (autoplayInterval2) {
-    clearInterval(autoplayInterval2)
+  if (marqueeTl) {
+    marqueeTl.kill()
+    marqueeTl = null
+  }
+  if (tickerAdded) {
+    gsap.ticker.remove(tickerStep)
+    tickerAdded = false
   }
   
   if (process.client) {
@@ -652,35 +618,107 @@ onUnmounted(() => {
   }
 })
 
-const startAutoplay1 = () => {
-  autoplayInterval1 = setInterval(() => {
-    if (carouselRef1.value) {
-      const currentIndex = carouselRef1.value.currentSlide
-      const maxIndex = clients.length - 4
-      
-      if (currentIndex >= maxIndex) {
-        carouselRef1.value.slideTo(0)
-      } else {
-        carouselRef1.value.next()
+const marqueeRef = ref(null)
+const marqueeTrack = ref(null)
+let marqueeTl = null
+let marqueeResizeHandler = null
+let tickerAdded = false
+let marqueeSpeed = 40
+let marqueeInstances = []
+let onWheelHandler = null
+let onPointerDown = null
+let onPointerMove = null
+let onPointerUp = null
+let isDragging = false
+let lastPointerX = 0
+
+const initClientsMarquee = () => {
+  const containers = document.querySelectorAll('.new-carousel-section .marquee')
+  if (!containers || containers.length === 0) return
+  marqueeInstances = []
+  const setup = () => {
+    containers.forEach((container, index) => {
+      const track = container.querySelector('.marquee-track')
+      if (!track) return
+      const items = Array.from(track.children)
+      if (!items || items.length === 0) return
+
+      const baseCount = Math.floor(items.length / 2) || items.length
+
+      const imgs = Array.from(track.querySelectorAll('img'))
+      const allLoaded = imgs.length === 0 || imgs.every(img => img.complete && img.naturalWidth > 0)
+      if (!allLoaded) {
+        let pending = imgs.length
+        const onDone = () => {
+          pending -= 1
+          if (pending <= 0) {
+            setup()
+          }
+        }
+        imgs.forEach(img => {
+          if (img.complete && img.naturalWidth > 0) return
+          img.addEventListener('load', onDone, { once: true })
+          img.addEventListener('error', onDone, { once: true })
+        })
+        return
       }
+
+      let seqWidth = 0
+      for (let i = 0; i < baseCount; i++) {
+        seqWidth += items[i].getBoundingClientRect().width
+      }
+
+      const containerWidth = container.getBoundingClientRect().width
+
+      if (!track.dataset.marqueeInit) {
+        const baseNodes = items.slice(0, baseCount)
+        baseNodes.forEach(node => track.appendChild(node.cloneNode(true)))
+        track.dataset.marqueeInit = 'true'
+      }
+
+      let contentWidth = track.getBoundingClientRect().width
+      const baseNodesForClone = Array.from(track.children).slice(0, baseCount)
+      while (contentWidth < containerWidth + seqWidth) {
+        baseNodesForClone.forEach(node => track.appendChild(node.cloneNode(true)))
+        contentWidth += seqWidth
+      }
+
+      gsap.set(track, { x: 0, willChange: 'transform', transform: 'translate3d(0,0,0)' })
+      const dir = index === 0 ? 1 : -1
+      marqueeInstances.push({ track, wrapWidth: seqWidth, pos: 0, dir })
+    })
+    if (marqueeInstances.length === 0) return
+    if (!tickerAdded) {
+      gsap.ticker.add(tickerStep)
+      tickerAdded = true
     }
-  }, 3000)
+  }
+  requestAnimationFrame(() => requestAnimationFrame(setup))
+  if (marqueeResizeHandler) {
+    window.removeEventListener('resize', marqueeResizeHandler)
+  }
+  marqueeResizeHandler = () => {
+    initClientsMarquee()
+  }
+  window.addEventListener('resize', marqueeResizeHandler)
 }
 
-const startAutoplay2 = () => {
-  autoplayInterval2 = setInterval(() => {
-    if (carouselRef2.value) {
-      const currentIndex = carouselRef2.value.currentSlide
-      const maxIndex = clients.length - 4
-      
-      if (currentIndex <= 0) {
-        carouselRef2.value.slideTo(maxIndex)
-      } else {
-        carouselRef2.value.prev()
-      }
-    }
-  }, 3000)
+const tickerStep = (time, deltaTime, frame) => {
+  if (!marqueeInstances || marqueeInstances.length === 0) return
+  const dr = gsap.ticker.deltaRatio()
+  marqueeInstances.forEach((inst) => {
+    inst.pos += (marqueeSpeed * inst.dir) * (dr / 60)
+    const w = inst.wrapWidth
+    if (!w) return
+    const wrapped = ((inst.pos % w) + w) % w
+    const x = -wrapped
+    gsap.set(inst.track, { x })
+  })
 }
+
+const attachMarqueeEvents = (container) => {}
+
+ 
 
 const animateTitleLines = () => {
   const lineInners = document.querySelectorAll('.full-banner h1 .line .line-inner')
@@ -1069,6 +1107,68 @@ const setupPortfolioGalleryReveal = () => {
 </script>
 
 <style scoped>
+.new-carousel-section {
+  width: 100%;
+  overflow: hidden;
+}
+
+.new-carousel-section .marquee {
+  position: relative;
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.new-carousel-section .marquee-track {
+  display: flex;
+  flex-wrap: nowrap;
+  will-change: transform;
+}
+
+.new-carousel-section .marquee-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 40px;
+}
+
+.new-carousel-section .client-logo {
+  max-width: 180px;
+  max-height: 80px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+@media (max-width: 768px) {
+  .new-carousel-section .marquee {
+    height: 80px;
+  }
+  .new-carousel-section .marquee-item {
+    padding: 0 24px;
+  }
+  .new-carousel-section .client-logo {
+    max-width: 140px;
+    max-height: 60px;
+  }
+}
+
+@media (max-width: 576px) {
+  .new-carousel-section .marquee {
+    height: 60px;
+  }
+  .new-carousel-section .marquee-item {
+    padding: 0 18px;
+  }
+  .new-carousel-section .client-logo {
+    max-width: 120px;
+    max-height: 50px;
+  }
+}
 .typing-animation-text {
   opacity: 0;
 }
@@ -1537,6 +1637,45 @@ const setupPortfolioGalleryReveal = () => {
 @media (max-width: 576px) {
   .carousel__viewport::after,
   .carousel__viewport::before {
+    width: 50px;
+  }
+}
+
+/* Gradiente de borda para o novo marquee (mesmo comportamento do carousel atual) */
+.new-carousel-section .marquee::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200px;
+  height: 100%;
+  background: linear-gradient(270deg, rgba(255, 255, 255, 0) 15%, rgba(29, 29, 27, 1) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.new-carousel-section .marquee::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 200px;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(29, 29, 27, 1) 85%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .new-carousel-section .marquee::after,
+  .new-carousel-section .marquee::before {
+    width: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .new-carousel-section .marquee::after,
+  .new-carousel-section .marquee::before {
     width: 50px;
   }
 }
