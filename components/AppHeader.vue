@@ -102,17 +102,39 @@ onMounted(() => {
       window.addEventListener('colorTransitionUpdate', (event) => {
         const progress = event.detail.progress
         
-        const logoInvert = gsap.utils.interpolate(0, 1, progress)
+        // Verifica se AppIntro existe
+        const introOverlay = document.querySelector('.intro-overlay')
+        const hasIntro = !!introOverlay
         
-        gsap.set(logoRef.value, {
-          filter: `invert(${logoInvert})`
-        })
-        
-        if (buttonRef.value) {
-          if (progress > 0.5) {
-            buttonRef.value.classList.add('white')
-          } else {
-            buttonRef.value.classList.remove('white')
+        if (hasIntro) {
+          // Com AppIntro: progress 1 = branco (invert 1)
+          const logoInvert = progress
+          
+          gsap.set(logoRef.value, {
+            filter: `invert(${logoInvert})`
+          })
+          
+          if (buttonRef.value) {
+            if (progress > 0.5) {
+              buttonRef.value.classList.add('white')
+            } else {
+              buttonRef.value.classList.remove('white')
+            }
+          }
+        } else {
+          // Sem AppIntro: progress 0 = preto, progress 1 = branco
+          const logoInvert = gsap.utils.interpolate(0, 1, progress)
+          
+          gsap.set(logoRef.value, {
+            filter: `invert(${logoInvert})`
+          })
+          
+          if (buttonRef.value) {
+            if (progress > 0.5) {
+              buttonRef.value.classList.add('white')
+            } else {
+              buttonRef.value.classList.remove('white')
+            }
           }
         }
       })

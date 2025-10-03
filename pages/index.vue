@@ -5,7 +5,7 @@
       @intro-complete="onIntroComplete"
       @video-flip-request="onVideoFlipRequest"
     />
-    <div class="container-fluid">
+    <div class="container-fluid locked-container">
       <div class="row">
         <div class="col-12">
         <section class="full-banner">
@@ -85,6 +85,12 @@
             </div>
           </div>
         </section>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
         <section class="section-numbers-text">
             <div class="row section-numbers-text-content">
             <div class="col-md-6 col-sm-12">
@@ -411,7 +417,7 @@ const carouselRef2 = ref(null)
 let autoplayInterval1 = null
 let autoplayInterval2 = null
 
-
+let flipScrollTrigger = null
 
 const onVideoFlipRequest = (introElement) => {
   if (!introElement) return
@@ -420,103 +426,133 @@ const onVideoFlipRequest = (introElement) => {
     const targetContainer = document.querySelector('.flip-receive-container')
     if (!targetContainer) return
     
-    // Get the entire intro overlay element
     const introOverlay = document.querySelector('.intro-overlay')
     if (!introOverlay) return
     
-    // Fade out slide-2 text and video-intro-text before Flip
+    const pageContent = document.querySelector('.locked-container')
+    if (!pageContent) return
+    
+    const introTextSlider = introOverlay.querySelector('.intro-text-slider')
+    
+    const slide1Elements = introOverlay.querySelectorAll('.slide-1')
     const slide2Elements = introOverlay.querySelectorAll('.slide-2')
     const videoIntroText = introOverlay.querySelector('.video-intro-text')
     const videoBgIntro = introOverlay.querySelector('.video-bg-intro')
+    const screen = introOverlay.querySelector('.screen')
+    const videoIntroContainer = introOverlay.querySelector('.video-intro-container')
+    const initialVideo = document.querySelector('.video-bg.initial-video')
     
-    if (slide2Elements.length > 0 || videoIntroText || videoBgIntro) {
-      const elementsToFade = [...slide2Elements]
-      if (videoIntroText) {
-        elementsToFade.push(videoIntroText)
-      }
-      
-      // Create timeline for simultaneous animations
-      const tl = gsap.timeline({
-        onComplete: () => {
-          // Start Flip animation after animations complete
-          startFlipAnimation()
-        }
-      })
-      
-      // Fade out texts
-      if (elementsToFade.length > 0) {
-        tl.to(elementsToFade, {
-          duration: 0.5,
-          opacity: 0,
-          ease: "power2.out"
-        }, 0)
-      }
-      
-      // Fade in video-bg-intro
-      if (videoBgIntro) {
-        tl.to(videoBgIntro, {
-          duration: 0.5,
-          opacity: 1,
-          ease: "power2.out"
-        }, 0)
-      }
-    } else {
-      // Start Flip immediately if no elements found
-      startFlipAnimation()
+    const elementsToFade = [...slide1Elements, ...slide2Elements]
+    if (videoIntroText) {
+      elementsToFade.push(videoIntroText)
     }
     
-    function startFlipAnimation() {
-      // Create Flip state of the intro overlay
-      const state = Flip.getState(introOverlay)
-      
-      // Move intro overlay to target container
-      targetContainer.appendChild(introOverlay)
-      
-      // Apply Flip animation with border-radius transition
-      Flip.from(state, {
-        duration: 1,
-        ease: "power2.inOut",
-        scale: false,
+    const isMobile = window.innerWidth <= 576
+    
+    const initialRect = introOverlay.getBoundingClientRect()
+    targetContainer.appendChild(introOverlay)
+    const targetRect = introOverlay.getBoundingClientRect()
+    
+    const xDiff = initialRect.left - targetRect.left
+    const yDiff = initialRect.top - targetRect.top
+    const widthDiff = initialRect.width / targetRect.width
+    const heightDiff = initialRect.height / targetRect.height
+    
+    gsap.set(introOverlay, {
+      x: xDiff,
+      y: yDiff,
+      width: initialRect.width,
+      height: initialRect.height
+    })
+    
+    const flipTimeline = gsap.timeline({ paused: true })
+    
+    flipTimeline
+      .to(elementsToFade, {
+        duration: 0.3,
+        opacity: 0,
+        ease: "none"
+      }, 0)
+      .to(introTextSlider, {
+        duration: 0.3,
+        opacity: 0,
+        ease: "none"
+      }, 0)
+      .to(videoBgIntro, {
+        duration: 0.3,
+        opacity: 1,
+        ease: "none"
+      }, 0)
+      .to(introOverlay, {
+        duration: 0.7,
+        x: 0,
+        y: 0,
+        width: targetRect.width,
+        height: targetRect.height,
+        ease: "none",
         onUpdate: function() {
           const progress = this.progress()
-          const isMobile = window.innerWidth <= 576
-          const borderRadius = isMobile ? progress * 20 : progress * 400 // 0 to 20px on mobile, 0 to 400px on desktop
+          const borderRadius = isMobile ? progress * 20 : progress * 400
+          if (introOverlay) gsap.set(introOverlay, { borderRadius: `${borderRadius}px` })
+          if (screen) gsap.set(screen, { borderRadius: `${borderRadius}px` })
+          if (videoIntroContainer) gsap.set(videoIntroContainer, { borderRadius: `${borderRadius}px` })
+        }
+      }, 0.3)
+      .to({}, { duration: 1 })
+    
+    flipScrollTrigger = ScrollTrigger.create({
+      trigger: 'body',
+      start: 'top top',
+      end: '+=600vh',
+      pin: pageContent,
+      pinSpacing: true,
+      scrub: 1,
+      animation: flipTimeline,
+      onUpdate: (self) => {
+        if (self.progress >= 0.05 && !flipScrollTrigger._homeAnimationsStarted) {
+          flipScrollTrigger._homeAnimationsStarted = true
+          startHomeAnimations()
+        }
+        
+        if (self.progress >= 0.99 && !flipScrollTrigger._completed) {
+          flipScrollTrigger._completed = true
           
-          // Apply border-radius to elements during Flip
-          gsap.set(introOverlay, { borderRadius: `${borderRadius}px` })
-          gsap.set(introOverlay.querySelector('.screen'), { borderRadius: `${borderRadius}px` })
-          gsap.set(introOverlay.querySelector('.video-intro-container'), { borderRadius: `${borderRadius}px` })
-        },
-        onComplete: () => {
-          // Hide the initial video
-          const initialVideo = document.querySelector('.video-bg.initial-video')
           if (initialVideo) {
             initialVideo.style.display = 'none'
           }
           
-          // Move intro-overlay back to its original position and make it visible
-          if (introOverlay) {
-            introOverlay.style.display = 'block'
-            introOverlay.style.opacity = '1'
-            introOverlay.style.position = 'absolute'
-            introOverlay.style.top = '0'
-            introOverlay.style.left = '0'
-            introOverlay.style.width = '100%'
-            introOverlay.style.height = '100%'
-            introOverlay.style.zIndex = '9999'
-          }
-          
-          // Scroll is already unlocked by AppIntro when video flip is requested
-          
-          // Reset AppHeader state and dispatch event to clear intro-specific styling
           window.dispatchEvent(new CustomEvent('introAnimationComplete'))
-          // Start page animations without hiding intro
-          setTimeout(() => {
-            startHomeAnimations()
-          }, 100)
         }
-      })
-    }
+        
+        // Durante flip: progresso do scroll controla a cor
+        if (self.progress < 0.1) {
+          // Primeiros 10%: branco
+          window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+            detail: { progress: 1 }
+          }))
+        } else {
+          // Após 10%: preto
+          window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+            detail: { progress: 0 }
+          }))
+        }
+      },
+      onLeaveBack: () => {
+        const introTextSlider = introOverlay.querySelector('.intro-text-slider')
+        if (introTextSlider) {
+          gsap.to(introTextSlider, { 
+            opacity: 1, 
+            duration: 0.3,
+            ease: "power2.out"
+          })
+        }
+        
+        // Quando flip desfaz: volta ao branco
+        window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+          detail: { progress: 1 }
+        }))
+      }
+    })
   })
 }
 
@@ -586,7 +622,10 @@ onUnmounted(() => {
   }
   
   if (process.client) {
-    // Clean up color transition ScrollTrigger
+    if (flipScrollTrigger) {
+      flipScrollTrigger.kill()
+    }
+    
     const layout = document.querySelector('.layout')
     if (layout && layout._scrollColorTrigger) {
       layout._scrollColorTrigger.kill()
@@ -595,12 +634,10 @@ onUnmounted(() => {
       window.removeEventListener('scroll', layout._scrollHandler)
     }
     
-    // Remove resize listener
     window.removeEventListener('resize', () => {
       ScrollTrigger.refresh()
     })
     
-    // Kill gallery-specific ScrollTriggers
     const galleryTriggers = ScrollTrigger.getAll().filter(trigger => {
       if (!trigger.vars || !trigger.vars.trigger) return false
       
@@ -759,14 +796,14 @@ const setupColorTransitions = () => {
     }
   })
   
-  // Define all elements once
+  // Define all elements once (exclude intro overlay elements)
   const textElements = [
-    "h1:not(.no-color-change)",
-    "h2:not(.no-color-change)", 
-    ".full-banner-content p:not(.no-color-change)",
-    ".full-banner-content span:not(.no-color-change)",
+    "h1:not(.no-color-change):not(.intro-overlay h1)",
+    "h2:not(.no-color-change):not(.intro-overlay h2)", 
+    ".full-banner-content p:not(.no-color-change):not(.intro-overlay p)",
+    ".full-banner-content span:not(.no-color-change):not(.intro-overlay span)",
     ".award-text-title",
-    ".color-change-text:not(.no-color-change)",
+    ".color-change-text:not(.no-color-change):not(.intro-overlay .color-change-text)",
     ".big-number.color-change-text",
     ".big-number-plus.color-change-text",
     ".clients-title:not(.no-color-change)"
@@ -783,11 +820,14 @@ const setupColorTransitions = () => {
       duration: 1
     }, 0)
   
+  // Check if intro was shown to adjust color transition trigger
+  const introWasShown = showIntroAnimation.value || shouldShowIntro.value
+  
   // ScrollTrigger configuration for color changes
   const scrollColorTrigger = ScrollTrigger.create({
     trigger: "body",
-    start: "top top",
-    end: "500px top",
+    start: introWasShown ? "500px top" : "top top",
+    end: introWasShown ? "1000px top" : "500px top",
     scrub: 0.5,
     animation: colorTimeline,
     onUpdate: (self) => {
@@ -803,16 +843,16 @@ const setupColorTransitions = () => {
     gsap.set(layout, {
       backgroundColor: "#ffffff"
     })
-    gsap.set("h1:not(.no-color-change), h2:not(.no-color-change)", {
+    gsap.set("h1:not(.no-color-change):not(.intro-overlay h1), h2:not(.no-color-change):not(.intro-overlay h2)", {
       color: "#000000"
     })
-    gsap.set(".full-banner-content p:not(.no-color-change), .full-banner-content span:not(.no-color-change)", {
+    gsap.set(".full-banner-content p:not(.no-color-change):not(.intro-overlay p), .full-banner-content span:not(.no-color-change):not(.intro-overlay span)", {
       color: "#000000"
     })
     gsap.set(".award-text-title", {
       color: "#000000"
     })
-    gsap.set(".color-change-text:not(.no-color-change)", {
+    gsap.set(".color-change-text:not(.no-color-change):not(.intro-overlay .color-change-text)", {
       color: "#000000"
     })
     gsap.set(".big-number.color-change-text, .big-number-plus.color-change-text", {
@@ -821,10 +861,11 @@ const setupColorTransitions = () => {
     gsap.set(".clients-title:not(.no-color-change)", {
       color: "#000000"
     })
-    
-    window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
-      detail: { progress: 0 }
-    }))
+    if (!introWasShown) {
+      window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
+        detail: { progress: 0 }
+      }))
+    }
   }
   
   // Apply initial state
@@ -834,8 +875,16 @@ const setupColorTransitions = () => {
   
   // Handle scroll to reset state
   const handleScroll = () => {
-    if (window.scrollY === 0) {
-      forceInitialState()
+    if (introWasShown) {
+      // When intro was shown, only reset at very top
+      if (window.scrollY <= 10) {
+        forceInitialState()
+      }
+    } else {
+      // Normal behavior when no intro
+      if (window.scrollY === 0) {
+        forceInitialState()
+      }
     }
   }
   
@@ -862,7 +911,7 @@ const setupPortfolioGalleryReveal = () => {
   // Force refresh
   ScrollTrigger.refresh(true)
   
-  const gallerySection = document.querySelector('.section-portfolio-gallery')
+  const gallerySection = '.section-portfolio-gallery'
   const galleryContent = document.querySelector('.portfolio-gallery-content')
   const portfolioItem = document.querySelector('.portfolio-gallery-content-item')
   
@@ -929,23 +978,25 @@ const setupPortfolioGalleryReveal = () => {
       scale: 'none'
     })
   })
-
+  
   // Create ScrollTrigger with minimal configuration
   const st = ScrollTrigger.create({
-    trigger: gallerySection,
+    trigger: galleryContent,
     start: "top top",
-    end: "bottom bottom",
-    pin: galleryContent,
-    pinSpacing: false,
+    end: "bottom+=1000vh bottom",
+    pin: true,
+    pinSpacing: true,
     scrub: 1,
-    onEnter: () => {
-    },
-    onLeave: () => {
-    },
-    onEnterBack: () => {
-    },
-    onLeaveBack: () => {
-    },
+    // markers: true,
+    invalidateOnRefresh: true,
+    // onEnter: () => {
+    // },
+    // onLeave: () => {
+    // },
+    // onEnterBack: () => {
+    // },
+    // onLeaveBack: () => {
+    // },
     onUpdate: (self) => {
       const progress = self.progress
       
@@ -1002,6 +1053,17 @@ const setupPortfolioGalleryReveal = () => {
       }
     }
   })
+  
+  // Cleanup function to restore element
+  st.kill = (() => {
+    const originalKill = st.kill
+    return function() {
+      if (originalParent && galleryContent.parentNode === document.body) {
+        originalParent.appendChild(galleryContent)
+      }
+      return originalKill.call(this)
+    }
+  })()
 }
 
 </script>
@@ -1282,6 +1344,7 @@ const setupPortfolioGalleryReveal = () => {
 
   p {
     font-size: 34px;
+    min-height: 115px;
   }
 
 }
@@ -1479,7 +1542,6 @@ const setupPortfolioGalleryReveal = () => {
 }
 
 .section-portfolio-gallery {
-  height: 300vh;
   position: relative;
 
   .col-12 {
@@ -1761,6 +1823,10 @@ const setupPortfolioGalleryReveal = () => {
 
   .section-numbers-content {
     width: initial !important;
+  }
+
+  .section-numbers-text p {
+    min-height: 250px !important;
   }
 }
 
