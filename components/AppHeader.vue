@@ -5,7 +5,7 @@
         <NuxtLink to="/" class="header-logo">
           <img 
             ref="logoRef" 
-            src="/images/logos/icon-black.svg" 
+            src="/images/logos/icon-white.svg" 
             alt="Agência Esfera" 
             class="logo-image"
           >
@@ -50,14 +50,6 @@ onMounted(() => {
     nextTick(() => {
       window.scrollTo(0, 0)
       
-      gsap.set(logoRef.value, {
-        filter: `invert(0)`
-      })
-      
-      if (buttonRef.value) {
-        buttonRef.value.classList.remove('white')
-      }
-      
       initButtonMagnetic()
       initLogoMagnetic()
       
@@ -98,59 +90,6 @@ onMounted(() => {
           ease: "power2.out"
         })
       })
-      
-      window.addEventListener('colorTransitionUpdate', (event) => {
-        const progress = event.detail.progress
-        
-        // Verifica se AppIntro existe
-        const introOverlay = document.querySelector('.intro-overlay')
-        const hasIntro = !!introOverlay
-        
-        if (hasIntro) {
-          // Com AppIntro: progress 1 = branco (invert 1)
-          const logoInvert = progress
-          
-          gsap.set(logoRef.value, {
-            filter: `invert(${logoInvert})`
-          })
-          
-          if (buttonRef.value) {
-            if (progress > 0.5) {
-              buttonRef.value.classList.add('white')
-            } else {
-              buttonRef.value.classList.remove('white')
-            }
-          }
-        } else {
-          // Sem AppIntro: progress 0 = preto, progress 1 = branco
-          const logoInvert = gsap.utils.interpolate(0, 1, progress)
-          
-          gsap.set(logoRef.value, {
-            filter: `invert(${logoInvert})`
-          })
-          
-          if (buttonRef.value) {
-            if (progress > 0.5) {
-              buttonRef.value.classList.add('white')
-            } else {
-              buttonRef.value.classList.remove('white')
-            }
-          }
-        }
-      })
-      
-      // Listen for intro animation completion to reset state
-      window.addEventListener('introAnimationComplete', () => {
-        // Reset logo filter to default (will be controlled by scroll again)
-        gsap.set(logoRef.value, {
-          filter: `invert(0)`
-        })
-        
-        // Reset button class
-        if (buttonRef.value) {
-          buttonRef.value.classList.remove('white')
-        }
-      })
     })
   }
 })
@@ -162,16 +101,7 @@ onUnmounted(() => {
     window.removeEventListener('pageVisibleImmediately', () => {})
     window.removeEventListener('introAnimationComplete', () => {})
     window.removeEventListener('videoExpandStart', () => {})
-    
-    if (logoRef.value) {
-      gsap.set(logoRef.value, {
-        clearProps: "filter"
-      })
-    }
-    
-    if (buttonRef.value) {
-      buttonRef.value.classList.remove('white')
-    }
+  
     
     if (headerRef.value) {
       gsap.set(headerRef.value, {
@@ -192,6 +122,7 @@ onUnmounted(() => {
   z-index: 10001;
   padding-top: 50px;
   transform: translateY(-100vh);
+  mix-blend-mode: difference;
 }
 
 .header-content {
@@ -228,6 +159,14 @@ onUnmounted(() => {
   overflow: hidden;
   position: relative;
   background: transparent;
+  border-color: #fff;
+
+  &:hover,
+  &:focus-visible {
+    .magnetic-text {
+      color: #000;
+    }
+  }
 }
 
 .button::before {
@@ -237,7 +176,7 @@ onUnmounted(() => {
   left: 50%;
   width: 0;
   height: 0;
-  background: var(--color-yellow);
+  background: #fff;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: all 0.3s ease;
@@ -254,12 +193,12 @@ onUnmounted(() => {
   will-change: transform, opacity;
   position: relative;
   z-index: 1;
-  color: var(--color-black);
+  color: #fff;
   transition: color 0.3s ease;
 }
 
 .button.white .magnetic-text {
-  color: var(--color-white);
+  color: #fff;
 }
 
 @media (max-width: 768px) {
