@@ -125,14 +125,14 @@
             </div>
           </div>
           <div class="row section-numbers-content">
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
               <div class="small-number ">1</div>
               <div class="big-number-container">
                 <div class="big-number color-change-text">26</div>
                 <div class="big-number-text">Anos de <br /> experiência</div>
               </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
               <div class="small-number">2</div>
               <div class="big-number-container">
                 <div class="big-number-plus color-change-text">+</div>
@@ -140,7 +140,7 @@
                 <div class="big-number-text">Projetos <br /> executados</div>
               </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
               <div class="small-number">3</div>
               <div class="big-number-container">
                 <div class="big-number-plus color-change-text">+</div>
@@ -148,7 +148,7 @@
                 <div class="big-number-text">Clientes <br /> satisfeitos</div>
               </div>
             </div>
-            <div class="col-lg-3 col-sm-6">
+            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
               <div class="small-number">4</div>
               <div class="big-number-container">
                 <div class="big-number color-change-text">25</div>
@@ -1754,7 +1754,6 @@ const setupPortfolioGalleryReveal = () => {
   }
 
   @media (max-width: 768px) {
-    height: 250vh;
     
     .portfolio-gallery-content {
       min-height: 500px;
@@ -1934,9 +1933,6 @@ const setupPortfolioGalleryReveal = () => {
   .clients-description br {
     display: none;
   }
-}
-
-@media (max-width: 992px) {
   .big-number-container {
     margin-bottom: 30px !important;
   }

@@ -406,10 +406,26 @@ const animateFooterElements = () => {
   .address {
     font-size: 16px;
   }
-
 }
 
 @media (max-width: 768px) {
+  .footer-section:first-of-type {
+    padding-right: 40px;
+    padding-left: 20px;
+  }
+  .footer-brand {
+    padding-left: 20px;
+  }
+  .address-phone-container {
+    align-items: center;
+  }
+  .navigation {
+    margin-top: -2px;
+  }
+}
+
+
+@media (max-width: 576px) {
   .footer-content {
     flex-direction: column;
     gap: 30px;

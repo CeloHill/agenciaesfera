@@ -36,7 +36,7 @@
       </div>
       
       <!-- Endereço na parte inferior -->
-      <div class="nav-footer">
+      <div class="nav-footer" ref="navFooterRef">
         <div class="nav-address">
           <span class="address-label">endereço</span>
           <p class="address-text">Av. Rep. Argentina, 1228</p>
@@ -91,6 +91,7 @@ const { gsap } = useGsap()
 const isMenuOpen = ref(false)
 const buttonMenuRef = ref(null)
 const navigationButtonRef = ref(null)
+const navFooterRef = ref(null)
 
 const { 
   elementRef: magneticButtonRef, 
@@ -188,6 +189,27 @@ onMounted(() => {
           ease: "power2.out"
         })
       })
+
+      watch(isMenuOpen, (open) => {
+        if (!navFooterRef.value) return
+        if (open) {
+          gsap.set(navFooterRef.value, { opacity: 0, y: 20 })
+          gsap.to(navFooterRef.value, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            delay: 0.6
+          })
+        } else {
+          gsap.to(navFooterRef.value, {
+            opacity: 0,
+            y: 20,
+            duration: 0.3,
+            ease: "power2.inOut"
+          })
+        }
+      }, { immediate: false })
     })
   }
 })
@@ -569,7 +591,8 @@ onUnmounted(() => {
   display: flex;
   justify-content: space-between;
   opacity: 0;
-  transition: opacity 0.2s ease 0.65s;
+  transform: translateX(-50%) translateY(20px);
+  transition: opacity 0.4s ease 0.1s, transform 0.6s ease 0.1s;
   flex-direction: column;
   gap: 40px;
   margin-bottom: 70px;
@@ -577,6 +600,7 @@ onUnmounted(() => {
 
 .navigation-overlay.is-open .nav-footer {
   opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 @media (max-width: 768px) {
