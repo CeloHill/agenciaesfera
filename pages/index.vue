@@ -99,7 +99,7 @@
             <div class="col-md-6 col-sm-12">
               <div class="badge-clients">
                 <div class="animated-circle">
-                  <img src="/images/logos/icon-white.svg" class="animated-circle-icon"></img>
+                  <img src="/images/logos/icon-white.svg" class="animated-circle-icon" />
                   <div class="animated-circle-text">
                     <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                       <defs>
@@ -228,20 +228,14 @@
                   </div>
                   <div class="case-content-container">
                     <div class="case-content-text">
-                      <div class="animated-text-container">
+                      <div class="animated-text-container animated-text-container--left">
                         <div class="case-content-text-title">
-                          Blabs 1
-                        </div>
-                        <div class="case-content-text-number">
-                          01
+                          Título de Projeto 01
                         </div>
                       </div>
-                      <div class="animated-text-container">
+                      <div class="animated-text-container animated-text-container--left">
                         <div class="case-content-text-title">
-                          Blabs 3
-                        </div>
-                        <div class="case-content-text-number">
-                          03
+                          Título de Projeto 02
                         </div>
                       </div>
                     </div>
@@ -253,19 +247,13 @@
                     </div>
                     <div class="case-content-text">
                       <div class="animated-text-container">
-                        <div class="case-content-text-number">
-                          02
-                        </div>
                         <div class="case-content-text-title">
-                          Blabs 2
+                          Ano do projeto
                         </div>
                       </div>
                       <div class="animated-text-container">
-                        <div class="case-content-text-number">
-                          04
-                        </div>
                         <div class="case-content-text-title">
-                          Blabs 4
+                          Ano do projeto
                         </div>
                       </div>
                     </div>
@@ -286,7 +274,6 @@
 <script setup>
 import { useFirstVisit } from '~/composables/useFirstVisit'
 import { useAnimateNumbers } from '~/composables/useAnimateNumbers'
-import { useScrollLock } from '~/composables/useScrollLock'
 
 // Page meta configuration
 definePageMeta({
@@ -297,24 +284,23 @@ definePageMeta({
   }
 })
 
-const { gsap, ScrollTrigger, Flip } = useGsap()
+const { gsap, ScrollTrigger } = useGsap()
 const {  checkDirectNavigation, resetFirstVisit, forceLoader } = useFirstVisit()
 const { animateNumbers } = useAnimateNumbers()
-const { unlockScroll } = useScrollLock()
 
 const showIntroAnimation = ref(false)
 const shouldShowIntro = ref(false)
 
 // Check if we should show intro based on AppLoader logic
 const checkIfShouldShowIntro = () => {
-  if (process.client) {
+  if (import.meta.client) {
     const shouldShowLoader = checkDirectNavigation()
     shouldShowIntro.value = shouldShowLoader
   }
 }
 
 // For testing - you can call this in browser console
-if (process.client) {
+if (import.meta.client) {
   window.resetHomeVisit = () => {
     resetFirstVisit('home')
   }
@@ -400,6 +386,8 @@ const onVideoFlipRequest = (introElement) => {
     const slide2Elements = introOverlay.querySelectorAll('.slide-2')
     const videoIntroText = introOverlay.querySelector('.video-intro-text')
     const videoBgIntro = introOverlay.querySelector('.video-bg-intro')
+    const scroll = introOverlay.querySelector('.scroll')
+    const scroller = scroll.querySelector('.scroll-inner > div')
     const screen = introOverlay.querySelector('.screen')
     const videoIntroContainer = introOverlay.querySelector('.video-intro-container')
     const initialVideo = document.querySelector('.video-bg.initial-video')
@@ -408,6 +396,22 @@ const onVideoFlipRequest = (introElement) => {
     if (videoIntroText) {
       elementsToFade.push(videoIntroText)
     }
+
+    const scrollAnimation = gsap.timeline({
+      repeat: -1,
+      repeatDelay: 1
+    })
+
+    scrollAnimation.to(scroller, {
+      duration: 1,
+      height: '100%',
+      ease: "power2.out"
+    }, 0)
+    .to(scroller, {
+      duration: 1,
+      yPercent: 100,
+      ease: "power2.out"
+    }, '+=.5')
     
     const isMobile = window.innerWidth <= 576
     
@@ -417,8 +421,8 @@ const onVideoFlipRequest = (introElement) => {
     
     const xDiff = initialRect.left - targetRect.left
     const yDiff = initialRect.top - targetRect.top
-    const widthDiff = initialRect.width / targetRect.width
-    const heightDiff = initialRect.height / targetRect.height
+
+    const windowHeight = window.innerHeight
     
     gsap.set(introOverlay, {
       x: xDiff,
@@ -431,17 +435,22 @@ const onVideoFlipRequest = (introElement) => {
     
     flipTimeline
       .to(elementsToFade, {
-        duration: 0.3,
+        duration: 1,
+        opacity: 0,
+        ease: "none"
+      }, 0)
+      .to(scroll, {
+        duration: .5,
         opacity: 0,
         ease: "none"
       }, 0)
       .to(introTextSlider, {
-        duration: 0.3,
+        duration: 1,
         opacity: 0,
         ease: "none"
       }, 0)
       .to(videoBgIntro, {
-        duration: 0.3,
+        duration: 1,
         opacity: 1,
         ease: "none"
       }, 0)
@@ -460,16 +469,17 @@ const onVideoFlipRequest = (introElement) => {
           if (videoIntroContainer) gsap.set(videoIntroContainer, { borderRadius: `${borderRadius}px` })
         }
       }, 0.3)
-      .to({}, { duration: 1 })
     
     flipScrollTrigger = ScrollTrigger.create({
       trigger: 'body',
       start: 'top top',
-      end: '+=600vh',
+      end: `+=${windowHeight * 1}px top`,
       pin: pageContent,
       pinSpacing: true,
-      scrub: 1,
+      scrub: 2,
+      //markers: true,
       animation: flipTimeline,
+      invalidateOnRefresh: true,
       onUpdate: (self) => {
         if (self.progress >= 0.05 && !flipScrollTrigger._homeAnimationsStarted) {
           flipScrollTrigger._homeAnimationsStarted = true
@@ -515,6 +525,20 @@ const onVideoFlipRequest = (introElement) => {
         }))
       }
     })
+    
+    // Add resize handler for flip animation
+    const handleFlipResize = () => {
+      if (flipScrollTrigger) {
+        const newWindowHeight = window.innerHeight
+        flipScrollTrigger.vars.end = `+=${newWindowHeight * 1}px top`
+        flipScrollTrigger.refresh()
+      }
+    }
+    
+    window.addEventListener('resize', handleFlipResize)
+    
+    // Store resize handler for cleanup
+    flipScrollTrigger._resizeHandler = handleFlipResize
   })
 }
 
@@ -524,7 +548,7 @@ const onIntroComplete = () => {
 }
 
 const startHomeAnimations = () => {
-  if (process.client) {
+  if (import.meta.client) {
     nextTick(() => {
       initClientsMarquee()
       animateTitleLines()
@@ -536,7 +560,7 @@ const startHomeAnimations = () => {
       setupColorTransitions()
       
       // Refresh ScrollTrigger on resize for responsiveness (but not gallery)
-      window.addEventListener('resize', () => {
+      const handleMainResize = () => {
         // Only refresh non-gallery ScrollTriggers
         const allTriggers = ScrollTrigger.getAll()
         allTriggers.forEach(trigger => {
@@ -554,7 +578,12 @@ const startHomeAnimations = () => {
             trigger.refresh()
           }
         })
-      })
+      }
+      
+      window.addEventListener('resize', handleMainResize)
+      
+      // Store main resize handler for cleanup
+      window._mainResizeHandler = handleMainResize
     })
   }
 }
@@ -587,22 +616,31 @@ onUnmounted(() => {
     tickerAdded = false
   }
   
-  if (process.client) {
+  if (import.meta.client) {
     if (flipScrollTrigger) {
+      // Remove flip resize handler
+      if (flipScrollTrigger._resizeHandler) {
+        window.removeEventListener('resize', flipScrollTrigger._resizeHandler)
+      }
       flipScrollTrigger.kill()
     }
     
     const layout = document.querySelector('.layout')
     if (layout && layout._scrollColorTrigger) {
+      // Remove color transition resize handler
+      if (layout._scrollColorTrigger._resizeHandler) {
+        window.removeEventListener('resize', layout._scrollColorTrigger._resizeHandler)
+      }
       layout._scrollColorTrigger.kill()
     }
     if (layout && layout._scrollHandler) {
       window.removeEventListener('scroll', layout._scrollHandler)
     }
     
-    window.removeEventListener('resize', () => {
-      ScrollTrigger.refresh()
-    })
+    // Remove main resize handler
+    if (window._mainResizeHandler) {
+      window.removeEventListener('resize', window._mainResizeHandler)
+    }
     
     const galleryTriggers = ScrollTrigger.getAll().filter(trigger => {
       if (!trigger.vars || !trigger.vars.trigger) return false
@@ -623,14 +661,8 @@ const marqueeTrack = ref(null)
 let marqueeTl = null
 let marqueeResizeHandler = null
 let tickerAdded = false
-let marqueeSpeed = 40
+const marqueeSpeed = 40
 let marqueeInstances = []
-let onWheelHandler = null
-let onPointerDown = null
-let onPointerMove = null
-let onPointerUp = null
-let isDragging = false
-let lastPointerX = 0
 
 const initClientsMarquee = () => {
   const containers = document.querySelectorAll('.new-carousel-section .marquee')
@@ -703,7 +735,7 @@ const initClientsMarquee = () => {
   window.addEventListener('resize', marqueeResizeHandler)
 }
 
-const tickerStep = (time, deltaTime, frame) => {
+const tickerStep = () => {
   if (!marqueeInstances || marqueeInstances.length === 0) return
   const dr = gsap.ticker.deltaRatio()
   marqueeInstances.forEach((inst) => {
@@ -716,7 +748,6 @@ const tickerStep = (time, deltaTime, frame) => {
   })
 }
 
-const attachMarqueeEvents = (container) => {}
 
  
 
@@ -861,13 +892,18 @@ const setupColorTransitions = () => {
   // Check if intro was shown to adjust color transition trigger
   const introWasShown = showIntroAnimation.value || shouldShowIntro.value
   
-  // ScrollTrigger configuration for color changes
+  // Calculate the start position based on flip animation completion
+  const windowHeight = window.innerHeight
+  const flipEndPosition = windowHeight * 1 // Same as flipScrollTrigger end
+  
+  // ScrollTrigger configuration for color changes - starts after flip animation
   const scrollColorTrigger = ScrollTrigger.create({
     trigger: "body",
-    start: introWasShown ? "500px top" : "top top",
-    end: introWasShown ? "1000px top" : "500px top",
+    start: introWasShown ? `${flipEndPosition}px top` : `${flipEndPosition}px top`,
+    end: introWasShown ? `${flipEndPosition * 2}px top` : `${flipEndPosition * 1.5}px top`,
     scrub: 0.5,
     animation: colorTimeline,
+    invalidateOnRefresh: true,
     onUpdate: (self) => {
       // Dispatch event for AppHeader
       window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
@@ -875,6 +911,22 @@ const setupColorTransitions = () => {
       }))
     }
   })
+  
+  // Add resize handler for color transition
+  const handleColorResize = () => {
+    if (scrollColorTrigger) {
+      const newWindowHeight = window.innerHeight
+      const newFlipEndPosition = newWindowHeight * 1
+      scrollColorTrigger.vars.start = introWasShown ? `${newFlipEndPosition}px top` : `${newFlipEndPosition}px top`
+      scrollColorTrigger.vars.end = introWasShown ? `${newFlipEndPosition * 2}px top` : `${newFlipEndPosition * 1.5}px top`
+      scrollColorTrigger.refresh()
+    }
+  }
+  
+  window.addEventListener('resize', handleColorResize)
+  
+  // Store resize handler for cleanup
+  scrollColorTrigger._resizeHandler = handleColorResize
   
   // Force initial state
   const forceInitialState = () => {
@@ -1793,7 +1845,7 @@ const setupPortfolioGalleryReveal = () => {
         box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.1);
         max-width: 400px;
         max-height: 400px;
-        border-radius: 1.3em;
+        border-radius: .25em;
 
         img {
           position: absolute;
@@ -1838,6 +1890,10 @@ const setupPortfolioGalleryReveal = () => {
       top: 0;
       left: 0;
       padding: 0px 6vw;
+    }
+
+    .animated-text-container--left {
+      justify-content: flex-end;
     }
     
     .animated-text-container:nth-child(1) {

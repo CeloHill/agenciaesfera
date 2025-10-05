@@ -14,13 +14,23 @@
               <div class="slide-2-text-2"><span>e por aqui a gente nunca para.</span></div>
             </div>
           </div>
+          
           <div class="video-intro-container">
             <video class="video-bg-intro" src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
           </div>
+          
           <div class="video-intro-text">
             Somos uma <br />
             <span class="video-intro-text-highlight">agência 360</span>
           </div>
+
+          <div class="scroll">
+            <div class="scroll-inner">
+              <div></div>
+            </div>
+            <p>Scroll</p>
+          </div>
+
         </div>
       </div>
     </div>
@@ -482,6 +492,40 @@ defineExpose({
 
 .video-intro-text-highlight {
   color: var(--color-yellow) !important;
+}
+
+.scroll {
+  position: absolute;
+  bottom: 20px;
+  right: var(--body-horizontal-padding);
+  z-index: 10;
+  color: #fff;
+  font-size: .875em;
+  letter-spacing: .5px;
+  text-transform: lowercase;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 1em;
+
+  .scroll-inner {
+    position: relative;
+    overflow: hidden;
+    display: block;
+    width: 2px;
+    height: 50px;
+    border-radius: 2px;
+
+    > div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background-color: #fff;
+    }
+    
+  }
 }
 
 .intro-text-slider {

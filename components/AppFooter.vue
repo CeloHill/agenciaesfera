@@ -259,7 +259,7 @@ const animateFooterElements = () => {
   display: flex;
   flex-direction: column;
   gap: 35px;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .nav-item {
