@@ -70,6 +70,9 @@ const startSequentialAnimation = () => {
     // Phase 1: Video container appears from center (1 second)
     mainTimeline
     .to(".video-intro-container", {
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
       duration: 1,
       opacity: 1,
       scale: 1,
@@ -77,8 +80,10 @@ const startSequentialAnimation = () => {
     })
     .to(".video-intro-text", {
         duration: 1,
-        x: 70 - (window.innerWidth * 0.5 + 100),
-        y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 400, // 200px acima da posição final
+        // x: 70 - (window.innerWidth * 0.5 + 100),
+        left: "50%",
+        transform: "translateX(-50%)",
+        // y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 200,
         ease: "power2.inOut",
         onUpdate: function() {
           const progress = this.progress()
@@ -98,21 +103,25 @@ const startSequentialAnimation = () => {
     })
   }
 
-  //Phase 2 was deleted
+  // Phase 2 was deleted
+  // Phase 2 was responsible for the background color transition
         
   // Phase 3: Elements displacement (1 second)
   if (isMobile) {
-    // Mobile: Video goes up, text goes down (both centered)
     mainTimeline
       .to(".video-intro-container", {
         duration: 1,
-        x: 0,
-        y: -100,
+        // x: 0,
+        top: "36%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
         ease: "power2.inOut"
       }, "phase2Complete")
       .to(".video-intro-text", {
         duration: 1,
-        x: 70 - (window.innerWidth * 0.5 + 100),
+        // x: 70 - (window.innerWidth * 0.5 + 100),
+        left: "50%",
+        transform: "translateX(-50%)",
         y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 200, // 200px acima da posição final
         opacity: 1,
         ease: "power2.inOut",
@@ -126,7 +135,6 @@ const startSequentialAnimation = () => {
       .to({}, { duration: 3 }, "phase2Complete")
       .addLabel("phase3Complete")
   } else {
-    // Desktop: Original horizontal animation
     mainTimeline
       .to(".video-intro-container", {
         duration: 1,
@@ -161,12 +169,11 @@ const startSequentialAnimation = () => {
     }, null, "phase3Complete")
     .to(".video-intro-container", {
       duration: 1,
-      x: 0,
-      y: 0,
       width: "100%",
       height: "100%",
-      top: "0px",
-      left: "0px",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
       ease: "power2.inOut"
     }, "phase3Complete")
     .to(".video-bg-intro", {
@@ -176,8 +183,14 @@ const startSequentialAnimation = () => {
     }, "phase3Complete")
     .to(".video-intro-text", {
       duration: 1,
-      x: () => 70 - (window.innerWidth * 0.5 + 125),
+      // x: () => {
+      //   const centerX = window.innerWidth * 0.5
+      //   const elementWidth = 250
+      //   return centerX - elementWidth * 0.5
+      // },
       y: () => isMobile ? window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 150 : window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 100,
+      left: "50%",
+      transform: "translateX(-50%)",
       color: "#FFFFFF",
       scale: 0.6,
       ease: "power2.inOut"
@@ -208,7 +221,7 @@ const startSequentialAnimation = () => {
     .to(".video-intro-text", {
       duration: 1,
       x: () => 70 - (window.innerWidth * 0.5 + 125),
-      y: () => isMobile ? window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 150 : window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 100,
+      y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 100,
       color: "#FFFFFF",
       scale: 0.6,
       ease: "power2.inOut"
@@ -577,6 +590,7 @@ defineExpose({
 @media (max-width: 768px) {
   .intro-text-slider {
     max-width: 90%;
+    top: 36%;
   }
   
   .slide-1-text-1,
@@ -591,7 +605,7 @@ defineExpose({
 
   .video-intro-text {
     font-size: 2.5rem;
-    width: 80%;
+    white-space: nowrap;
     /* top: calc(50% - 105px);
     left: calc(50% + 5px); */
   }

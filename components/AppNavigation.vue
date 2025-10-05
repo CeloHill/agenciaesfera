@@ -51,6 +51,13 @@
               </svg>
             </span>
           </a>
+          <a href="https://www.facebook.com/AgenciaEsfera/" class="social-link" aria-label="Facebook">
+            <span class="social-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.5 22V12.75H17l.5-3.75h-4V6.6c0-1.085.301-1.824 1.86-1.824h1.34V1.427C16.7 1.384 15.488 1.29 14.09 1.29c-2.96 0-4.99 1.807-4.99 5.129V9H6v3.75h3.1V22h4.4Z" fill="currentColor"/>
+              </svg>
+            </span>
+          </a>
           <a href="https://www.instagram.com/agencia_esfera/" class="social-link">
             <span class="social-icon">
               <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -591,7 +598,7 @@ onUnmounted(() => {
   }
 
   .nav-footer {
-    bottom: 40px !important;
+    bottom: 30px !important;
   }
   .nav-subtitle {
     transform: translateY(-4px);
@@ -600,9 +607,13 @@ onUnmounted(() => {
 
 @media (max-width: 576px) {
   .navigation-button {
-    transform: scale(0.8) !important;
-    left: 30% !important;
+    transform: translateX(-50%) scale(0.8) !important;
+    left: 50% !important;
     bottom: 0 !important;
+  }
+
+  .nav-left {
+    gap: 25px !important;
   }
 }
 
