@@ -1,6 +1,6 @@
 <template>
   <div class="navigation-overlay" :class="{ 'is-open': isMenuOpen }">
-    <div class="navigation-container">
+    <div class="navigation-container" ref="navigationContainerRef">
       <!-- Conteúdo principal do menu -->
       <div class="nav-content">
         <div class="nav-left">
@@ -20,13 +20,13 @@
         <div class="nav-right">
           <div class="nav-video-placeholder">
             <div class="video-image-container">
-              <a data-fancybox href="/videos/video-intro-esfera.mp4" class="video-fancybox-trigger" aria-label="assistir ao vídeo">
+              <a data-fancybox href="https://vimeo.com/1057895430" class="video-fancybox-trigger" aria-label="assistir ao vídeo">
                 <video class="video-bg" src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
               </a>
             </div>
             <span class="video-text">
               <div>
-                <img src="/icons/play.png" alt="assistir ao vídeo" class="video-image"></img>
+                <img src="/icons/play-icon.svg" alt="assistir ao vídeo" class="video-image" />
               </div>
               assista<br>
               nosso reels
@@ -92,6 +92,7 @@ const isMenuOpen = ref(false)
 const buttonMenuRef = ref(null)
 const navigationButtonRef = ref(null)
 const navFooterRef = ref(null)
+const navigationContainerRef = ref(null)
 
 const { 
   elementRef: magneticButtonRef, 
@@ -135,8 +136,31 @@ const toggleMenu = () => {
   
   if (newState) {
     animateTextTransition('fechar')
+
+    gsap.to(navigationContainerRef.value, {
+      opacity: 1,
+      duration: 0
+    }, 0)
+
+    gsap.fromTo(navigationContainerRef.value, {
+      y: "100%"
+    }, {
+      y: "0%",
+      duration: .6,
+      ease: 'power2.inOut'
+    })
+
   } else {
     animateTextTransition('menu')
+
+    gsap.fromTo(navigationContainerRef.value, {
+      opacity: 1
+    }, {
+      opacity: 0,
+      duration: .6,
+      ease: 'power2.out'
+    })
+
   }
   
   isMenuOpen.value = newState
@@ -154,6 +178,11 @@ onMounted(() => {
     nextTick(() => {
       // Initialize magnetic effect
       initMagneticEffect()
+      
+      // Set initial state for navigation container
+      gsap.set(navigationContainerRef.value, {
+        y: "100%"
+      })
       
       gsap.set(navigationButtonRef.value, {
         y: 150,
@@ -253,18 +282,12 @@ onUnmounted(() => {
   height: 100vh;
   background-color: var(--color-white);
   border-radius: 0;
-  transform: translateY(100%);
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* Remove CSS transform - GSAP will handle positioning */
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 1;
   z-index: 10002;
-}
-
-.navigation-overlay.is-open .navigation-container {
-  transform: translateY(0);
 }
 
 .navigation-button {
@@ -379,7 +402,7 @@ onUnmounted(() => {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100vw;
-  max-width: 1200px;
+  max-width: 1440px;
   padding: 0 40px;
   display: flex;
   opacity: 0;
@@ -532,10 +555,14 @@ onUnmounted(() => {
   display: flex;
   justify-content: flex-start;
   opacity: 0;
-  transition: opacity 0.2s ease 0.7s;
+  transition: opacity 0.6s ease 0.7s;
   align-items: flex-end;
   position: relative;
   padding-top: 40%;
+
+  @media (max-width: 768px) {
+    border-radius: 10px;
+  }
 
   .video-image-container {
     position: absolute;
@@ -547,11 +574,31 @@ onUnmounted(() => {
     overflow: hidden;
     opacity: 0.5;
     z-index: 1;
+    transition: opacity .5s ease-in-out;
+
+    @media (max-width: 768px) {
+      border-radius: 10px;
+    }
+
+    &:has(.video-fancybox-trigger:hover),
+    &:has(.video-fancybox-trigger:focus-visible) {
+      opacity: 1;
+
+      .video-fancybox-trigger {
+        video {
+          transform: scale(1.1);
+        }
+      }
+    }
     
     .video-fancybox-trigger {
       display: block;
       width: 100%;
       height: 100%;
+
+      video {
+        transition: .5s ease-in-out;
+      }
     }
 
     .video-bg {
@@ -578,6 +625,9 @@ onUnmounted(() => {
   margin-left: 35px;
   z-index: 2;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .nav-footer {
@@ -586,7 +636,7 @@ onUnmounted(() => {
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
-  max-width: 1200px;
+  max-width: 1440px;
   padding: 0 40px;
   display: flex;
   justify-content: space-between;
@@ -609,7 +659,7 @@ onUnmounted(() => {
     align-items: center;
     gap: 50px;
     width: 100%;
-    top: 40%;
+    top: 30%;
   }
 
   .nav-left {
