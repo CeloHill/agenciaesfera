@@ -12,6 +12,7 @@
     <div :class="{ 'page-hidden': isPageHidden }">
       <AppNavigation />
       <AppHeader />
+      <AppFollowMouse />
       <main class="main-content flex-grow-1 w-100">
         <slot />
       </main>
