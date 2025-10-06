@@ -1843,7 +1843,7 @@ const setupPortfolioGalleryReveal = () => {
     flex-direction: column;
     width: 100%;
     padding: 0 var(--body-horizontal-padding);
-    height: 100vh;
+    height: 100lvh;
     min-height: 600px;
     gap: 100px;
     justify-content: center;
@@ -2107,8 +2107,9 @@ const setupPortfolioGalleryReveal = () => {
     width: 60vw !important;
     height: 60vw !important;
   }
-  .case-content-container .case-content-text:last-of-type .animated-text-container {
+  .case-content-container .case-content-text .animated-text-container {
     flex-direction: row-reverse !important;
+    justify-content: center;
   }
 
   .section-numbers-content {
