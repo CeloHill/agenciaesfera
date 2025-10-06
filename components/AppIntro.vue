@@ -400,6 +400,15 @@ onMounted(() => {
     window.addEventListener('startAppIntro', () => {
       startIntro()
     })
+    window.addEventListener('resetIntroTextSlider', () => {
+      if (textSliderTimeline) {
+        textSliderTimeline.pause(0)
+        textSliderTimeline.kill()
+      }
+      // restore initial visible state and restart
+      gsap.set([".slide-1", ".slide-2"], { clearProps: "all" })
+      animateTextSlider()
+    })
   }
 })
 

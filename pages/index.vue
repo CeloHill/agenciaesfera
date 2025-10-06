@@ -223,37 +223,49 @@
                 <div class="portfolio-gallery-content">
                   <div class="portfolio-gallery-content-item">
                   <div class="case-content-item-background">
-                    <img src="/images/cases-background.jpg" alt="Blabs" />
-                    <img src="/images/cases-background-2.jpg" alt="Blabs" />
+                    <img src="/images/cases-background-01.jpg" alt="Agrinho 2024" />
+                    <img src="/images/cases-background-02.jpg" alt="John Deere Space" />
+                    <img src="/images/cases-background-03.jpg" alt="Convenção Bosch Service 2025" />
                   </div>
                   <div class="case-content-container">
                     <div class="case-content-text">
                       <div class="animated-text-container animated-text-container--left">
                         <div class="case-content-text-title">
-                          Título de Projeto 01
+                          Agrinho 2024
                         </div>
                       </div>
                       <div class="animated-text-container animated-text-container--left">
                         <div class="case-content-text-title">
-                          Título de Projeto 02
+                          John Deere Space
+                        </div>
+                      </div>
+                      <div class="animated-text-container animated-text-container--left">
+                        <div class="case-content-text-title">
+                          Convenção Bosch Service 2025
                         </div>
                       </div>
                     </div>
                     <div class="case-content-image">
                       <div class="case-content-image-container">
-                        <img src="/images/case-folder-1.png" alt="Blabs" />
-                        <img src="/images/case-folder-2.png" alt="Blabs" />
+                        <img src="/images/case-folder-01.jpg" alt="Agrinho 2024" />
+                        <img src="/images/case-folder-02.jpg" alt="John Deere Space" />
+                        <img src="/images/case-folder-03.jpg" alt="Convenção Bosch Service 2025" />
                       </div>
                     </div>
                     <div class="case-content-text">
                       <div class="animated-text-container">
                         <div class="case-content-text-title">
-                          Ano do projeto
+                          Do Campo à Cidade
                         </div>
                       </div>
                       <div class="animated-text-container">
                         <div class="case-content-text-title">
-                          Ano do projeto
+                          Inovação em grande escala
+                        </div>
+                      </div>
+                      <div class="animated-text-container">
+                        <div class="case-content-text-title">
+                          Juntos crescemos mais
                         </div>
                       </div>
                     </div>
@@ -434,20 +446,15 @@ const onVideoFlipRequest = (introElement) => {
     const flipTimeline = gsap.timeline({ paused: true })
     
     flipTimeline
-      .to(elementsToFade, {
-        duration: 1,
-        opacity: 0,
-        ease: "none"
-      }, 0)
       .to(scroll, {
         duration: .5,
         opacity: 0,
         ease: "none"
       }, 0)
       .to(introTextSlider, {
-        duration: 1,
+        duration: 0.3,
         opacity: 0,
-        ease: "none"
+        ease: "power2.out"
       }, 0)
       .to(videoBgIntro, {
         duration: 1,
@@ -517,6 +524,8 @@ const onVideoFlipRequest = (introElement) => {
             duration: 0.3,
             ease: "power2.out"
           })
+          // Reset looped slider immediately
+          window.dispatchEvent(new CustomEvent('resetIntroTextSlider'))
         }
         
         // Quando flip desfaz: volta ao branco
@@ -1008,24 +1017,34 @@ const setupPortfolioGalleryReveal = () => {
   const backgroundContainer = document.querySelector('.case-content-item-background')
   const gal1Background = backgroundContainer?.querySelector('img:nth-child(1)')
   const gal2Background = backgroundContainer?.querySelector('img:nth-child(2)')
+  const gal3Background = backgroundContainer?.querySelector('img:nth-child(3)')
   
   const imageContainer = document.querySelector('.case-content-image-container')
   const gal1Image = imageContainer?.querySelector('img:nth-child(1)')
   const gal2Image = imageContainer?.querySelector('img:nth-child(2)')
+  const gal3Image = imageContainer?.querySelector('img:nth-child(3)')
   
   const textContainers = document.querySelectorAll('.case-content-text')
   const gal1TextContainers = []
   const gal2TextContainers = []
+  const gal3TextContainers = []
   
   textContainers.forEach(container => {
     const firstText = container.querySelector('.animated-text-container:nth-child(1)')
     const secondText = container.querySelector('.animated-text-container:nth-child(2)')
+    const thirdText = container.querySelector('.animated-text-container:nth-child(3)')
     if (firstText) gal1TextContainers.push(firstText)
     if (secondText) gal2TextContainers.push(secondText)
+    if (thirdText) gal3TextContainers.push(thirdText)
   })
   
-  if (!gallerySection || !galleryContent || !portfolioItem || !gal1Background || !gal2Background || !gal1Image || !gal2Image) return
+  if (!gallerySection || !galleryContent || !portfolioItem || !gal1Background || !gal2Background || !gal3Background || !gal1Image || !gal2Image || !gal3Image) return
 
+  gsap.set(gal3Background, {
+    clipPath: 'inset(100% 0 0 0)',
+    zIndex: 3
+  })
+  
   gsap.set(gal2Background, {
     clipPath: 'inset(100% 0 0 0)',
     zIndex: 2
@@ -1033,6 +1052,14 @@ const setupPortfolioGalleryReveal = () => {
   
   gsap.set(gal1Background, {
     zIndex: 1
+  })
+  
+  gsap.set(gal3Image, {
+    clipPath: 'inset(100% 0 0 0)',
+    zIndex: 3,
+    translate: 'none',
+    rotate: 'none',
+    scale: 'none'
   })
   
   gsap.set(gal2Image, {
@@ -1048,6 +1075,16 @@ const setupPortfolioGalleryReveal = () => {
     translate: 'none',
     rotate: 'none',
     scale: 'none'
+  })
+  
+  gal3TextContainers.forEach(textContainer => {
+    gsap.set(textContainer, {
+      clipPath: 'inset(100% 0 0 0)',
+      zIndex: 3,
+      translate: 'none',
+      rotate: 'none',
+      scale: 'none'
+    })
   })
   
   gal2TextContainers.forEach(textContainer => {
@@ -1090,14 +1127,14 @@ const setupPortfolioGalleryReveal = () => {
     onUpdate: (self) => {
       const progress = self.progress
       
-      // gsap.set(galleryContent, { clearProps: "transform" })
-      
-      if (progress <= 0.8) {
-        const revealProgress = progress / 0.8
+      // Phase 1: gal1 -> gal2 (0 to 0.4)
+      if (progress <= 0.4) {
+        const revealProgress = progress / 0.4
         const clipValue = 100 - (revealProgress * 100)
         const moveDistance = revealProgress * 30
         
         gsap.set(gal2Background, { clipPath: `inset(${clipValue}% 0 0 0)` })
+        gsap.set(gal3Background, { clipPath: 'inset(100% 0 0 0)' })
         
         gsap.set(gal2Image, { 
           clipPath: `inset(${clipValue}% 0 0 0)`,
@@ -1105,6 +1142,10 @@ const setupPortfolioGalleryReveal = () => {
         })
         gsap.set(gal1Image, { 
           transform: `translate3d(0px, -${revealProgress * 40}px, 0px)`
+        })
+        gsap.set(gal3Image, { 
+          clipPath: 'inset(100% 0 0 0)',
+          transform: 'translate3d(0px, 40px, 0px)'
         })
         
         gal2TextContainers.forEach(textContainer => {
@@ -1118,21 +1159,79 @@ const setupPortfolioGalleryReveal = () => {
             transform: `translate3d(0px, -${moveDistance}px, 0px)`
           })
         })
+        gal3TextContainers.forEach(textContainer => {
+          gsap.set(textContainer, { 
+            clipPath: 'inset(100% 0 0 0)',
+            transform: 'translate3d(0px, 30px, 0px)'
+          })
+        })
+      }
+      // Phase 2: gal2 -> gal3 (0.4 to 0.8)
+      else if (progress <= 0.8) {
+        const revealProgress = (progress - 0.4) / 0.4
+        const clipValue = 100 - (revealProgress * 100)
+        const moveDistance = revealProgress * 30
         
-      } else {
         gsap.set(gal2Background, { clipPath: 'inset(0% 0 0 0)' })
+        gsap.set(gal3Background, { clipPath: `inset(${clipValue}% 0 0 0)` })
+        
         gsap.set(gal2Image, { 
           clipPath: 'inset(0% 0 0 0)',
-          transform: 'translate3d(0px, 0px, 0px)'
+          transform: `translate3d(0px, -${revealProgress * 40}px, 0px)`
         })
         gsap.set(gal1Image, { 
           transform: 'translate3d(0px, -40px, 0px)'
+        })
+        gsap.set(gal3Image, { 
+          clipPath: `inset(${clipValue}% 0 0 0)`,
+          transform: `translate3d(0px, ${40 - (revealProgress * 40)}px, 0px)`
         })
         
         gal2TextContainers.forEach(textContainer => {
           gsap.set(textContainer, { 
             clipPath: 'inset(0% 0 0 0)',
+            transform: `translate3d(0px, -${moveDistance}px, 0px)`
+          })
+        })
+        gal1TextContainers.forEach(textContainer => {
+          gsap.set(textContainer, { 
+            transform: 'translate3d(0px, -30px, 0px)'
+          })
+        })
+        gal3TextContainers.forEach(textContainer => {
+          gsap.set(textContainer, { 
+            clipPath: `inset(${clipValue}% 0 0 0)`,
+            transform: `translate3d(0px, ${30 - moveDistance}px, 0px)`
+          })
+        })
+      }
+      // Phase 3: gal3 fully visible (0.8 to 1.0)
+      else {
+        gsap.set(gal2Background, { clipPath: 'inset(0% 0 0 0)' })
+        gsap.set(gal3Background, { clipPath: 'inset(0% 0 0 0)' })
+        
+        gsap.set(gal3Image, { 
+          clipPath: 'inset(0% 0 0 0)',
+          transform: 'translate3d(0px, 0px, 0px)'
+        })
+        gsap.set(gal2Image, { 
+          clipPath: 'inset(0% 0 0 0)',
+          transform: 'translate3d(0px, -40px, 0px)'
+        })
+        gsap.set(gal1Image, { 
+          transform: 'translate3d(0px, -40px, 0px)'
+        })
+        
+        gal3TextContainers.forEach(textContainer => {
+          gsap.set(textContainer, { 
+            clipPath: 'inset(0% 0 0 0)',
             transform: 'translate3d(0px, 0px, 0px)'
+          })
+        })
+        gal2TextContainers.forEach(textContainer => {
+          gsap.set(textContainer, { 
+            clipPath: 'inset(0% 0 0 0)',
+            transform: 'translate3d(0px, -30px, 0px)'
           })
         })
         gal1TextContainers.forEach(textContainer => {
@@ -1823,7 +1922,7 @@ const setupPortfolioGalleryReveal = () => {
       width: 100%;
       justify-content: center;
       align-items: center;
-      background-color: rgb(29 29 27 / 50%);
+      background-color: rgb(29 29 27 / 65%);
       z-index: 1;
     }
 
