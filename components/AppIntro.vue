@@ -179,8 +179,9 @@ const startSequentialAnimation = () => {
     }, null, "phase3Complete")
     .to(".video-intro-container", {
       duration: 1,
-      width: "100%",
-      height: "100%",
+      width: "100vw",
+      height: "100lvh",
+      borderRadius: "0px",
       top: "50%",
       left: "50%",
       transform: "translate(-50%, -50%)",
