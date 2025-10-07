@@ -1649,9 +1649,9 @@ const setupPortfolioGalleryReveal = () => {
   flex-direction: column;
   width: 100%;
   padding: 0 var(--body-horizontal-padding);
-  height: 80lvh;
   gap: 100px;
   justify-content: center;
+  margin-bottom: 80px;
 }
 
 .clients-content {
