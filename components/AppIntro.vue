@@ -220,6 +220,7 @@ const startSequentialAnimation = () => {
       x: 0,
       width: "100%",
       height: "100%",
+      borderRadius: "0px",
       top: "0px",
       left: "0px",
       ease: "power2.inOut"

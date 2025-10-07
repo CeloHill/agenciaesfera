@@ -1110,7 +1110,7 @@ const setupPortfolioGalleryReveal = () => {
   const st = ScrollTrigger.create({
     trigger: galleryContent,
     start: "top top",
-    end: "bottom+=1000lvh bottom",
+    end: "bottom+=200% bottom",
     pin: true,
     pinSpacing: true,
     scrub: 1,
@@ -1862,7 +1862,7 @@ const setupPortfolioGalleryReveal = () => {
   }
 
   @media (max-width: 480px) {
-    height: 200lvh;
+    height: intial;
     
     .portfolio-gallery-content {
       min-height: 400px;
