@@ -1115,7 +1115,7 @@ const setupPortfolioGalleryReveal = () => {
     pinSpacing: true,
     anticipatePin: true,
     scrub: 1,
-    markers: true,
+    // markers: true,
     invalidateOnRefresh: true,
     // onEnter: () => {
     // },
