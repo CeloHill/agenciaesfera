@@ -1110,7 +1110,7 @@ const setupPortfolioGalleryReveal = () => {
   const st = ScrollTrigger.create({
     trigger: galleryContent,
     start: "top top",
-    end: "bottom+=1000vh bottom",
+    end: "bottom+=1000lvh bottom",
     pin: true,
     pinSpacing: true,
     scrub: 1,
@@ -1361,7 +1361,7 @@ const setupPortfolioGalleryReveal = () => {
   flex-direction: column;
   gap: 160px;
   padding: 0 var(--body-horizontal-padding);
-  height: 100vh;
+  height: 100lvh;
   justify-content: center;
 
   h1 {
@@ -1649,7 +1649,7 @@ const setupPortfolioGalleryReveal = () => {
   flex-direction: column;
   width: 100%;
   padding: 0 var(--body-horizontal-padding);
-  height: 80vh;
+  height: 80lvh;
   gap: 100px;
   justify-content: center;
 }
@@ -1862,7 +1862,7 @@ const setupPortfolioGalleryReveal = () => {
   }
 
   @media (max-width: 480px) {
-    height: 200vh;
+    height: 200lvh;
     
     .portfolio-gallery-content {
       min-height: 400px;
