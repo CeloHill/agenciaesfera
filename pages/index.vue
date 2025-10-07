@@ -1113,8 +1113,9 @@ const setupPortfolioGalleryReveal = () => {
     end: "bottom+=200% bottom",
     pin: true,
     pinSpacing: true,
+    anticipatePin: true,
     scrub: 1,
-    // markers: true,
+    markers: true,
     invalidateOnRefresh: true,
     // onEnter: () => {
     // },
@@ -2117,7 +2118,7 @@ const setupPortfolioGalleryReveal = () => {
   }
 
   .section-numbers-text p {
-    min-height: 250px !important;
+    min-height: 310px !important;
   }
 }
 
