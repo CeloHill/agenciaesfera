@@ -169,6 +169,18 @@ const toggleMenu = () => {
 const closeMenu = () => {
   if (isMenuOpen.value) {
     animateTextTransition('menu')
+    
+    gsap.fromTo(navigationContainerRef.value, {
+      opacity: 1
+    }, {
+      opacity: 0,
+      duration: .6,
+      ease: 'power2.out',
+      onComplete: () => {
+        gsap.set(navigationContainerRef.value, { y: "100%" })
+      }
+    })
+    
     isMenuOpen.value = false
   }
 }
