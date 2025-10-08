@@ -668,7 +668,7 @@ onUnmounted(() => {
 
   .nav-right {
     gap: 50px;
-    width: 80vw;
+    width: 100%;
   }
 
   .nav-footer {
@@ -688,6 +688,16 @@ onUnmounted(() => {
 
   .nav-left {
     gap: 25px !important;
+  }
+
+  .nav-content, .nav-footer {
+    gap: 25px;
+  }
+
+  .nav-content {
+    top: 40px !important;
+    left: initial !important;
+    transform: initial !important;
   }
 }
 
