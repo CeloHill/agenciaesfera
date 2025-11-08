@@ -94,13 +94,7 @@ const startSequentialAnimation = () => {
         left: "50%",
         transform: "translateX(-50%)",
         // y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 200,
-        ease: "power2.inOut",
-        onUpdate: function() {
-          const progress = this.progress()
-          window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
-            detail: { progress }
-          }))
-        }
+        ease: "power2.inOut"
       }, "phase1Complete")
     .addLabel("phase1Complete")
   } else {
@@ -134,13 +128,7 @@ const startSequentialAnimation = () => {
         transform: "translateX(-50%)",
         y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 200, // 200px acima da posição final
         opacity: 1,
-        ease: "power2.inOut",
-        onUpdate: function() {
-          const progress = this.progress()
-          window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
-            detail: { progress }
-          }))
-        }
+        ease: "power2.inOut"
       }, "phase2Complete")
       .to({}, { duration: 3 }, "phase2Complete")
       .addLabel("phase3Complete")
@@ -155,13 +143,7 @@ const startSequentialAnimation = () => {
         duration: 1,
         x: -400,
         opacity: 1,
-        ease: "power2.inOut",
-        onUpdate: function() {
-          const progress = this.progress()
-          window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
-            detail: { progress }
-          }))
-        }
+        ease: "power2.inOut"
       }, "phase2Complete")
       .to({}, { duration: 3 }, "phase2Complete")
       .addLabel("phase3Complete")
@@ -383,10 +365,7 @@ const startIntro = () => {
       scale: 0
     })
     
-    // Ensure navigation and header start hidden
-    gsap.set(".navigation-button", {
-      transform: "translate(-50%, 100vh)"
-    })
+    // Ensure header starts hidden
     gsap.set(".header", {
       transform: "translateY(-100vh)"
     })
@@ -585,11 +564,13 @@ defineExpose({
   font-weight: 200;
   margin-bottom: 0.5rem;
   color: #FFF;
+  font-family: 'Antonio';
 }
 
 .slide-1-text-2 {
   font-size: 3.5rem;
   font-weight: 600;
+  font-family: 'Antonio';
 }
 
 .slide-1 .video-intro-text-highlight {
@@ -600,6 +581,7 @@ defineExpose({
   font-size: 3.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
+  font-family: 'Antonio';
 }
 
 .slide-2-text-2 {
@@ -607,6 +589,7 @@ defineExpose({
   font-weight: 200;
   position: relative;
   color: #FFF;
+  font-family: 'Antonio';
 
   span {
     position: relative;
