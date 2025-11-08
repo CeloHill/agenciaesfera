@@ -16,7 +16,7 @@
       <main class="main-content flex-grow-1 w-100">
         <slot />
       </main>
-      <AppFooter />
+      <AppFooterSecond />
     </div>
   </div>
 </template>
@@ -27,7 +27,6 @@ const { lockScroll, unlockScroll } = useScrollLock()
 const layoutRef = ref(null)
 const showLoader = ref(false)
 const isPageHidden = ref(true)
-const scrollColorTrigger = ref(null)
 
 // AppLoader callbacks
 const onLoadingComplete = () => {
@@ -84,12 +83,6 @@ onMounted(async () => {
     }
     
     if (gsap && ScrollTrigger) {
-      // Ensure layout always starts with white background
-      gsap.set(layoutRef.value, {
-        backgroundColor: "#ffffff"
-      })
-      
-      // Ensure page always starts at top
       window.scrollTo(0, 0)
     }
   }
@@ -97,11 +90,6 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (process.client) {
-    if (layoutRef.value) {
-      gsap.set(layoutRef.value, {
-        clearProps: "backgroundColor"
-      })
-    }
   }
 })
 </script>
@@ -113,7 +101,6 @@ main {
 
 .layout {
   background-color: var(--color-white);
-  transition: background-color 0.1s ease;
 }
 
 .page-hidden {

@@ -26,56 +26,44 @@
           </div>
           <div class="full-banner-events container-fluid">
             <div class="full-banner-events-content row">
-              <div class="col-sm-12 col-md-6 col-lg-3 col-align-center">
+              <div class="col-sm-12 col-md-6 col-lg-4 col-align-center">
                 <div class="award-container">
                   <div class="award-icon-left">
                     <img src="/icons/awards-left.png"></img>
                   </div>  
                   <div class="award-text">
-                    <div class="award-text-subtitle">Lorem ipsum</div>
-                    <div class="award-text-title">Melhor Evento</div>
+                    <div class="award-text-subtitle">20ª Mostra de Comunicação do Agro ABMRA</div>
+                    <div class="award-text-title">Ouro em Programa e Campanha de Incentivo</div>
+                    <div class="award-text-case">Case: Expo Latin America 2021 john deere</div>
                   </div>
                   <div class="award-icon-right">
                     <img src="/icons/awards-right.png"></img>
                   </div>
                 </div>
               </div>
-              <div class="col-sm-12 col-md-6 col-lg-3 col-align-center">
+              <div class="col-sm-12 col-md-6 col-lg-4 col-align-center">
                 <div class="award-container">
                   <div class="award-icon-left">
                     <img src="/icons/awards-left.png"></img>
                   </div>  
                   <div class="award-text">
-                    <div class="award-text-subtitle">Lorem ipsum</div>
-                    <div class="award-text-title">Melhor Evento</div>
+                    <div class="award-text-subtitle">Prêmio Live 2021</div>
+                    <div class="award-text-title">Ouro em Agência Regional de Brand Experience</div>
                   </div>
                   <div class="award-icon-right">
                     <img src="/icons/awards-right.png"></img>
                   </div>
                 </div>
               </div>
-              <div class="col-sm-12 col-md-6 col-lg-3 col-align-center">
+              <div class="col-sm-12 col-md-6 col-lg-4 col-align-center">
                 <div class="award-container">
                   <div class="award-icon-left">
                     <img src="/icons/awards-left.png"></img>
                   </div>  
                   <div class="award-text">
-                    <div class="award-text-subtitle">Lorem ipsum</div>
-                    <div class="award-text-title">Melhor Evento</div>
-                  </div>
-                  <div class="award-icon-right">
-                    <img src="/icons/awards-right.png"></img>
-                  </div>
-                </div>
-              </div>
-              <div class="col-sm-12 col-md-6 col-lg-3 col-align-center">
-                <div class="award-container">
-                  <div class="award-icon-left">
-                    <img src="/icons/awards-left.png"></img>
-                  </div>  
-                  <div class="award-text">
-                    <div class="award-text-subtitle">Lorem ipsum</div>
-                    <div class="award-text-title">Melhor Evento</div>
+                    <div class="award-text-subtitle">Premio Caio 2024</div>
+                    <div class="award-text-title">Ouro em evento promocional</div>
+                    <div class="award-text-case">Case: M&T Expo 24 John Deere & Wirtgen Group</div>
                   </div>
                   <div class="award-icon-right">
                     <img src="/icons/awards-right.png"></img>
@@ -84,85 +72,77 @@
               </div>
             </div>
           </div>
+          <div class="full-banner-events-text">
+            <span class="text">Grandes conquistas rendem uma coleção de memórias únicas.</span>
+          </div>
         </section>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid section-numbers-text-container">
+      <div class="row">
+        <div class="col-12">
+          <div class="section-board-container">
+            <section class="section-board">
+              <div class="section-board-content">
+                Na Esfera
+              </div>
+              <div class="section-board-content-second">
+                Acontece
+              </div>
+            </section>
+          </div>
+          <section class="section-numbers-text">
+              <div class="row section-numbers-text-content">
+              <div class="col-xl-6 col-lg-8 col-md-12">
+                <div class="color-change-text typing-animation-text"><div class="no-color-change animated-text-1">Seu evento, nossa missão</div><div class="highlight animated-text-2"> A gente soma números com expertise e mostra resultados com orgulho.</div></div>
+              </div>
+            </div>
+            <div class="row section-numbers-content">
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                <div class="small-number ">1</div>
+                <div class="big-number-container">
+                  <div class="big-number color-change-text">26</div>
+                  <div class="big-number-text">Anos de <br /> experiência</div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                <div class="small-number">2</div>
+                <div class="big-number-container">
+                  <div class="big-number-plus color-change-text">+</div>
+                  <div class="big-number color-change-text">6.500</div>
+                  <div class="big-number-text">Projetos <br /> executados</div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                <div class="small-number">3</div>
+                <div class="big-number-container">
+                  <div class="big-number-plus color-change-text">+</div>
+                  <div class="big-number color-change-text">350</div>
+                  <div class="big-number-text">Clientes <br /> satisfeitos</div>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                <div class="small-number">4</div>
+                <div class="big-number-container">
+                  <div class="big-number color-change-text">25</div>
+                  <div class="big-number-text">Prêmios <br /> no setor</div>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
     <div class="container-fluid">
       <div class="row">
         <div class="col-12">
-        <section class="section-numbers-text">
-            <div class="row section-numbers-text-content">
-            <div class="col-md-6 col-sm-12">
-              <p class="color-change-text typing-animation-text"><span class="highlight no-color-change animated-text-1">Seu evento, é a nossa missão</span><span class="animated-text-2"> e a gente soma números com expertise e mostra resultados com orgulho.</span></p>
-            </div>
-            <div class="col-md-6 col-sm-12">
-              <div class="badge-clients">
-                <div class="animated-circle">
-                  <img src="/images/logos/icon-white.svg" class="animated-circle-icon" />
-                  <div class="animated-circle-text">
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <path id="circle" d="M 100, 100 m -80, 0 a 80,80 0 1,1 160,0 a 80,80 0 1,1 -160,0" />
-                      </defs>
-                      <text font-size="16" fill="white" font-weight="400">
-                        <textPath href="#circle">
-                          nossos números • nossos números • nossos números • nossos números • nossos números •
-                        </textPath>
-                        <animateTransform 
-                          attributeName="transform" 
-                          attributeType="XML" 
-                          type="rotate" 
-                          from="0 100 100" 
-                          to="360 100 100" 
-                          dur="20s" 
-                          repeatCount="indefinite"/>
-                      </text>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row section-numbers-content">
-            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-              <div class="small-number ">1</div>
-              <div class="big-number-container">
-                <div class="big-number color-change-text">26</div>
-                <div class="big-number-text">Anos de <br /> experiência</div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-              <div class="small-number">2</div>
-              <div class="big-number-container">
-                <div class="big-number-plus color-change-text">+</div>
-                <div class="big-number color-change-text">6.500</div>
-                <div class="big-number-text">Projetos <br /> executados</div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-              <div class="small-number">3</div>
-              <div class="big-number-container">
-                <div class="big-number-plus color-change-text">+</div>
-                <div class="big-number color-change-text">350</div>
-                <div class="big-number-text">Clientes <br /> satisfeitos</div>
-              </div>
-            </div>
-            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-              <div class="small-number">4</div>
-              <div class="big-number-container">
-                <div class="big-number color-change-text">25</div>
-                <div class="big-number-text">Prêmios <br /> no setor</div>
-              </div>
-            </div>
-          </div>
-        </section>
         <section class="section-clients">
           <div class="clients-content row">
-            <div class="clients-title col-md-6 col-sm-12">
-              Na esfera o cliente <span class="highlight no-color-change">é nosso parceiro</span>
+            <div class="clients-title highlight no-color-change col-md-12 col-lg-6">
+              Clientes
             </div>
-            <div class="clients-description col-md-6 col-sm-12">
+            <div class="clients-description col-md-12 col-lg-6">
               <div class="align-right no-color-change">
                 Trabalhamos ideias que ganham forma por que são <br />
                 construídas junto de quem nos inspira.
@@ -503,14 +483,11 @@ const onVideoFlipRequest = (introElement) => {
           window.dispatchEvent(new CustomEvent('introAnimationComplete'))
         }
         
-        // Durante flip: progresso do scroll controla a cor
         if (self.progress < 0.1) {
-          // Primeiros 10%: branco
           window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
             detail: { progress: 1 }
           }))
         } else {
-          // Após 10%: preto
           window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
             detail: { progress: 0 }
           }))
@@ -524,11 +501,9 @@ const onVideoFlipRequest = (introElement) => {
             duration: 0.3,
             ease: "power2.out"
           })
-          // Reset looped slider immediately
           window.dispatchEvent(new CustomEvent('resetIntroTextSlider'))
         }
         
-        // Quando flip desfaz: volta ao branco
         window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
           detail: { progress: 1 }
         }))
@@ -567,6 +542,7 @@ const startHomeAnimations = () => {
       setupPortfolioGalleryReveal()
       animateNumbers()
       setupColorTransitions()
+      animateBoardLoop()
       
       // Refresh ScrollTrigger on resize for responsiveness (but not gallery)
       const handleMainResize = () => {
@@ -605,6 +581,11 @@ onMounted(() => {
     if (!showedLoader && !shouldShowIntro.value) {
       // No AppLoader and no intro needed, start home animations directly
       startHomeAnimations()
+    } else {
+      // Call adjust board scale even if intro is showing
+      /*nextTick(() => {
+        adjustBoardScale()
+      })*/
     }
     // If AppLoader is running, it will trigger the intro animation
   }, 100)
@@ -636,7 +617,6 @@ onUnmounted(() => {
     
     const layout = document.querySelector('.layout')
     if (layout && layout._scrollColorTrigger) {
-      // Remove color transition resize handler
       if (layout._scrollColorTrigger._resizeHandler) {
         window.removeEventListener('resize', layout._scrollColorTrigger._resizeHandler)
       }
@@ -649,6 +629,11 @@ onUnmounted(() => {
     // Remove main resize handler
     if (window._mainResizeHandler) {
       window.removeEventListener('resize', window._mainResizeHandler)
+    }
+    
+    // Remove board resize handler
+    if (window._boardResizeHandler) {
+      window.removeEventListener('resize', window._boardResizeHandler)
     }
     
     const galleryTriggers = ScrollTrigger.getAll().filter(trigger => {
@@ -865,7 +850,6 @@ const setupColorTransitions = () => {
   const layout = document.querySelector('.layout')
   if (!layout) return
   
-  // Create timeline for color transitions
   const colorTimeline = gsap.timeline({
     paused: true,
     defaults: {
@@ -874,38 +858,28 @@ const setupColorTransitions = () => {
     }
   })
   
-  // Define all elements once (exclude intro overlay elements)
   const textElements = [
-    "h1:not(.no-color-change):not(.intro-overlay h1)",
+    "h1:not(.no-color-change):not(.intro-overlay h1)", 
     "h2:not(.no-color-change):not(.intro-overlay h2)", 
     ".full-banner-content p:not(.no-color-change):not(.intro-overlay p)",
     ".full-banner-content span:not(.no-color-change):not(.intro-overlay span)",
-    ".award-text-title",
     ".color-change-text:not(.no-color-change):not(.intro-overlay .color-change-text)",
     ".big-number.color-change-text",
     ".big-number-plus.color-change-text",
     ".clients-title:not(.no-color-change)"
   ].join(", ")
   
-  // Create the color animation timeline
   colorTimeline
-    .to(layout, {
-      backgroundColor: "#1d1d1b",
-      duration: 1
-    }, 0)
     .to(textElements, {
       color: "#ffffff",
       duration: 1
     }, 0)
   
-  // Check if intro was shown to adjust color transition trigger
   const introWasShown = showIntroAnimation.value || shouldShowIntro.value
   
-  // Calculate the start position based on flip animation completion
   const windowHeight = window.innerHeight
-  const flipEndPosition = windowHeight * 1 // Same as flipScrollTrigger end
+  const flipEndPosition = windowHeight * 1
   
-  // ScrollTrigger configuration for color changes - starts after flip animation
   const scrollColorTrigger = ScrollTrigger.create({
     trigger: "body",
     start: introWasShown ? `${flipEndPosition}px top` : `${flipEndPosition}px top`,
@@ -914,14 +888,12 @@ const setupColorTransitions = () => {
     animation: colorTimeline,
     invalidateOnRefresh: true,
     onUpdate: (self) => {
-      // Dispatch event for AppHeader
       window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
         detail: { progress: self.progress }
       }))
     }
   })
   
-  // Add resize handler for color transition
   const handleColorResize = () => {
     if (scrollColorTrigger) {
       const newWindowHeight = window.innerHeight
@@ -934,21 +906,13 @@ const setupColorTransitions = () => {
   
   window.addEventListener('resize', handleColorResize)
   
-  // Store resize handler for cleanup
   scrollColorTrigger._resizeHandler = handleColorResize
   
-  // Force initial state
   const forceInitialState = () => {
-    gsap.set(layout, {
-      backgroundColor: "#ffffff"
-    })
     gsap.set("h1:not(.no-color-change):not(.intro-overlay h1), h2:not(.no-color-change):not(.intro-overlay h2)", {
       color: "#000000"
     })
     gsap.set(".full-banner-content p:not(.no-color-change):not(.intro-overlay p), .full-banner-content span:not(.no-color-change):not(.intro-overlay span)", {
-      color: "#000000"
-    })
-    gsap.set(".award-text-title", {
       color: "#000000"
     })
     gsap.set(".color-change-text:not(.no-color-change):not(.intro-overlay .color-change-text)", {
@@ -967,20 +931,16 @@ const setupColorTransitions = () => {
     }
   }
   
-  // Apply initial state
   if (window.scrollY === 0) {
     forceInitialState()
   }
   
-  // Handle scroll to reset state
   const handleScroll = () => {
     if (introWasShown) {
-      // When intro was shown, only reset at very top
       if (window.scrollY <= 10) {
         forceInitialState()
       }
     } else {
-      // Normal behavior when no intro
       if (window.scrollY === 0) {
         forceInitialState()
       }
@@ -989,10 +949,104 @@ const setupColorTransitions = () => {
   
   window.addEventListener('scroll', handleScroll, { passive: true })
   
-  // Store reference for cleanup
   layout._scrollHandler = handleScroll
   layout._scrollColorTrigger = scrollColorTrigger
 }
+
+const adjustBoardScale = () => {
+  const board = document.querySelector('.section-board')
+  const boardContent = document.querySelector('.section-board-content')
+  
+  if (!board || !boardContent) return
+  
+  const adjustScale = () => {
+    requestAnimationFrame(() => {
+      const containerWidth = board.offsetWidth
+      const padding = 40
+      const targetWidth = containerWidth - padding
+      
+      boardContent.style.transform = 'scale(1)'
+      
+      const contentWidth = boardContent.scrollWidth || boardContent.offsetWidth
+      
+      if (contentWidth > 0 && targetWidth > 0) {
+        const scale = Math.min(targetWidth / contentWidth, 1)
+        boardContent.style.transform = `scale(${scale})`
+      }
+    })
+  }
+  
+  setTimeout(() => {
+    adjustScale()
+  }, 200)
+  
+  let resizeTimeout
+  const resizeHandler = () => {
+    clearTimeout(resizeTimeout)
+    resizeTimeout = setTimeout(() => {
+      adjustScale()
+    }, 100)
+  }
+  
+  window.addEventListener('resize', resizeHandler)
+  
+  if (window._boardResizeHandler) {
+    window.removeEventListener('resize', window._boardResizeHandler)
+  }
+  window._boardResizeHandler = resizeHandler
+}
+
+const animateBoardLoop = () => {
+  const boardSecond = document.querySelector('.section-board-content-second')
+  
+  if (!boardSecond) return
+  
+  gsap.set(boardSecond, {
+    y: '110%',
+    rotateZ: 0,
+    transformOrigin: 'bottom right'
+  })
+  
+  const timeline = gsap.timeline({
+    repeat: -1,
+    delay: 3
+  })
+  
+  timeline
+    .to(boardSecond, {
+      y: '0%',
+      rotateZ: -6,
+      transformOrigin: 'bottom right',
+      duration: 0.7,
+      ease: "power2.inOut"
+    })
+    .to(boardSecond, {
+      rotateZ: 0,
+      transformOrigin: 'bottom center',
+      duration: 0.7,
+      ease: "power2.inOut"
+    })
+    .to(boardSecond, {
+      duration: 5
+    })
+    .to(boardSecond, {
+      rotateZ: -6,
+      transformOrigin: 'bottom right',
+      duration: 0.7,
+      ease: "power2.inOut"
+    })
+    .to(boardSecond, {
+      y: '110%',
+      rotateZ: 0,
+      transformOrigin: 'bottom right',
+      duration: 0.7,
+      ease: "power2.inOut"
+    })
+    .to(boardSecond, {
+      duration: 2
+    })
+}
+
 
 const setupPortfolioGalleryReveal = () => {
   // Kill any existing gallery ScrollTriggers first
@@ -1259,6 +1313,60 @@ const setupPortfolioGalleryReveal = () => {
 </script>
 
 <style scoped>
+.section-board {
+  width: 100%;
+  background-color: var(--color-yellow);
+  color: var(--color-black);
+  border-radius: 10px;
+  font-family: Antonio;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-top: 15px;
+  padding-top: 27%;
+  position: relative;
+  perspective: 1000px;
+
+  .section-board-content {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    margin-top: -8%;
+    margin-bottom: -4%;
+    transform-origin: center center;
+    transition: transform 0.2s ease;
+    font-size: 27vw;
+    line-height: 0;
+    margin-top: -35%;
+  }
+
+  .section-board-content-second {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    font-size: 28vw;
+    line-height: 0;
+    background: #FFF;
+    padding: 0;
+    margin-top: 0%;
+    padding-bottom: 4.1%;
+    color: var(--color-yellow);
+    will-change: transform;
+  }
+}
+
 .new-carousel-section {
   width: 100%;
   overflow: hidden;
@@ -1294,6 +1402,7 @@ const setupPortfolioGalleryReveal = () => {
   object-fit: contain;
   user-select: none;
   -webkit-user-drag: none;
+  filter: brightness(0);
 }
 
 @media (max-width: 768px) {
@@ -1472,6 +1581,8 @@ const setupPortfolioGalleryReveal = () => {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
 .full-banner-content-left {
@@ -1506,6 +1617,43 @@ const setupPortfolioGalleryReveal = () => {
   left: 0;
   border-radius: 400px;
 }
+.full-banner-events-text {
+  text-align: center;
+}
+.full-banner-events-text .text {
+  font-size: 34px;
+  font-weight: var(--font-weight-regular);
+  font-family: Antonio;
+  text-transform: uppercase;
+  line-height: 1.1;
+  text-align: center;
+  margin-top: 60px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: calc(50% - 5px);
+    left: 0;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-yellow);
+    border-radius: 50%;
+    left: -30px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 5px);
+    right: 0;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-yellow);
+    border-radius: 50%;
+    right: -30px;
+  }
+}
 
 .full-banner-events {
   display: flex;
@@ -1534,7 +1682,6 @@ const setupPortfolioGalleryReveal = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 200px;
   opacity: 0;
   filter: blur(10px);
 }
@@ -1567,12 +1714,41 @@ const setupPortfolioGalleryReveal = () => {
     font-weight: var(--font-weight-semibold);
     line-height: 1.1;
     margin-top: 5px;
+    text-transform: uppercase;
+  }
+
+  .award-text-case {
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: var(--font-weight-regular);
+    line-height: 1.1;
+    margin-top: 9px;
   }
 }
 
 .section-numbers-content {
   display: flex;
   width: 100%;
+}
+
+.section-numbers-text-content {
+  min-height: 170px;
+  align-items: flex-start;
+  .animated-text-1 {
+    font-size: 60px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    font-family: Antonio;
+  }
+
+  .animated-text-2 {
+    font-size: 25px;
+    line-height: 1.5;
+    color: var(--color-yellow);
+    margin-top: 20px;
+    float: left;
+    max-width: 90%;
+  }
 }
 
 .section-numbers-text {
@@ -1585,10 +1761,6 @@ const setupPortfolioGalleryReveal = () => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-
-  .section-numbers-text-content {
-    align-items: center;
-  }
 
   .badge-clients {
     width: 170px;
@@ -1663,6 +1835,10 @@ const setupPortfolioGalleryReveal = () => {
 
 .clients-title {
   font-size: 34px;
+  font-family: Antonio;
+  text-transform: uppercase;
+  font-size: 10rem;
+  font-weight: 500;
 }
 
 .highlight {
@@ -1675,6 +1851,7 @@ const setupPortfolioGalleryReveal = () => {
 
   .align-right {
     text-align: right;
+    margin-top: -50px;
   }
 }
 
@@ -1801,7 +1978,7 @@ const setupPortfolioGalleryReveal = () => {
   left: 0;
   width: 200px;
   height: 100%;
-  background: linear-gradient(270deg, rgba(255, 255, 255, 0) 15%, rgba(29, 29, 27, 1) 100%);
+  background: linear-gradient(270deg, rgba(255, 255, 255, 0) 15%, rgba(255, 255, 255, 1) 100%);
   z-index: 1;
   pointer-events: none;
 }
@@ -1813,7 +1990,7 @@ const setupPortfolioGalleryReveal = () => {
   right: 0;
   width: 200px;
   height: 100%;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(29, 29, 27, 1) 85%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 85%);
   z-index: 1;
   pointer-events: none;
 }
@@ -2026,6 +2203,12 @@ const setupPortfolioGalleryReveal = () => {
   }
 }
 
+.section-numbers-text-container {
+  margin-top: 60px;
+  background-color: #1D1D1B;
+  color: #FFFFFF;
+}
+
 @media (max-width: 1200px) {
   .big-number {
     font-size: clamp(20px, 7vw, 90px) !important;
@@ -2036,6 +2219,10 @@ const setupPortfolioGalleryReveal = () => {
   .big-number-container {
     margin-bottom: 30px !important;
   }
+
+  .section-board-container {
+    margin-bottom: 80px !important;
+  }
 }
 
 @media (max-width: 768px) {
@@ -2044,6 +2231,12 @@ const setupPortfolioGalleryReveal = () => {
     gap: 60px;
     height: initial !important;
     min-height: 100vh;
+  }
+
+  .clients-description {
+    .align-right {
+      margin-top: 0 !important;
+    }
   }
   
   .full-banner-content {

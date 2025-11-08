@@ -70,10 +70,10 @@
     </div>
   </div>
   
-  <div ref="navigationButtonRef" class="navigation-button">
+  <div ref="navigationButtonRef" class="navigation-button" :class="{ 'is-visible': isMenuOpen }">
     <div ref="magneticButtonRef" class="button-menu-magnetic">
       <button ref="buttonMenuRef" class="button-menu" @click="toggleMenu">
-        <span class="navigation-button-text">menu</span>
+        <span class="navigation-button-text">fechar</span>
         <span class="navigation-button-icon" :class="{ 'is-open': isMenuOpen }">
           <span class="navigation-button-icon-line"></span>
           <span class="navigation-button-icon-line"></span>
@@ -103,39 +103,14 @@ const {
   textAnimation: false
 })
 
-const animateTextTransition = (newText) => {
-  if (!buttonMenuRef.value) return
-  
-  const textElement = buttonMenuRef.value.querySelector('.navigation-button-text')
-  if (!textElement) return
-  
-  gsap.to(textElement, {
-    y: -30,
-    opacity: 0,
-    duration: 0.5,
-    ease: "power2.in",
-    onComplete: () => {
-      textElement.textContent = newText
-      gsap.set(textElement, { 
-        y: 30,
-        opacity: 0 
-      })
-      
-      gsap.to(textElement, {
-        y: 0,
-        opacity: 1,
-        duration: 0.5,
-        ease: "power2.out"
-      })
-    }
-  })
-}
-
 const toggleMenu = () => {
   const newState = !isMenuOpen.value
   
   if (newState) {
-    animateTextTransition('fechar')
+    const navRight = document.querySelector('.nav-right')
+    if (navRight) {
+      navRight.style.display = 'none'
+    }
 
     gsap.to(navigationContainerRef.value, {
       opacity: 1,
@@ -151,7 +126,10 @@ const toggleMenu = () => {
     })
 
   } else {
-    animateTextTransition('menu')
+    const navRight = document.querySelector('.nav-right')
+    if (navRight) {
+      navRight.style.display = ''
+    }
 
     gsap.fromTo(navigationContainerRef.value, {
       opacity: 1
@@ -168,7 +146,10 @@ const toggleMenu = () => {
 
 const closeMenu = () => {
   if (isMenuOpen.value) {
-    animateTextTransition('menu')
+    const navRight = document.querySelector('.nav-right')
+    if (navRight) {
+      navRight.style.display = ''
+    }
     
     gsap.fromTo(navigationContainerRef.value, {
       opacity: 1
@@ -188,47 +169,14 @@ const closeMenu = () => {
 onMounted(() => {
   if (process.client && gsap) {
     nextTick(() => {
-      // Initialize magnetic effect
       initMagneticEffect()
       
-      // Set initial state for navigation container
       gsap.set(navigationContainerRef.value, {
         y: "100%"
       })
       
-      gsap.set(navigationButtonRef.value, {
-        y: 150,
-        opacity: 0
-      })
-      
-      window.addEventListener('appLoaderAnimationComplete', () => {
-        gsap.to(navigationButtonRef.value, {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power2.out",
-          delay: 0.5
-        })
-      })
-      
-      window.addEventListener('pageVisibleImmediately', () => {
-        gsap.to(navigationButtonRef.value, {
-          y: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: "power2.out",
-          delay: 0.3
-        })
-      })
-      
-      // Listen for video expand start (AppIntro)
-      window.addEventListener('videoExpandStart', () => {
-        gsap.to(navigationButtonRef.value, {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          ease: "power2.out"
-        })
+      window.addEventListener('toggleNavigation', () => {
+        toggleMenu()
       })
 
       watch(isMenuOpen, (open) => {
@@ -257,15 +205,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (process.client) {
-    window.removeEventListener('appLoaderAnimationComplete', () => {})
-    window.removeEventListener('pageVisibleImmediately', () => {})
-    window.removeEventListener('videoExpandStart', () => {})
-    
-    if (navigationButtonRef.value) {
-      gsap.set(navigationButtonRef.value, {
-        clearProps: "y,opacity"
-      })
-    }
+    window.removeEventListener('toggleNavigation', () => {})
   }
 })
 </script>
@@ -303,7 +243,7 @@ onUnmounted(() => {
 }
 
 .navigation-button {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   padding: 20px 0;
@@ -312,6 +252,15 @@ onUnmounted(() => {
   left: 50%;
   transform: translateX(-50%);
   z-index: 10003;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.navigation-button.is-visible {
+  display: flex !important;
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .navigation-button .button-menu-magnetic {
@@ -692,6 +641,10 @@ onUnmounted(() => {
 }
 
 @media (max-width: 576px) {
+  .navigation-overlay.is-open .nav-right {
+    display: none !important;
+  }
+  
   .navigation-button {
     transform: translateX(-50%) scale(0.8) !important;
     left: 50% !important;
