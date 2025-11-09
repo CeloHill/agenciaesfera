@@ -9,14 +9,14 @@
               <div class="row">
                 <div class="col-lg-8 col-md-7 col-sm-12">
                   <div class="header-left">
-                    <h2 class="header-subtitle">Paixão por fazer <div class="header-dot"></div></h2>
-                    <h1 class="header-title">Portfolio</h1>
+                    <h1 class="header-title">Portfolio <span class="header-subtitle">Paixão por fazer</span></h1>
                   </div>
                 </div>
                 <div class="col-lg-4 col-md-5 col-sm-12">
                   <div class="header-filters">
-                    <button class="filter-btn">tipo de projeto</button>
-                    <button class="filter-btn">setor do cliente</button>
+                    <button class="filter-btn active">Tudo</button>
+                    <button class="filter-btn">Portfólio <span class="filter-btn-count">15</span></button>
+                    <button class="filter-btn">Cases <span class="filter-btn-count">8</span></button>
                   </div>
                 </div>
               </div>
@@ -27,84 +27,58 @@
           <section class="projects-grid-section">
             <div class="projects-grid">
               <div class="row">
-                <!-- Project Card 1 -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                  <div class="project-card">
-                    <div class="project-image">
-                      <div class="image-placeholder"></div>
-                    </div>
+                <div class="col-12">
+                  <!-- Project Card 1 -->
+                  <div class="project-card" style="background-image: url('/images/cases-background-01.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Multilog Intermodal 2025</h3>
                       <p class="project-client">John Deere</p>
                     </div>
                   </div>
-                </div>
 
                 <!-- Project Card 2 -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                  <div class="project-card">
-                    <div class="project-image">
-                      <div class="image-placeholder"></div>
-                    </div>
+                  <div class="project-card" style="background-image: url('/images/cases-background-02.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">M&T Expo 2024</h3>
                       <p class="project-client">John Deere e Wingen Group</p>
                     </div>
                   </div>
-                </div>
 
                 <!-- Project Card 3 -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                  <div class="project-card">
-                    <div class="project-image">
-                      <div class="image-placeholder"></div>
-                    </div>
+                  <div class="project-card" style="background-image: url('/images/cases-background-03.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Intermodal South America 2024</h3>
                       <p class="project-client">John Deere</p>
                     </div>
                   </div>
-                </div>
 
                 <!-- Project Card 4 -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                  <div class="project-card">
-                    <div class="project-image">
-                      <div class="image-placeholder"></div>
-                    </div>
+                <div class="col-12">
+                  <div class="project-card" style="background-image: url('/images/cases-background-01.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Agrishow 2024</h3>
                       <p class="project-client">John Deere</p>
                     </div>
                   </div>
-                </div>
 
                 <!-- Project Card 5 -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                  <div class="project-card">
-                    <div class="project-image">
-                      <div class="image-placeholder"></div>
-                    </div>
+                  <div class="project-card" style="background-image: url('/images/cases-background-02.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">M&T Expo 2024</h3>
                       <p class="project-client">John Deere e Wirtaen Group</p>
                     </div>
                   </div>
-                </div>
 
                 <!-- Project Card 6 -->
-                <div class="col-lg-4 col-md-6 col-sm-12">
-                  <div class="project-card">
-                    <div class="project-image">
-                      <div class="image-placeholder"></div>
-                    </div>
+                  <div class="project-card" style="background-image: url('/images/cases-background-03.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Intermodal South America 2024</h3>
                       <p class="project-client">John Deere</p>
                     </div>
                   </div>
-                </div>
+                </div>  
               </div>
+            </div>
             </div>
           </section>
         </div>
@@ -121,13 +95,13 @@ definePageMeta({
 
 <style scoped>
 .projects-page {
-  min-height: 100vh;
-  background-color: #F5F5F5;
+  min-height: 80vh;
+  background-color: transparent;
 }
 
 /* Header Section */
 .projects-header {
-  background-color: #F5F5F5;
+  background-color: transparent;
   padding: 200px 0 50px 0;
   width: 100%;
 }
@@ -159,17 +133,21 @@ definePageMeta({
 .header-subtitle {
   font-size: 18px;
   font-weight: 400;
-  color: #1D1D1B;
+  color: var(--color-yellow);
   margin: 0;
   padding-left: 6px;
+  font-family: var(--font-family);
+  text-transform:initial;
 }
 
 .header-title {
   font-size: clamp(40px, 6vw, 80px);
   font-weight: 700;
-  color: #000;
+  color: #FFF;
   margin: 0;
   line-height: 1.1;
+  font-family: 'Antonio';
+  text-transform: uppercase;
 }
 
 .header-filters {
@@ -183,18 +161,46 @@ definePageMeta({
   border: none;
   font-size: 16px;
   font-weight: 400;
-  color: #666;
+  color: #FFF;
   cursor: pointer;
   transition: color 0.3s ease;
+  position: relative;
+  
+  &.active {
+    color: var(--color-yellow);
+
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: -10px;
+      width: calc(100% + 20px);
+      height: 1px;
+      background-color: var(--color-yellow);
+    }
+  }
 }
 
 .filter-btn:hover {
-  color: #000;
+  color: #FFF;
+}
+
+.filter-btn-count {
+  font-size: 11px;
+  color: var(--color-yellow);
+  margin-left: 5px;
+  padding-bottom: 0;
+  float: right;
+  margin-top: -3px;
+}
+
+.filter-btn:hover .filter-btn-count {
+  color: #999;
 }
 
 /* Projects Grid Section */
 .projects-grid-section {
-  background-color: #F5F5F5;
+  background-color: transparent;
   padding-bottom: 80px;
 }
 
@@ -214,6 +220,24 @@ definePageMeta({
 .project-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
+  width: 33%;
+  float: left;
+  background-color: #A9ACB5;
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+  padding-top: 28%;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 }
 
 .project-card:hover {
@@ -228,9 +252,7 @@ definePageMeta({
 
 .image-placeholder {
   width: 100%;
-  border-radius: 12px;
-  padding-top: 130%;
-  background-color: #A9ACB5;
+  padding-top: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,13 +262,18 @@ definePageMeta({
 }
 
 .project-info {
-  padding: 20px 0px 35px;
+  padding: 20px 25px 25px;
+  z-index: 2;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 .project-title {
   font-size: 20px;
   font-weight: 600;
-  color: #000;
+  color: #FFF;
   margin: 0 0 2px 0;
   line-height: 1.3;
 }
@@ -254,11 +281,18 @@ definePageMeta({
 .project-client {
   font-size: 16px;
   font-weight: 400;
-  color: #A9ACB5;
+  color: #FFF;
+  opacity: 0.7;
   margin: 0;
 }
 
-/* Responsividade Bootstrap */
+@media (max-width: 992px) {
+  .project-card {
+    width: 50%;
+    padding-top: 40%;
+  }
+}
+
 @media (max-width: 768px) {
   .projects-header {
     padding: 150px 0 60px 0;
@@ -284,6 +318,13 @@ definePageMeta({
   
   .project-client {
     font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .project-card {
+    width: 100%;
+    padding-top: 70%;
   }
 }
 

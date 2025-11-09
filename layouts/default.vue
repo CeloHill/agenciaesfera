@@ -1,5 +1,5 @@
 <template>
-  <div ref="layoutRef" class="layout d-flex flex-column min-vh-100">
+  <div ref="layoutRef" class="layout d-flex flex-column min-vh-100" :class="{ 'dark-background': isDarkBackground }">
     <AppLoader 
       v-if="showLoader"
       :logo-url="'/images/logos/logo-black.svg'"
@@ -27,6 +27,8 @@ const { lockScroll, unlockScroll } = useScrollLock()
 const layoutRef = ref(null)
 const showLoader = ref(false)
 const isPageHidden = ref(true)
+const isDarkBackground = useState('darkBackground', () => false)
+const route = useRoute()
 
 // AppLoader callbacks
 const onLoadingComplete = () => {
@@ -54,6 +56,20 @@ if (process.client) {
     lockScroll()
   })
 }
+
+watch(() => route.path, (newPath) => {
+  if (newPath === '/projetos') {
+    isDarkBackground.value = true
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('pageBackgroundDark'))
+    }
+  } else {
+    isDarkBackground.value = false
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('pageBackgroundLight'))
+    }
+  }
+}, { immediate: true })
 
 onMounted(async () => {
   if (process.client) {
@@ -96,11 +112,16 @@ onUnmounted(() => {
 
 <style scoped>
 main {
-  min-height: 100vh;
+  min-height: 80vh;
 }
 
 .layout {
   background-color: var(--color-white);
+  transition: background-color 0.3s ease;
+}
+
+.layout.dark-background {
+  background-color: #1D1D1B;
 }
 
 .page-hidden {

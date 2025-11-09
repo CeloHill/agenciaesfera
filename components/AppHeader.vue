@@ -280,6 +280,12 @@ onMounted(() => {
     
     nextTick(() => {
       checkMobile()
+      
+      const route = useRoute()
+      if (route.path === '/projetos') {
+        hasDarkBg.value = true
+      }
+      
       window.scrollTo(0, 0)
       
       initButtonMagnetic()
@@ -313,6 +319,14 @@ onMounted(() => {
         }
       })
       
+      window.addEventListener('pageBackgroundDark', () => {
+        hasDarkBg.value = true
+      })
+      
+      window.addEventListener('pageBackgroundLight', () => {
+        hasDarkBg.value = false
+      })
+      
       window.addEventListener('appLoaderAnimationComplete', () => {
         gsap.to(headerRef.value, {
           y: 0,
@@ -324,7 +338,10 @@ onMounted(() => {
       })
       
       window.addEventListener('pageVisibleImmediately', () => {
-        hasDarkBg.value = false
+        const currentRoute = useRoute()
+        if (currentRoute.path !== '/projetos') {
+          hasDarkBg.value = false
+        }
         gsap.to(headerRef.value, {
           y: 0,
           opacity: 1,
@@ -356,6 +373,8 @@ onUnmounted(() => {
     window.removeEventListener('introAnimationComplete', () => {})
     window.removeEventListener('videoExpandStart', () => {})
     window.removeEventListener('startAppIntro', () => {})
+    window.removeEventListener('pageBackgroundDark', () => {})
+    window.removeEventListener('pageBackgroundLight', () => {})
   
     if (showTimeline) showTimeline.kill()
     if (hideTimeline) hideTimeline.kill()
