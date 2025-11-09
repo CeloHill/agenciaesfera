@@ -282,7 +282,7 @@ onMounted(() => {
       checkMobile()
       
       const route = useRoute()
-      if (route.path === '/projetos') {
+      if (route.path === '/projetos' || route.path === '/projeto') {
         hasDarkBg.value = true
       }
       
@@ -339,7 +339,7 @@ onMounted(() => {
       
       window.addEventListener('pageVisibleImmediately', () => {
         const currentRoute = useRoute()
-        if (currentRoute.path !== '/projetos') {
+        if (currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto') {
           hasDarkBg.value = false
         }
         gsap.to(headerRef.value, {
