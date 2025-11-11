@@ -29,59 +29,52 @@
       </div>
     </section>
 
-    <section class="project-intro">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-6 col-md-12">
-            <div class="project-intro-title">Introdução</div>
-          </div>
-          <div class="col-lg-6 col-md-12">
-            <div class="project-intro-text">
-                <h2 class="project-section-title">{{ project.introTitle }}</h2>
-                <p v-for="(paragraph, index) in project.introDescription" :key="index" v-html="paragraph"></p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <PortfolioText 
+      label="Introdução"
+      :title="project.introTitle"
+      :description="project.introDescription"
+    />
 
-    <section class="project-video">
-      <div class="project-video-content">
-        <video :src="project.introVideo" autoplay loop muted playsinline></video>
-      </div>
-    </section>
+    <PortfolioVideo :video-src="project.introVideo" />
 
-    <section class="project-gallery">
-      <div class="container-fluid">
-        <div class="row g-0">
-          <div class="col-lg-6 col-md-12" v-for="(image, index) in project.galleryImages.slice(0, 2)" :key="index">
-            <div class="gallery-image" :style="{ backgroundImage: `url(${image})` }"></div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <PortfolioImages :images="project.galleryImages" />
 
-    <section class="project-details-dark">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-6 col-md-12">
-            <div class="project-intro-title">Especial</div>
-          </div>
-          <div class="col-lg-6 col-md-12">
-            <div class="details-content">
-              <h2 class="details-title">{{ project.detailsTitle }}</h2>
-              <p class="details-description" v-html="project.detailsDescription"></p>
-            </div>
-          </div>
-        </div>
-        <div class="row g-0">
-          <div class="details-image" :style="{ backgroundImage: `url(${project.specialImage})` }"></div>
-        </div>
-      </div>
-    </section>
+    <PortfolioText 
+      label="Desafio Socioeducativo"
+      :description="project.challengeDescription"
+      :links="project.challengeLinks"
+      :dark-mode="true"
+      :label-top="true"
+    />
 
-    <section class="project-impact">
-    </section>
+    <PortfolioImageText 
+      :title="project.eventTitle"
+      :description="project.eventDescription"
+      :image="project.eventImage"
+    />
+
+    <PortfolioText 
+      label="Especial"
+      :title="project.detailsTitle"
+      :description="project.detailsDescription"
+      :dark-mode="true"
+      padding-bottom="0"
+    />
+
+    <PortfolioImage 
+      :image="project.specialImage"
+      :dark-mode="true"
+    />
+
+    <PortfolioText 
+      label="Especial 2"
+      :title="project.detailsTitle"
+      :description="project.detailsDescription"
+    />
+
+    <PortfolioCards :cards="project.featureCards" :dark-mode="true" />
+
+    <PortfolioCards :cards="project.featureCards" :dark-mode="false" />
 
     <section class="project-final-dark">
       <div class="container-fluid">
@@ -132,15 +125,29 @@ const project = ref({
   heroDescription: 'Imagine um lugar onde as mentes mais brilhantes e as empresas mais inovadoras da logística na América Latina se reúnem. Esse lugar é a Intermodal South America!',
   
   introTitle: 'Multilog Intermodal onde a logística da América Latina se encontra',
-  introDescription: [
-    'Na participação da <b>Multilog no Intermodal South America 2025</b>, o foco recai sobre a excelência e inovação em soluções logísticas. Com um estande projetado para representar o melhor da marca, a empresa apresentou suas capacidades tecnológicas avançadas em automação e eficiência logística, que abriram portas para novas conexões no setor.',
-    'Destacou-se pelo ambiente impactante, atrações experienciais, atendimento personalizado e projeção da Multilog como Polo de experiência e inovação tecnológica.'
-  ],
+  introDescription: '<p>Na participação da <b>Multilog no Intermodal South America 2025</b>, o foco recai sobre a excelência e inovação em soluções logísticas. Com um estande projetado para representar o melhor da marca, a empresa apresentou suas capacidades tecnológicas avançadas em automação e eficiência logística, que abriram portas para novas conexões no setor.</p><p>Destacou-se pelo ambiente impactante, atrações experienciais, atendimento personalizado e projeção da Multilog como Polo de experiência e inovação tecnológica.</p>',
   introVideo: '/images/projects/sample/video.mp4',
+  
+  challengeTitle: 'socioeducativo',
+  challengeDescription: '<p>Em sua essência, o Agrinho é um projeto de interesse público, sem fins comerciais, que busca impactar positivamente estudantes, famílias e educadores da rede básica. Por meio de atividades como redações, desenhos e projetos educativos, o programa estimula a conscientização sobre a importância do agronegócio e valoriza práticas agrícolas sustentáveis, a preservação ambiental e o empreendedorismo social.</p><p>Em 2024, a edição trouxe como tema “Do campo à cidade, colhendo oportunidades”, convidando os participantes a refletirem sobre inovação, sustentabilidade e novas formas de empreender. Os pilares trabalhados foram:</p>',
+  challengeLinks: [
+    { text: 'Estímulo à inovação e criatividade', url: 'https://www.google.com' },
+    { text: 'Fomento ao espírito empreendedor', url: 'https://www.google.com' },
+    { text: 'Conscientização sobre sustentabilidade', url: 'https://www.google.com' },
+    { text: 'Incentivo ao empreendedorismo social', url: 'https://www.google.com' }
+  ],
   
   galleryImages: [
     '/images/case-folder-01.jpg',
-    '/images/case-folder-02.jpg'
+    '/images/case-folder-02.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/case-folder-03.jpg'
   ],
   
   detailsTitle: 'Gastronomia e Hospitalidade no Estande',
@@ -151,57 +158,106 @@ const project = ref({
     '/images/case-folder-03.jpg'
   ],
 
+  eventTitle: 'Mais que um evento',
+  eventDescription: 'O Agrinho 2024 mostrou, mais uma vez, que quando se unem educação, criatividade e propósito social, é possível cultivar oportunidades que ultrapassam os limites de um único evento. Cada estudante envolvido leva consigo aprendizados que inspiram não apenas sua própria trajetória, mas também a transformação de toda a comunidade em que vive.',
+  eventImage: '/images/projects/sample/02.jpg',
+
   specialImage: '/images/projects/sample/01.jpg',
   impactTitle: 'Mover o mundo, conectar pessoas',
   impactDescription: 'Cada projeto da Multilog carrega a missão de integrar tecnologia e eficiência ao cotidiano da cadeia logística. Com sistemas de automação avançados, conectividade inovadora e um portfólio robusto de soluções, a empresa se consolida como uma referência indispensável no segmento logístico da América Latina.',
   impactImage: '/images/cases-background-02.jpg',
   
   nextProjectTitle: 'Bosch Service 2025',
-  nextProjectImage: '/images/cases-background-03.jpg'
+  nextProjectImage: '/images/cases-background-03.jpg',
+  
+  featureCards: [
+    {
+      image: '/images/case-folder-01.jpg',
+      title: 'Ligue os Pontos',
+      description: 'Dois grandes murais conectavam, de forma literal e simbólica, o campo e a cidade. Os fios coloridos criados pelas crianças formavam uma instalação visual coletiva e impactante.',
+      links: [
+        { text: 'Ver mais', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-02.jpg',
+      title: 'Game Pac-Man Sustentável',
+      description: 'Em uma versão personalizada do clássico jogo, os participantes coletavam moedas e aprendiam conceitos de sustentabilidade financeira.',
+      links: [
+        { text: 'Saiba mais', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-03.jpg',
+      title: 'Túnel do Desafio',
+      description: 'A entrada da plenária se transformou em um percurso com obstáculos divertidos, com cordas e espumas, transmitindo a mensagem de autonomia e superação.',
+      links: [
+        { text: 'Explorar', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-01.jpg',
+      title: 'Workshop de Robótica',
+      description: 'Espaço interativo onde estudantes puderam programar e controlar robôs, desenvolvendo habilidades técnicas e criativas em um ambiente lúdico e educativo.',
+      links: [
+        { text: 'Ver detalhes', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-02.jpg',
+      title: 'Feira de Ciências',
+      description: 'Exposição de projetos científicos desenvolvidos por alunos, mostrando inovação e aplicação prática dos conhecimentos adquiridos em sala de aula.',
+      links: [
+        { text: 'Conhecer projetos', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-03.jpg',
+      title: 'Palco de Apresentações',
+      description: 'Espaço dedicado para apresentações artísticas e culturais, onde estudantes compartilharam talentos e expressaram criatividade através de música, dança e teatro.',
+      links: [
+        { text: 'Assistir', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-01.jpg',
+      title: 'Área de Networking',
+      description: 'Ambiente descontraído para troca de experiências entre educadores, estudantes e profissionais do agronegócio, promovendo conexões e parcerias.',
+      links: [
+        { text: 'Participar', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-02.jpg',
+      title: 'Exposição de Tecnologia',
+      description: 'Mostra de equipamentos e soluções tecnológicas aplicadas ao campo, demonstrando como a inovação transforma a agricultura moderna.',
+      links: [
+        { text: 'Explorar tecnologia', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-03.jpg',
+      title: 'Espaço de Leitura',
+      description: 'Cantinho acolhedor com livros e materiais educativos sobre sustentabilidade e agronegócio, incentivando o hábito da leitura e o aprendizado contínuo.',
+      links: [
+        { text: 'Ver acervo', url: 'https://www.google.com' }
+      ]
+    },
+    {
+      image: '/images/case-folder-01.jpg',
+      title: 'Atividades Práticas',
+      description: 'Oficinas hands-on onde participantes puderam colocar a mão na massa, plantando, colhendo e aprendendo sobre práticas agrícolas sustentáveis.',
+      links: [
+        { text: 'Inscrever-se', url: 'https://www.google.com' }
+      ]
+    }
+  ]
 })
 </script>
 
 <style scoped>
-.project-video {
-  position: relative;
-  padding-top: 40%;
-  width: 100%;
-  overflow: hidden;
-  background-color: #FFF;
-}
-
-.project-video-content {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-}
-
-.project-video-content video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
 .project-detail-page {
   background-color: transparent;
-}
-
-.project-intro-title {
-  font-size: 35px;
-  color: var(--color-yellow);
-  margin: 0;
-  line-height: 1.2;
-  font-family: 'Antonio';
-  text-transform: uppercase;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
 }
 
 .project-hero {
@@ -257,7 +313,7 @@ const project = ref({
   z-index: 2;
   display: flex;
   gap: 80px;
-  margin-bottom: 13%;
+  margin-bottom: 5%;
 }
 
 .data-item {
@@ -306,98 +362,6 @@ const project = ref({
   opacity: 0.7;
 }
 
-.project-intro {
-  background-color: #FFF;
-  padding: 100px 0;
-}
-
-.project-intro .container-fluid {
-  padding: 0 var(--body-horizontal-padding);
-}
-
-.project-section-title {
-  font-size: clamp(30px, 4vw, 50px);
-  font-weight: 700;
-  color: #000;
-  margin: 0;
-  line-height: 1.2;
-  font-family: var(--font-family);
-  margin-bottom: 30px;
-}
-
-.project-intro-text {
-  color: #000;
-  font-size: 18px;
-  line-height: 1.8;
-  font-weight: var(--font-weight-regular);
-}
-
-.project-intro-text p {
-  margin-bottom: 20px;
-}
-
-.project-gallery {
-  background-color: #FFF;
-  padding-bottom: 30px;
-  padding-top: 30px;
-}
-
-.gallery-image {
-  padding-top: 70%;
-  background-size: cover;
-  background-position: center;
-  border-radius: 8px;
-  margin: 30px
-}
-
-.project-details-dark {
-  background-color: #1D1D1B;
-  padding: 100px 0;
-  padding-bottom: 0;
-  margin-bottom: -40px;
-}
-
-.project-details-dark .container-fluid {
-  padding: 0 var(--body-horizontal-padding);
-}
-
-.details-content {
-  margin-bottom: 60px;
-}
-
-.details-badge {
-  font-size: 12px;
-  font-weight: var(--font-weight-medium);
-  color: var(--color-yellow);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-}
-
-.details-title {
-  font-size: clamp(30px, 4vw, 50px);
-  font-weight: 700;
-  color: #FFF;
-  margin: 0 0 20px 0;
-  line-height: 1.2;
-  max-width: 800px;
-}
-
-.details-description {
-  font-size: 18px;
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.8);
-  max-width: 800px;
-  margin: 0;
-}
-
-.details-image {
-  width: 100%;
-  padding-top: 14%;
-  background-size: cover;
-  background-position: center;
-  border-radius: 8px;
-}
 
 .project-impact {
   background-color: #FFF;
@@ -596,37 +560,12 @@ const project = ref({
     gap: 40px;
   }
   
-  .project-intro {
-    padding: 60px 0;
-  }
-  
-  .project-details-dark {
-    padding: 60px 0;
-  }
-  
   .project-impact {
     padding: 60px 0;
   }
   
-  .impact-content {
-    padding: 40px 30px;
-    min-height: auto;
-  }
-  
   .project-final-dark {
     padding: 60px 0;
-  }
-  
-  .final-image {
-    padding-top: 80%;
-  }
-  
-  .gallery-image {
-    padding-top: 100%;
-  }
-  
-  .details-image {
-    padding-top: 120%;
   }
 }
 
@@ -657,18 +596,6 @@ const project = ref({
   }
   
   .project-badge {
-    font-size: 16px;
-  }
-  
-  .project-intro-text {
-    font-size: 16px;
-  }
-  
-  .details-description {
-    font-size: 16px;
-  }
-  
-  .impact-description {
     font-size: 16px;
   }
 }

@@ -1,0 +1,490 @@
+<template>
+  <section 
+    ref="galleryRef" 
+    class="portfolio-images" 
+    :class="{ 'gallery-mode': isGalleryMode }"
+  >
+    <div v-if="!isGalleryMode" class="container-fluid">
+      <div class="row g-0 images-grid" ref="imagesGridRef">
+        <div 
+          v-for="(image, index) in images" 
+          :key="index"
+          :class="getImageClass(index)"
+          class="image-item"
+          ref="imageItemsRef"
+        >
+          <a
+            class="portfolio-image-link"
+            :href="image"
+            data-fancybox="portfolio-gallery"
+          >
+            <div
+              class="portfolio-image"
+              :style="{ backgroundImage: `url(${image})` }"
+            ></div>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div v-else class="gallery-scroll-container" ref="scrollContainerRef">
+      <div class="gallery-scroll-wrapper" ref="scrollTrackRef">
+        <div class="gallery-scroll-track top-row">
+          <div 
+            v-for="(image, index) in topRowImages" 
+            :key="`top-${index}`"
+            :class="['gallery-scroll-item', getTopRowClass(index)]"
+          >
+            <a
+              class="gallery-scroll-link"
+              :href="image"
+              data-fancybox="portfolio-gallery"
+            >
+              <div 
+                class="gallery-scroll-image" 
+                :style="{ backgroundImage: `url(${image})` }"
+              ></div>
+            </a>
+          </div>
+        </div>
+        <div class="gallery-scroll-track bottom-row">
+          <div 
+            v-for="(image, index) in bottomRowImages" 
+            :key="`bottom-${index}`"
+            :class="['gallery-scroll-item', getBottomRowClass(index)]"
+          >
+            <a
+              class="gallery-scroll-link"
+              :href="image"
+              data-fancybox="portfolio-gallery"
+            >
+              <div 
+                class="gallery-scroll-image" 
+                :style="{ backgroundImage: `url(${image})` }"
+              ></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+const { gsap, ScrollTrigger } = useGsap()
+
+const props = defineProps({
+  images: {
+    type: Array,
+    required: true
+  }
+})
+
+const galleryRef = ref(null)
+const imagesGridRef = ref(null)
+const imageItemsRef = ref([])
+const scrollContainerRef = ref(null)
+const scrollTrackRef = ref(null)
+let dragHandlers = null
+
+const isGalleryMode = computed(() => props.images.length > 7)
+
+const topRowImages = computed(() => {
+  if (!isGalleryMode.value) return []
+  const half = Math.ceil(props.images.length / 2)
+  return props.images.slice(0, half)
+})
+
+const bottomRowImages = computed(() => {
+  if (!isGalleryMode.value) return []
+  const half = Math.ceil(props.images.length / 2)
+  return props.images.slice(half)
+})
+
+let fancyboxInstance = null
+
+const getImageClass = (index) => {
+  const total = props.images.length
+  
+  if (total === 2) {
+    return 'col-lg-6 col-md-12'
+  }
+  
+  if (total <= 7) {
+    const classes = [
+      'col-lg-4 col-md-6',
+      'col-lg-8 col-md-6',
+      'col-lg-6 col-md-12',
+      'col-lg-6 col-md-12',
+      'col-lg-4 col-md-6',
+      'col-lg-4 col-md-6',
+      'col-lg-4 col-md-6'
+    ]
+    return classes[index] || 'col-lg-4 col-md-6'
+  }
+  
+  return 'col-12'
+}
+
+const getTopRowClass = (index) => {
+  const heights = ['tall', 'small', 'medium', 'tall', 'small', 'medium', 'small']
+  return heights[index % heights.length]
+}
+
+const getBottomRowClass = (index) => {
+  const heights = ['small', 'medium', 'tall', 'small', 'medium', 'tall', 'small']
+  return heights[index % heights.length]
+}
+
+onMounted(() => {
+  if (process.client) {
+    if (gsap && ScrollTrigger) {
+      nextTick(() => {
+        if (!isGalleryMode.value) {
+          animateGridImages()
+        } else {
+          setupGalleryScroll()
+        }
+      })
+    }
+
+    import('@fancyapps/ui').then(({ Fancybox }) => {
+      fancyboxInstance = Fancybox
+      Fancybox.bind('[data-fancybox="portfolio-gallery"]', {
+        Images: {
+          zoom: true,
+          initialSize: 'cover'
+        },
+        Thumbs: false,
+        Toolbar: {
+          display: ['zoom', 'fullscreen', 'close']
+        }
+      })
+    }).catch(() => {})
+  }
+})
+
+const animateGridImages = () => {
+  if (!imagesGridRef.value || !imageItemsRef.value.length) return
+  
+  const items = imageItemsRef.value.filter(item => item !== null)
+  
+  gsap.set(items, {
+    scale: 0.8,
+    opacity: 0,
+    y: 100
+  })
+  
+  ScrollTrigger.create({
+    trigger: galleryRef.value,
+    start: 'top 70%',
+    once: true,
+    onEnter: () => {
+      gsap.to(items, {
+        scale: 1,
+        opacity: 1,
+        y: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: 'power2.out'
+      })
+    }
+  })
+}
+
+const setupGalleryScroll = () => {
+  if (!scrollContainerRef.value || !scrollTrackRef.value) return
+  
+  const wrapper = scrollTrackRef.value
+  const container = scrollContainerRef.value
+  
+  gsap.set(wrapper, {
+    x: '50%'
+  })
+  
+  let currentX = 0
+  
+  ScrollTrigger.create({
+    trigger: galleryRef.value,
+    start: 'top 70%',
+    once: true,
+    onEnter: () => {
+      gsap.to(wrapper, {
+        x: '0%',
+        duration: 1.5,
+        ease: 'power2.out',
+        onComplete: () => {
+          currentX = 0
+        }
+      })
+    }
+  })
+  
+  let isDragging = false
+  let startX = 0
+  let scrollLeft = 0
+  
+  let dragStartX = 0
+  
+  const handleMouseDown = (e) => {
+    const link = e.target.closest('a[data-fancybox]')
+    if (link && e.target === link) {
+      return
+    }
+    isDragging = true
+    dragStartX = e.pageX
+    startX = e.pageX - container.getBoundingClientRect().left
+    scrollLeft = currentX
+    container.style.cursor = 'grabbing'
+    e.preventDefault()
+  }
+  
+  const handleMouseUp = (e) => {
+    if (isDragging) {
+      if (e && dragStartX) {
+        const moved = Math.abs(dragStartX - e.pageX) > 5
+        if (moved) {
+          const link = e.target?.closest('a[data-fancybox]')
+          if (link) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }
+      }
+    }
+    isDragging = false
+    container.style.cursor = 'grab'
+    dragStartX = 0
+  }
+  
+  const handleMouseMove = (e) => {
+    if (!isDragging) return
+    e.preventDefault()
+    const x = e.pageX - container.getBoundingClientRect().left
+    const walk = (x - startX) * 2
+    currentX = scrollLeft + walk
+    
+    const maxScroll = -(wrapper.scrollWidth - container.offsetWidth)
+    currentX = Math.max(maxScroll, Math.min(0, currentX))
+    
+    gsap.to(wrapper, {
+      x: currentX,
+      duration: 0.1,
+      ease: 'none'
+    })
+  }
+  
+  const handleTouchStart = (e) => {
+    if (e.target.closest('a[data-fancybox]')) {
+      return
+    }
+    isDragging = true
+    startX = e.touches[0].pageX - container.getBoundingClientRect().left
+    scrollLeft = currentX
+  }
+  
+  const handleTouchMove = (e) => {
+    if (!isDragging) return
+    e.preventDefault()
+    const x = e.touches[0].pageX - container.getBoundingClientRect().left
+    const walk = (x - startX) * 2
+    currentX = scrollLeft + walk
+    
+    const maxScroll = -(wrapper.scrollWidth - container.offsetWidth)
+    currentX = Math.max(maxScroll, Math.min(0, currentX))
+    
+    gsap.to(wrapper, {
+      x: currentX,
+      duration: 0.1,
+      ease: 'none'
+    })
+  }
+  
+  const handleTouchEnd = () => {
+    isDragging = false
+  }
+  
+  container.addEventListener('mousedown', handleMouseDown)
+  document.addEventListener('mouseup', handleMouseUp)
+  document.addEventListener('mouseleave', handleMouseUp)
+  document.addEventListener('mousemove', handleMouseMove)
+  
+  container.addEventListener('touchstart', handleTouchStart, { passive: false })
+  container.addEventListener('touchmove', handleTouchMove, { passive: false })
+  container.addEventListener('touchend', handleTouchEnd)
+  
+  dragHandlers = {
+    container,
+    handleMouseDown,
+    handleMouseUp,
+    handleMouseMove,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd
+  }
+}
+
+onUnmounted(() => {
+  ScrollTrigger.getAll().forEach(trigger => {
+    if (trigger.vars && trigger.vars.trigger === galleryRef.value) {
+      trigger.kill()
+    }
+  })
+
+  if (fancyboxInstance) {
+    fancyboxInstance.destroy()
+    fancyboxInstance = null
+  }
+  
+  if (dragHandlers) {
+    const { container, handleMouseDown, handleMouseUp, handleMouseMove, handleTouchStart, handleTouchMove, handleTouchEnd } = dragHandlers
+    
+    container.removeEventListener('mousedown', handleMouseDown)
+    document.removeEventListener('mouseup', handleMouseUp)
+    document.removeEventListener('mouseleave', handleMouseUp)
+    document.removeEventListener('mousemove', handleMouseMove)
+    
+    container.removeEventListener('touchstart', handleTouchStart)
+    container.removeEventListener('touchmove', handleTouchMove)
+    container.removeEventListener('touchend', handleTouchEnd)
+    
+    dragHandlers = null
+  }
+})
+</script>
+
+<style scoped>
+.portfolio-images {
+  background-color: #FFF;
+  padding: 30px 0;
+}
+
+.portfolio-images .container-fluid {
+  padding: 0 var(--body-horizontal-padding);
+}
+
+.images-grid {
+  gap: 30px;
+}
+
+.portfolio-image {
+  width: 100%;
+  padding-top: 70%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+}
+
+.portfolio-image-link {
+  display: block;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.portfolio-images.gallery-mode {
+  padding: 60px 0;
+  overflow: hidden;
+}
+
+.gallery-scroll-container {
+  width: 100%;
+  overflow: hidden;
+  cursor: grab;
+  padding: 0 var(--body-horizontal-padding);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.gallery-scroll-container:active {
+  cursor: grabbing;
+}
+
+.gallery-scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  will-change: transform;
+  width: max-content;
+}
+
+.gallery-scroll-track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+}
+
+.gallery-scroll-track.top-row {
+  align-items: flex-end;
+}
+
+.gallery-scroll-track.bottom-row {
+  align-items: flex-start;
+}
+
+.gallery-scroll-item {
+  flex-shrink: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  width: 380px;
+}
+
+.gallery-scroll-image {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+}
+
+.gallery-scroll-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-scroll-item.small .gallery-scroll-image {
+  padding-top: 75%;
+}
+
+.gallery-scroll-item.medium .gallery-scroll-image {
+  padding-top: 100%;
+}
+
+.gallery-scroll-item.tall .gallery-scroll-image {
+  padding-top: 130%;
+}
+
+@media (max-width: 1024px) {
+  .gallery-scroll-item {
+    width: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .portfolio-image {
+    padding-top: 100%;
+  }
+  
+  .gallery-scroll-item {
+    width: 280px;
+  }
+}
+
+@media (max-width: 576px) {
+  .portfolio-image {
+    padding-top: 120%;
+  }
+  
+  .gallery-scroll-item {
+    width: 240px;
+  }
+  
+  .images-grid {
+    gap: 15px;
+  }
+  
+  .image-item {
+    margin-bottom: 15px;
+  }
+}
+</style>
+
