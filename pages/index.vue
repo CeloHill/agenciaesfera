@@ -1628,7 +1628,6 @@ const setupPortfolioGalleryReveal = () => {
   text-transform: uppercase;
   line-height: 1.1;
   text-align: center;
-  margin-top: 60px;
   position: relative;
   display: inline-block;
 
@@ -1688,12 +1687,12 @@ const setupPortfolioGalleryReveal = () => {
 
 .award-icon-left {
   width: 77px;
-  margin-right: -30px;
+  margin-right: -10px;
 }
 
 .award-icon-right {
   width: 77px;
-  margin-left: -30px;
+  margin-left: -10px;
 }
 
 .award-text {
@@ -2318,6 +2317,14 @@ const setupPortfolioGalleryReveal = () => {
 
   .section-numbers-text {
     padding-bottom: 60px !important;
+  }
+
+  .full-banner-events-text {
+    margin-top: -60px !important;
+  }
+
+  .clients-title {
+    font-size: 60px !important;
   }
 }
 

@@ -65,7 +65,7 @@
 <script setup>
 import { useMagneticEffect } from '~/composables/useMagneticEffect'
 
-const SCROLL_THRESHOLD = 200
+const SCROLL_THRESHOLD = 550
 
 const { gsap, ScrollTrigger } = useGsap()
 const headerRef = ref(null)
@@ -314,7 +314,7 @@ onMounted(() => {
       })
       
       window.addEventListener('colorTransitionUpdate', (event) => {
-        if (event.detail && event.detail.progress > 0.5) {
+        if (event.detail && event.detail.progress > 0.8) {
           hasDarkBg.value = true
         } else {
           hasDarkBg.value = false
@@ -450,10 +450,26 @@ onUnmounted(() => {
   font-size: 20px;
   font-weight: 300;
   transition: color 0.3s ease;
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0%;
+    height: 1px;
+    background-color: #FFF;
+    transition: width 0.3s ease;
+  }
 }
 
 .header-menu-item:hover {
   color: var(--color-yellow);
+
+  &::after {
+    width: 100%;
+  }
 }
 
 .social-media {
@@ -513,6 +529,10 @@ onUnmounted(() => {
   color: #fff;
 }
 
+.header.has-dark-bg .social-media-item:hover svg{
+  color: #000;
+}
+
 .header.scrolled {
   padding-top: 0;
   background-color: rgba(255, 255, 255, 0.9);
@@ -522,10 +542,18 @@ onUnmounted(() => {
 
   .header-menu-item {
     color: var(--color-black);
+
+    &::after {
+      background-color: #000;
+    }
   }
 
   .header-menu-item:hover {
     color: var(--color-yellow);
+
+    &::after {
+      background-color: var(--color-yellow);
+    }
   }
 
   .social-media-item {
