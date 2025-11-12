@@ -1473,6 +1473,7 @@ const setupPortfolioGalleryReveal = () => {
   padding: 0 var(--body-horizontal-padding);
   height: 100lvh;
   justify-content: center;
+  margin-top: 100px;
 
   h1 {
     font-size: clamp(28px, 3.4vw, 80px);
@@ -1629,12 +1630,12 @@ const setupPortfolioGalleryReveal = () => {
   text-align: center;
   margin-top: 60px;
   position: relative;
+  display: inline-block;
 
   &::before {
     content: '';
     position: absolute;
     top: calc(50% - 5px);
-    left: 0;
     width: 10px;
     height: 10px;
     background-color: var(--color-yellow);
@@ -1646,7 +1647,6 @@ const setupPortfolioGalleryReveal = () => {
     content: '';
     position: absolute;
     top: calc(50% - 5px);
-    right: 0;
     width: 10px;
     height: 10px;
     background-color: var(--color-yellow);
@@ -1834,10 +1834,9 @@ const setupPortfolioGalleryReveal = () => {
 }
 
 .clients-title {
-  font-size: 34px;
   font-family: Antonio;
   text-transform: uppercase;
-  font-size: 10rem;
+  font-size: 10vw;
   font-weight: 500;
 }
 
@@ -2225,18 +2224,21 @@ const setupPortfolioGalleryReveal = () => {
   }
 }
 
+@media (max-width: 992px) {
+  .clients-description {
+    .align-right {
+      margin-top: 0 !important;
+      text-align: left !important;
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .full-banner {
     margin-top: 100px;
     gap: 60px;
     height: initial !important;
     min-height: 100vh;
-  }
-
-  .clients-description {
-    .align-right {
-      margin-top: 0 !important;
-    }
   }
   
   .full-banner-content {
@@ -2313,11 +2315,25 @@ const setupPortfolioGalleryReveal = () => {
   .section-numbers-text p {
     min-height: 310px !important;
   }
+
+  .section-numbers-text {
+    padding-bottom: 60px !important;
+  }
 }
 
 @media (max-width: 576px) { 
   .big-number {
     font-size: clamp(20px, 11vw, 90px) !important;
+  }
+
+  .full-banner-events-text .text {
+    &::before {
+      left: 0px !important;
+    }
+
+    &::after {
+      right: 0px !important;
+    }
   }
 }
 

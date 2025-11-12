@@ -65,6 +65,8 @@
 <script setup>
 import { useMagneticEffect } from '~/composables/useMagneticEffect'
 
+const SCROLL_THRESHOLD = 200
+
 const { gsap, ScrollTrigger } = useGsap()
 const headerRef = ref(null)
 const logoRef = ref(null)
@@ -258,14 +260,14 @@ const handleHeaderHover = (isHovering) => {
 const handleScroll = () => {
   const scrollY = window.scrollY
   
-  if (scrollY > 50 && !isScrolled.value) {
+  if (scrollY > SCROLL_THRESHOLD && !isScrolled.value) {
     isScrolled.value = true
     nextTick(() => {
       if (!isMobile.value) {
         hideHeaderContent()
       }
     })
-  } else if (scrollY <= 50 && isScrolled.value) {
+  } else if (scrollY <= SCROLL_THRESHOLD && isScrolled.value) {
     isScrolled.value = false
     isExpanded.value = false
     if (!isMobile.value) {
@@ -539,6 +541,10 @@ onUnmounted(() => {
 
   .logo-image {
     filter: brightness(0);
+  }
+
+  .hamburger-line {
+    background-color: var(--color-black);
   }
 }
 
