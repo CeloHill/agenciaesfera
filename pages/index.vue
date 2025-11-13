@@ -85,10 +85,10 @@
           <div class="section-board-container">
             <section class="section-board">
               <div class="section-board-content">
-                Na Esfera
+                <img src="/images/tag-na-esfera.svg" alt="Na Esfera" />
               </div>
               <div class="section-board-content-second">
-                Acontece
+                <img src="/images/tag-acontece.svg" alt="Acontece" />
               </div>
             </section>
           </div>
@@ -192,8 +192,8 @@
             backdrop-blur="12px"
             :follow-speed="0.12"
             :enter-duration="0.4"
-            :offset-x="50"
-            :offset-y="50"
+            :offset-x="0"
+            :offset-y="0"
             :use-viewport-position="true"
             enter-ease="back.out(1.5)"
           >
@@ -997,54 +997,30 @@ const adjustBoardScale = () => {
 }
 
 const animateBoardLoop = () => {
+  const boardFirst = document.querySelector('.section-board-content')
   const boardSecond = document.querySelector('.section-board-content-second')
   
-  if (!boardSecond) return
+  if (!boardSecond || !boardFirst) return
   
-  gsap.set(boardSecond, {
-    y: '110%',
-    rotateZ: 0,
+  gsap.set(boardFirst, {
+    y: '100%',
+    rotateZ: -6,
     transformOrigin: 'bottom right'
   })
-  
-  const timeline = gsap.timeline({
-    repeat: -1,
-    delay: 3
+
+  gsap.to(boardFirst, {
+    y: '0%',
+    rotateZ: 0,
+    transformOrigin: 'bottom right',
+    ease: "power2.inOut",
+    scrollTrigger: {
+      trigger: boardSecond,
+      start: 'top 70%',
+      end: 'bottom 70%',
+      scrub: 2,
+      //markers: true
+    }
   })
-  
-  timeline
-    .to(boardSecond, {
-      y: '0%',
-      rotateZ: -6,
-      transformOrigin: 'bottom right',
-      duration: 0.7,
-      ease: "power2.inOut"
-    })
-    .to(boardSecond, {
-      rotateZ: 0,
-      transformOrigin: 'bottom center',
-      duration: 0.7,
-      ease: "power2.inOut"
-    })
-    .to(boardSecond, {
-      duration: 5
-    })
-    .to(boardSecond, {
-      rotateZ: -6,
-      transformOrigin: 'bottom right',
-      duration: 0.7,
-      ease: "power2.inOut"
-    })
-    .to(boardSecond, {
-      y: '110%',
-      rotateZ: 0,
-      transformOrigin: 'bottom right',
-      duration: 0.7,
-      ease: "power2.inOut"
-    })
-    .to(boardSecond, {
-      duration: 2
-    })
 }
 
 
@@ -1315,55 +1291,42 @@ const setupPortfolioGalleryReveal = () => {
 <style scoped>
 .section-board {
   width: 100%;
-  background-color: var(--color-yellow);
-  color: var(--color-black);
   border-radius: 10px;
-  font-family: Antonio;
-  text-transform: uppercase;
   display: flex;
   align-items: center;
   justify-content: center;
   white-space: nowrap;
   overflow: hidden;
   margin-top: 15px;
-  padding-top: 27%;
   position: relative;
-  perspective: 1000px;
 
   .section-board-content {
-    width: fit-content;
-    height: fit-content;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    margin-top: -8%;
-    margin-bottom: -4%;
-    transform-origin: center center;
-    transition: transform 0.2s ease;
-    font-size: 27vw;
-    line-height: 0;
-    margin-top: -35%;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
   }
 
   .section-board-content-second {
     position: absolute;
+    z-index: 0;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    font-size: 28vw;
-    line-height: 0;
-    background: #FFF;
-    padding: 0;
-    margin-top: 0%;
-    padding-bottom: 4.1%;
-    color: var(--color-yellow);
     will-change: transform;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
   }
 }
 

@@ -214,7 +214,7 @@ const startSequentialAnimation = () => {
     }, "phase3Complete")
     .to(".video-intro-text", {
       duration: 1,
-      x: () => 70 - (window.innerWidth * 0.5 + 125),
+      x: () => 0 - (window.innerWidth * 0.5 + 125),
       y: () => window.innerHeight - 70 - (window.innerHeight * 0.5 - 105) - 100,
       color: "#FFFFFF",
       scale: 0.6,
@@ -487,6 +487,7 @@ defineExpose({
   top: calc(50% - 105px);
   left: calc(50% + 125px);
   font-size: 3.5rem;
+  line-height: 1.3;
   font-weight: normal;
   margin-bottom: 1rem;
   opacity: 0;
