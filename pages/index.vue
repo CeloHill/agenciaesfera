@@ -536,6 +536,53 @@ const onIntroComplete = () => {
   startHomeAnimations()
 }
 
+const INITIAL_SCALE = 4
+const FINAL_SCALE = 1
+const INITIAL_X_OFFSET = '100%'
+const MIDDLE_X_OFFSET = '50%'
+const PAUSE_DURATION = 0.2
+const MOVE_DURATION = 1.2
+const SCALE_DURATION = 0.8
+
+const animateNumbersSection = () => {
+  const numbersContent = document.querySelector('.section-numbers-content')
+  const numbersSection = document.querySelector('.section-numbers-text')
+  
+  if (!numbersContent || !numbersSection) return
+  
+  gsap.set(numbersContent, {
+    x: INITIAL_X_OFFSET,
+    scale: INITIAL_SCALE,
+    opacity: 0
+  })
+  
+  ScrollTrigger.create({
+    trigger: numbersSection,
+    start: 'top 70%',
+    once: true,
+    onEnter: () => {
+      const tl = gsap.timeline()
+      
+      tl.to(numbersContent, {
+        x: MIDDLE_X_OFFSET,
+        scale: INITIAL_SCALE,
+        opacity: 1,
+        duration: MOVE_DURATION,
+        ease: 'power3.out'
+      })
+      .to(numbersContent, {
+        duration: PAUSE_DURATION
+      })
+      .to(numbersContent, {
+        x: 0,
+        scale: FINAL_SCALE,
+        duration: SCALE_DURATION,
+        ease: 'power3.out'
+      })
+    }
+  })
+}
+
 const startHomeAnimations = () => {
   if (import.meta.client) {
     nextTick(() => {
@@ -546,6 +593,7 @@ const startHomeAnimations = () => {
       animateMissionTyping()
       setupPortfolioGalleryReveal()
       animateNumbers()
+      animateNumbersSection()
       setupColorTransitions()
       animateBoardLoop()
       
@@ -1652,6 +1700,7 @@ const setupPortfolioGalleryReveal = () => {
   justify-content: space-between;
   opacity: 0;
   filter: blur(10px);
+  margin: auto 32px;
 }
 
 .award-icon-left,
@@ -1709,11 +1758,14 @@ const setupPortfolioGalleryReveal = () => {
 .section-numbers-content {
   display: flex;
   width: 100%;
+  overflow: visible;
 }
 
 .section-numbers-text-content {
   min-height: 170px;
   align-items: flex-start;
+
+
   .animated-text-1 {
     font-size: 60px;
     line-height: 1.1;
@@ -1741,6 +1793,7 @@ const setupPortfolioGalleryReveal = () => {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow: visible;
 
   .badge-clients {
     width: 170px;
@@ -2186,6 +2239,7 @@ const setupPortfolioGalleryReveal = () => {
   margin-top: 60px;
   background-color: #1D1D1B;
   color: #FFFFFF;
+  overflow: hidden;
 }
 
 @media (max-width: 1200px) {

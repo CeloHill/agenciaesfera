@@ -541,7 +541,7 @@ defineExpose({
   color: #FFF;
   text-align: center;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
 }
 
 .slide-1, .slide-2 {
@@ -550,6 +550,7 @@ defineExpose({
   left: 0;
   width: 100%;
   opacity: 0;
+  text-transform: uppercase;
 }
 
 .slide-1 {
@@ -569,7 +570,7 @@ defineExpose({
 }
 
 .slide-1-text-2 {
-  font-size: 3.5rem;
+  font-size: 5.5rem;
   font-weight: 600;
   font-family: 'Antonio';
 }
@@ -579,7 +580,7 @@ defineExpose({
 }
 
 .slide-2-text-1 {
-  font-size: 3.5rem;
+  font-size: 5.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   font-family: 'Antonio';
