@@ -431,6 +431,11 @@ const onVideoFlipRequest = (introElement) => {
         opacity: 0,
         ease: "none"
       }, 0)
+      .to(videoIntroText, {
+        duration: .5,
+        opacity: 0,
+        ease: "none"
+      }, 0)
       .to(introTextSlider, {
         duration: 0.3,
         opacity: 0,
@@ -1637,6 +1642,7 @@ const setupPortfolioGalleryReveal = () => {
 
   &>div {
     margin-bottom: 50px;
+    padding: 0;
   }
 }
 
@@ -1648,13 +1654,24 @@ const setupPortfolioGalleryReveal = () => {
   filter: blur(10px);
 }
 
+.award-icon-left,
+.award-icon-right {
+  width: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
 .award-icon-left {
-  width: 77px;
   margin-right: -10px;
 }
 
 .award-icon-right {
-  width: 77px;
   margin-left: -10px;
 }
 
@@ -1662,6 +1679,7 @@ const setupPortfolioGalleryReveal = () => {
   width: 100%;
   text-align: center;
   margin-top: -15px;
+  padding: 0 15px;
 
   .award-text-subtitle {
     font-size: 13px;
@@ -2200,7 +2218,7 @@ const setupPortfolioGalleryReveal = () => {
     margin-top: 100px;
     gap: 60px;
     height: initial !important;
-    min-height: 100vh;
+    min-height: 100lvh;
   }
   
   .full-banner-content {
@@ -2298,11 +2316,11 @@ const setupPortfolioGalleryReveal = () => {
 
   .full-banner-events-text .text {
     &::before {
-      left: 0px !important;
+      left: -10px !important;
     }
 
     &::after {
-      right: 0px !important;
+      right: -10px !important;
     }
   }
 }

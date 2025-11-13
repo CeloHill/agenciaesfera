@@ -231,7 +231,7 @@ onUnmounted(() => {
   right: 0;
   bottom: 0;
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
   background-color: var(--color-white);
   border-radius: 0;
   /* Remove CSS transform - GSAP will handle positioning */

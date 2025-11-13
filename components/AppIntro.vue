@@ -367,7 +367,7 @@ const startIntro = () => {
     
     // Ensure header starts hidden
     gsap.set(".header", {
-      transform: "translateY(-100vh)"
+      transform: "translateY(-100lvh)"
     })
     
     // Start animation immediately since AppLoader already completed
@@ -418,7 +418,7 @@ defineExpose({
   left: 0;
   width: 100%;
   height: 100%;
-  max-height: 100vh;
+  max-height: 100lvh;
   z-index: 9999;
   background: #FFFFFF;
   overflow: hidden;
@@ -613,7 +613,7 @@ defineExpose({
 }
 :deep(.navigation-button) {
   z-index: 10003;
-  transform: translateY(100vh); /* Starts hidden below screen */
+  transform: translateY(100lvh); /* Starts hidden below screen */
   transition: none; /* Remove CSS transitions for GSAP control */
 }
 :deep(.header) {
@@ -622,7 +622,7 @@ defineExpose({
   left: 0;
   right: 0;
   z-index: 10001;
-  transform: translateY(-100vh); /* Starts hidden above screen */
+  transform: translateY(-100lvh); /* Starts hidden above screen */
   transition: none; /* Remove CSS transitions for GSAP control */
 }
 
