@@ -35,21 +35,38 @@
       :description="project.introDescription"
     />
 
-    <PortfolioVideo :video-src="project.introVideo" />
-
     <PortfolioImages :images="project.galleryImages" />
 
     <PortfolioText 
-      label="Especial"
-      :title="project.detailsTitle"
-      :description="project.detailsDescription"
+      label="Desafio Socioeducativo"
+      :description="project.challengeDescription"
+      :links="project.challengeLinks"
       :dark-mode="true"
-      padding-bottom="0"
+      :label-top="true"
     />
 
     <PortfolioImage 
       :image="project.specialImage"
       :dark-mode="true"
+    />
+
+    <PortfolioText 
+      label="Experiências"
+      :description="project.experiencesDescription"
+    />
+
+    <PortfolioCards :cards="project.featureCards" :dark-mode="false" />
+
+    <PortfolioText 
+      label="Impacto"
+      :description="project.impact2Description"
+      :label-top="true"
+    />
+
+    <PortfolioImageText 
+      :title="project.eventTitle"
+      :description="project.eventDescription"
+      :image="project.eventImage"
     />
 
     <section class="project-final-dark">
@@ -59,8 +76,8 @@
             <div class="final-content">
               <div class="final-content-title">Próximo Projeto</div>
               <div class="final-content-title-image">
-                <NuxtLink to="/projeto2" class="final-title">{{ project.nextProjectTitle }}</NuxtLink>
-                <NuxtLink to="/projeto2" class="final-image">
+                <NuxtLink to="/projeto" class="final-title">{{ project.nextProjectTitle }}</NuxtLink>
+                <NuxtLink to="/projeto" class="final-image">
                   <div class="final-image-overlay" :style="{ backgroundImage: `url(${project.nextProjectImage})` }"></div>
                 </NuxtLink>
               </div>
@@ -92,16 +109,16 @@ definePageMeta({
 })
 
 const project = ref({
-  title: 'Multilog',
-  subtitle: 'Intermodal 25',
+  title: 'Agrinho',
+  subtitle: 'Evento 24',
   sector: 'Automotivo e Industrial',
-  year: '2025',
-  client: 'Multilog',
-  heroImage: '/images/projects/sample/cover4.jpg',
-  heroDescription: 'Imagine um lugar onde as mentes mais brilhantes e as empresas mais inovadoras da logística na América Latina se reúnem. Esse lugar é a Intermodal South America!',
+  year: '2024',
+  client: 'Agrinho',
+  heroImage: '/images/projects/sample/cover5.jpg',
+  heroDescription: 'O Agrinho é reconhecido como a maior iniciativa social do Sistema FAEP, voltada para estudantes da educação básica do Paraná.',
   
-  introTitle: 'Multilog Intermodal onde a logística da América Latina se encontra',
-  introDescription: '<p>Na participação da <b>Multilog no Intermodal South America 2025</b>, o foco recai sobre a excelência e inovação em soluções logísticas. Com um estande projetado para representar o melhor da marca, a empresa apresentou suas capacidades tecnológicas avançadas em automação e eficiência logística, que abriram portas para novas conexões no setor.</p><p>Destacou-se pelo ambiente impactante, atrações experienciais, atendimento personalizado e projeção da Multilog como Polo de experiência e inovação tecnológica.</p>',
+  introTitle: 'Agrinho 2024 Do Campo à Cidade, Colhendo Oportunidades',
+  introDescription: '<p>O Agrinho é reconhecido como a <b>maior iniciativa social do Sistema FAEP</b>, voltada para estudantes da educação básica do Paraná. Muito mais que um concurso, o programa tem se consolidado como uma plataforma de transformação social, promovendo cidadania, inclusão, sustentabilidade e o fortalecimento do vínculo entre campo e cidade.</p>',
   introVideo: '/images/projects/sample/video.mp4',
   
   challengeTitle: 'socioeducativo',
@@ -138,15 +155,18 @@ const project = ref({
   eventDescription: 'O Agrinho 2024 mostrou, mais uma vez, que quando se unem educação, criatividade e propósito social, é possível cultivar oportunidades que ultrapassam os limites de um único evento. Cada estudante envolvido leva consigo aprendizados que inspiram não apenas sua própria trajetória, mas também a transformação de toda a comunidade em que vive.',
   eventImage: '/images/projects/sample/02.jpg',
 
-  specialImage: '/images/projects/sample/01.jpg',
+  specialImage: '/images/projects/sample/agrinho1.jpg',
   impactTitle: 'Mover o mundo, conectar pessoas',
   impactDescription: 'Cada projeto da Multilog carrega a missão de integrar tecnologia e eficiência ao cotidiano da cadeia logística. Com sistemas de automação avançados, conectividade inovadora e um portfólio robusto de soluções, a empresa se consolida como uma referência indispensável no segmento logístico da América Latina.',
   impactImage: '/images/cases-background-02.jpg',
   
-  nextProjectTitle: 'Agrinho 2024',
-  nextProjectImage: '/images/projects/sample/cover5.jpg',
-  nextProjectLink: '/projeto2',
+  nextProjectTitle: 'Bosch Service 2025',
+  nextProjectImage: '/images/cases-background-03.jpg',
+
+  impact2Description: '<p>Na plenária principal, todos receberam pulseiras de LED que criaram momentos coletivos de interação, reforçando a ideia de união e protagonismo. O ápice artístico ficou por conta da Sista Produções Artísticas, que apresentou uma adaptação de “The Greatest Showman”, combinando música, dança, teatro e performances circenses em um espetáculo emocionante.</p><p> A experiência foi complementada por uma logística de alimentação de grande escala: em parceria com o McDonald’s, foram distribuídas 4.000 unidades de lanches, uma operação que exigiu planejamento e execução minuciosos.</p>',
   
+  experiencesDescription: 'Para atender a esse desafio, o Agrinho 2024 foi cuidadosamente desenhado para proporcionar uma verdadeira jornada de experiências. Cada ativação tinha como objetivo engajar, ensinar e inspirar os participantes de forma lúdica:',
+
   featureCards: [
     {
       image: '/images/case-folder-01.jpg',
@@ -481,7 +501,6 @@ const project = ref({
   overflow: hidden;
   position: absolute;
   bottom: 0;
-  text-decoration: none;
 }
 
 .final-image-overlay {

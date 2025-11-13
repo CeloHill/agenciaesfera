@@ -46,11 +46,12 @@ const props = defineProps({
 <style scoped>
 .portfolio-image-text {
   padding: 120px 0;
-  background-color: #F6F6F6;
+  background-color: #FFFFFF;
 }
 
 .portfolio-image-text.dark-mode {
   background-color: #1D1D1B;
+  color: #FFFFFF;
 }
 
 .container-fluid {

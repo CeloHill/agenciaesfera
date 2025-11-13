@@ -29,56 +29,80 @@
               <div class="row">
                 <div class="col-12">
                   <!-- Project Card 1 -->
-                  <div class="project-card" style="background-image: url('/images/cases-background-01.jpg');">
+                  <NuxtLink to="/projeto" class="project-card" style="background-image: url('/images/projects/sample/cover1.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Multilog Intermodal 2025</h3>
                       <p class="project-client">John Deere</p>
                     </div>
-                  </div>
+                  </NuxtLink>
 
-                <!-- Project Card 2 -->
-                  <div class="project-card" style="background-image: url('/images/cases-background-02.jpg');">
+                  <!-- Project Card 2 -->
+                  <NuxtLink to="/projeto2" class="project-card" style="background-image: url('/images/projects/sample/cover2.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">M&T Expo 2024</h3>
                       <p class="project-client">John Deere e Wingen Group</p>
                     </div>
-                  </div>
+                  </NuxtLink>
 
-                <!-- Project Card 3 -->
-                  <div class="project-card" style="background-image: url('/images/cases-background-03.jpg');">
+                  <!-- Project Card 3 -->
+                  <NuxtLink to="/projeto" class="project-card" style="background-image: url('/images/projects/sample/cover3.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Intermodal South America 2024</h3>
                       <p class="project-client">John Deere</p>
                     </div>
-                  </div>
-
-                <!-- Project Card 4 -->
+                  </NuxtLink>
+                </div>
                 <div class="col-12">
-                  <div class="project-card" style="background-image: url('/images/cases-background-01.jpg');">
+                  <!-- Project Card 4 -->
+                  <NuxtLink to="/projeto2" class="project-card" style="background-image: url('/images/projects/sample/cover3.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Agrishow 2024</h3>
                       <p class="project-client">John Deere</p>
                     </div>
-                  </div>
+                  </NuxtLink>
 
-                <!-- Project Card 5 -->
-                  <div class="project-card" style="background-image: url('/images/cases-background-02.jpg');">
+                  <!-- Project Card 5 -->
+                  <NuxtLink to="/projeto" class="project-card" style="background-image: url('/images/projects/sample/cover1.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">M&T Expo 2024</h3>
                       <p class="project-client">John Deere e Wirtaen Group</p>
                     </div>
-                  </div>
+                  </NuxtLink>
 
-                <!-- Project Card 6 -->
-                  <div class="project-card" style="background-image: url('/images/cases-background-03.jpg');">
+                  <!-- Project Card 6 -->
+                  <NuxtLink to="/projeto2" class="project-card" style="background-image: url('/images/projects/sample/cover2.jpg');">
                     <div class="project-info">
                       <h3 class="project-title">Intermodal South America 2024</h3>
                       <p class="project-client">John Deere</p>
                     </div>
-                  </div>
+                  </NuxtLink>
+                </div>  
+                <div class="col-12">
+                  <!-- Project Card 7 -->
+                  <NuxtLink to="/projeto" class="project-card" style="background-image: url('/images/projects/sample/cover3.jpg');">
+                    <div class="project-info">
+                      <h3 class="project-title">Agrishow 2024</h3>
+                      <p class="project-client">John Deere</p>
+                    </div>
+                  </NuxtLink>
+
+                  <!-- Project Card 8 -->
+                  <NuxtLink to="/projeto2" class="project-card" style="background-image: url('/images/projects/sample/cover1.jpg');">
+                    <div class="project-info">
+                      <h3 class="project-title">M&T Expo 2024</h3>
+                      <p class="project-client">John Deere e Wirtaen Group</p>
+                    </div>
+                  </NuxtLink>
+
+                  <!-- Project Card 9 -->
+                  <NuxtLink to="/projeto" class="project-card" style="background-image: url('/images/projects/sample/cover2.jpg');">
+                    <div class="project-info">
+                      <h3 class="project-title">Intermodal South America 2024</h3>
+                      <p class="project-client">John Deere</p>
+                    </div>
+                  </NuxtLink>
                 </div>  
               </div>
-            </div>
             </div>
           </section>
         </div>
@@ -228,6 +252,8 @@ definePageMeta({
   box-shadow: inset 0 0 10px 0 rgba(0, 0, 0, 0.1);
   position: relative;
   padding-top: 28%;
+  display: block;
+  text-decoration: none;
 
   &::before {
     content: '';

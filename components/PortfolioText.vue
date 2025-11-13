@@ -107,6 +107,7 @@ const sectionRef = ref(null)
   align-items: center;
   justify-content: center;
   text-align: center;
+  height: 100%;
 }
 
 .portfolio-text-label.label-top {

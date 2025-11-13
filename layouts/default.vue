@@ -58,7 +58,7 @@ if (process.client) {
 }
 
 watch(() => route.path, (newPath) => {
-  if (newPath === '/projetos' || newPath === '/projeto') {
+  if (newPath === '/projetos' || newPath === '/projeto' || newPath === '/projeto2') {
     isDarkBackground.value = true
     if (process.client) {
       window.dispatchEvent(new CustomEvent('pageBackgroundDark'))
