@@ -94,7 +94,7 @@
           </div>
           <section class="section-numbers-text">
               <div class="row section-numbers-text-content">
-              <div class="col-xl-6 col-lg-8 col-md-12">
+              <div class="col-xl-7 col-lg-10 col-md-12">
                 <div class="color-change-text typing-animation-text"><div class="no-color-change animated-text-1">Seu evento, nossa missão</div><div class="highlight animated-text-2"> A gente soma números com expertise e mostra resultados com orgulho.</div></div>
               </div>
             </div>
@@ -170,10 +170,10 @@
               <div class="new-carousel-section">
                 <div class="marquee" ref="marqueeRef">
                   <div class="marquee-track" ref="marqueeTrack">
-                    <div class="marquee-item" v-for="(src, i) in baseClients" :key="'m-a-'+i">
+                    <div class="marquee-item" v-for="(src, i) in baseClients2" :key="'m-a-'+i">
                       <img :src="src" alt="" class="client-logo" draggable="false" />
                     </div>
-                    <div class="marquee-item" v-for="(src, i) in baseClients" :key="'m-b-'+i">
+                    <div class="marquee-item" v-for="(src, i) in baseClients2" :key="'m-b-'+i">
                       <img :src="src" alt="" class="client-logo" draggable="false" />
                     </div>
                   </div>
@@ -181,7 +181,6 @@
               </div>
             </div>
           </div>
-          
         </section>
         <section class="section-portfolio-gallery">
           <AppMagneticCursor
@@ -352,7 +351,21 @@ const baseClients = [
   '/images/clients/Corteva.png',
   '/images/clients/JohnDeere.png',
   '/images/clients/Multilog.png',
-  '/images/clients/PortosParana.png'
+  '/images/clients/PortosParana.png',
+  '/images/clients/agrishow.png',
+  '/images/clients/JD_WG.png',
+  '/images/clients/CortevaBio.png',
+  '/images/clients/Electrolux.png',
+]
+const baseClients2 = [
+  '/images/clients/credaluga.png',
+  '/images/clients/Mosaic.png',
+  '/images/clients/nutrien.png',
+  '/images/clients/TetraPak.png',
+  '/images/clients/Vitol.png',
+  '/images/clients/FAEP.png',
+  '/images/clients/Huawei.png',
+  '/images/clients/Volvo.png',
 ]
 
  
@@ -715,63 +728,71 @@ const initClientsMarquee = () => {
   const containers = document.querySelectorAll('.new-carousel-section .marquee')
   if (!containers || containers.length === 0) return
   marqueeInstances = []
+
+  const setupMarquee = (container, index) => {
+    const track = container.querySelector('.marquee-track')
+    if (!track) return false
+    const items = Array.from(track.children)
+    if (!items || items.length === 0) return false
+
+    const baseCount = Math.floor(items.length / 2) || items.length
+
+    const imgs = Array.from(track.querySelectorAll('img'))
+    const allLoaded = imgs.length === 0 || imgs.every(img => img.complete && img.naturalWidth > 0)
+    if (!allLoaded) {
+      let pending = imgs.length
+      const onDone = () => {
+        pending -= 1
+        if (pending <= 0) {
+          setupMarquee(container, index)
+        }
+      }
+      imgs.forEach(img => {
+        if (img.complete && img.naturalWidth > 0) return
+        img.addEventListener('load', onDone, { once: true })
+        img.addEventListener('error', onDone, { once: true })
+      })
+      return false
+    }
+
+    let seqWidth = 0
+    for (let i = 0; i < baseCount; i++) {
+      seqWidth += items[i].getBoundingClientRect().width
+    }
+
+    const containerWidth = container.getBoundingClientRect().width
+
+    if (!track.dataset.marqueeInit) {
+      const baseNodes = items.slice(0, baseCount)
+      baseNodes.forEach(node => track.appendChild(node.cloneNode(true)))
+      track.dataset.marqueeInit = 'true'
+    }
+
+    let contentWidth = track.getBoundingClientRect().width
+    const baseNodesForClone = Array.from(track.children).slice(0, baseCount)
+    while (contentWidth < containerWidth + seqWidth) {
+      baseNodesForClone.forEach(node => track.appendChild(node.cloneNode(true)))
+      contentWidth += seqWidth
+    }
+
+    gsap.set(track, { x: 0, willChange: 'transform', transform: 'translate3d(0,0,0)' })
+    const dir = index === 0 ? 1 : -1
+    marqueeInstances.push({ track, wrapWidth: seqWidth, pos: 0, dir })
+    return true
+  }
+
   const setup = () => {
     containers.forEach((container, index) => {
-      const track = container.querySelector('.marquee-track')
-      if (!track) return
-      const items = Array.from(track.children)
-      if (!items || items.length === 0) return
-
-      const baseCount = Math.floor(items.length / 2) || items.length
-
-      const imgs = Array.from(track.querySelectorAll('img'))
-      const allLoaded = imgs.length === 0 || imgs.every(img => img.complete && img.naturalWidth > 0)
-      if (!allLoaded) {
-        let pending = imgs.length
-        const onDone = () => {
-          pending -= 1
-          if (pending <= 0) {
-            setup()
-          }
-        }
-        imgs.forEach(img => {
-          if (img.complete && img.naturalWidth > 0) return
-          img.addEventListener('load', onDone, { once: true })
-          img.addEventListener('error', onDone, { once: true })
-        })
-        return
-      }
-
-      let seqWidth = 0
-      for (let i = 0; i < baseCount; i++) {
-        seqWidth += items[i].getBoundingClientRect().width
-      }
-
-      const containerWidth = container.getBoundingClientRect().width
-
-      if (!track.dataset.marqueeInit) {
-        const baseNodes = items.slice(0, baseCount)
-        baseNodes.forEach(node => track.appendChild(node.cloneNode(true)))
-        track.dataset.marqueeInit = 'true'
-      }
-
-      let contentWidth = track.getBoundingClientRect().width
-      const baseNodesForClone = Array.from(track.children).slice(0, baseCount)
-      while (contentWidth < containerWidth + seqWidth) {
-        baseNodesForClone.forEach(node => track.appendChild(node.cloneNode(true)))
-        contentWidth += seqWidth
-      }
-
-      gsap.set(track, { x: 0, willChange: 'transform', transform: 'translate3d(0,0,0)' })
-      const dir = index === 0 ? 1 : -1
-      marqueeInstances.push({ track, wrapWidth: seqWidth, pos: 0, dir })
+      setupMarquee(container, index)
     })
+
     if (marqueeInstances.length === 0) return
     if (!tickerAdded) {
       gsap.ticker.add(tickerStep)
       tickerAdded = true
     }
   }
+
   requestAnimationFrame(() => requestAnimationFrame(setup))
   if (marqueeResizeHandler) {
     window.removeEventListener('resize', marqueeResizeHandler)
@@ -1767,7 +1788,7 @@ const setupPortfolioGalleryReveal = () => {
 
 
   .animated-text-1 {
-    font-size: 60px;
+    font-size: 4.5vw;
     line-height: 1.1;
     text-transform: uppercase;
     font-family: Antonio;
@@ -1785,7 +1806,7 @@ const setupPortfolioGalleryReveal = () => {
 
 .section-numbers-text {
   width: 100%;
-  gap: 230px;
+  gap: 130px;
   font-weight: var(--font-weight-regular);
   line-height: 1.1;
   padding: 0 var(--body-horizontal-padding);
@@ -1794,6 +1815,8 @@ const setupPortfolioGalleryReveal = () => {
   flex-direction: column;
   justify-content: center;
   overflow: visible;
+  padding-left: 10vw;
+  padding-right: 10vw;
 
   .badge-clients {
     width: 170px;
@@ -1861,9 +1884,11 @@ const setupPortfolioGalleryReveal = () => {
 }
 
 .clients-content {
-    width: 100%;
-    justify-content: center;
-    align-items: center;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5vw;
+  padding-right: 5vw;
 }
 
 .clients-title {
@@ -2256,6 +2281,9 @@ const setupPortfolioGalleryReveal = () => {
   .section-board-container {
     margin-bottom: 80px !important;
   }
+  .animated-text-1 {
+    font-size: 6.5vw !important;
+  }
 }
 
 @media (max-width: 992px) {
@@ -2360,6 +2388,9 @@ const setupPortfolioGalleryReveal = () => {
 
   .clients-title {
     font-size: 60px !important;
+  }
+  .animated-text-1 {
+    font-size: 11vw !important;
   }
 }
 
