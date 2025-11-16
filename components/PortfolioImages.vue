@@ -13,16 +13,14 @@
           class="image-item"
           ref="imageItemsRef"
         >
-          <a
+          <div
             class="portfolio-image-link"
-            :href="image"
-            data-fancybox="portfolio-gallery"
           >
             <div
               class="portfolio-image"
               :style="{ backgroundImage: `url(${image})` }"
             ></div>
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -35,16 +33,14 @@
             :key="`top-${index}`"
             :class="['gallery-scroll-item', getTopRowClass(index)]"
           >
-            <a
+            <div
               class="gallery-scroll-link"
-              :href="image"
-              data-fancybox="portfolio-gallery"
             >
               <div 
                 class="gallery-scroll-image" 
                 :style="{ backgroundImage: `url(${image})` }"
               ></div>
-            </a>
+            </div>
           </div>
         </div>
         <div class="gallery-scroll-track bottom-row">
@@ -53,16 +49,14 @@
             :key="`bottom-${index}`"
             :class="['gallery-scroll-item', getBottomRowClass(index)]"
           >
-            <a
+            <div
               class="gallery-scroll-link"
-              :href="image"
-              data-fancybox="portfolio-gallery"
             >
               <div 
                 class="gallery-scroll-image" 
                 :style="{ backgroundImage: `url(${image})` }"
               ></div>
-            </a>
+            </div>
           </div>
         </div>
       </div>
@@ -72,6 +66,11 @@
 
 <script setup>
 const { gsap, ScrollTrigger } = useGsap()
+
+const GALLERY_SCROLL_ANIMATION_DURATION = 1.5
+const GALLERY_SCROLL_ANIMATION_EASE = 'power2.out'
+const GALLERY_SCROLL_TRIGGER_START = 'top 70%'
+const GALLERY_SCROLL_TRIGGER_END = 'bottom 30%'
 
 const props = defineProps({
   images: {
@@ -85,7 +84,6 @@ const imagesGridRef = ref(null)
 const imageItemsRef = ref([])
 const scrollContainerRef = ref(null)
 const scrollTrackRef = ref(null)
-let dragHandlers = null
 
 const isGalleryMode = computed(() => props.images.length > 7)
 
@@ -100,9 +98,6 @@ const bottomRowImages = computed(() => {
   const half = Math.ceil(props.images.length / 2)
   return props.images.slice(half)
 })
-
-let fancyboxInstance = null
-
 const getImageClass = (index) => {
   const total = props.images.length
   
@@ -137,30 +132,14 @@ const getBottomRowClass = (index) => {
 }
 
 onMounted(() => {
-  if (process.client) {
-    if (gsap && ScrollTrigger) {
-      nextTick(() => {
-        if (!isGalleryMode.value) {
-          animateGridImages()
-        } else {
-          setupGalleryScroll()
-        }
-      })
-    }
-
-    import('@fancyapps/ui').then(({ Fancybox }) => {
-      fancyboxInstance = Fancybox
-      Fancybox.bind('[data-fancybox="portfolio-gallery"]', {
-        Images: {
-          zoom: true,
-          initialSize: 'cover'
-        },
-        Thumbs: false,
-        Toolbar: {
-          display: ['zoom', 'fullscreen', 'close']
-        }
-      })
-    }).catch(() => {})
+  if (process.client && gsap && ScrollTrigger) {
+    nextTick(() => {
+      if (!isGalleryMode.value) {
+        animateGridImages()
+      } else {
+        setupGalleryScroll()
+      }
+    })
   }
 })
 
@@ -197,131 +176,47 @@ const setupGalleryScroll = () => {
   
   const wrapper = scrollTrackRef.value
   const container = scrollContainerRef.value
+  const topRow = wrapper.querySelector('.gallery-scroll-track.top-row')
+  const bottomRow = wrapper.querySelector('.gallery-scroll-track.bottom-row')
   
-  gsap.set(wrapper, {
-    x: '50%'
+  if (!topRow || !bottomRow) return
+  
+  const containerWidth = container.offsetWidth
+  const topRowWidth = topRow.scrollWidth
+  const bottomRowWidth = bottomRow.scrollWidth
+
+  const topRowStartX = 0
+  const topRowEndX = containerWidth - topRowWidth
+
+  const bottomRowStartX = containerWidth - bottomRowWidth
+  const bottomRowEndX = 0
+  
+  gsap.set(topRow, {
+    x: topRowStartX
   })
   
-  let currentX = 0
-  
-  ScrollTrigger.create({
-    trigger: galleryRef.value,
-    start: 'top 70%',
-    once: true,
-    onEnter: () => {
-      gsap.to(wrapper, {
-        x: '0%',
-        duration: 1.5,
-        ease: 'power2.out',
-        onComplete: () => {
-          currentX = 0
-        }
-      })
-    }
+  gsap.set(bottomRow, {
+    x: bottomRowStartX
   })
   
-  let isDragging = false
-  let startX = 0
-  let scrollLeft = 0
-  
-  let dragStartX = 0
-  
-  const handleMouseDown = (e) => {
-    const link = e.target.closest('a[data-fancybox]')
-    if (link && e.target === link) {
-      return
+  gsap.timeline({
+    scrollTrigger: {
+      trigger: galleryRef.value,
+      start: GALLERY_SCROLL_TRIGGER_START,
+      end: GALLERY_SCROLL_TRIGGER_END,
+      scrub: true
     }
-    isDragging = true
-    dragStartX = e.pageX
-    startX = e.pageX - container.getBoundingClientRect().left
-    scrollLeft = currentX
-    container.style.cursor = 'grabbing'
-    e.preventDefault()
-  }
-  
-  const handleMouseUp = (e) => {
-    if (isDragging) {
-      if (e && dragStartX) {
-        const moved = Math.abs(dragStartX - e.pageX) > 5
-        if (moved) {
-          const link = e.target?.closest('a[data-fancybox]')
-          if (link) {
-            e.preventDefault()
-            e.stopPropagation()
-          }
-        }
-      }
-    }
-    isDragging = false
-    container.style.cursor = 'grab'
-    dragStartX = 0
-  }
-  
-  const handleMouseMove = (e) => {
-    if (!isDragging) return
-    e.preventDefault()
-    const x = e.pageX - container.getBoundingClientRect().left
-    const walk = (x - startX) * 2
-    currentX = scrollLeft + walk
-    
-    const maxScroll = -(wrapper.scrollWidth - container.offsetWidth)
-    currentX = Math.max(maxScroll, Math.min(0, currentX))
-    
-    gsap.to(wrapper, {
-      x: currentX,
-      duration: 0.1,
-      ease: 'none'
-    })
-  }
-  
-  const handleTouchStart = (e) => {
-    if (e.target.closest('a[data-fancybox]')) {
-      return
-    }
-    isDragging = true
-    startX = e.touches[0].pageX - container.getBoundingClientRect().left
-    scrollLeft = currentX
-  }
-  
-  const handleTouchMove = (e) => {
-    if (!isDragging) return
-    e.preventDefault()
-    const x = e.touches[0].pageX - container.getBoundingClientRect().left
-    const walk = (x - startX) * 2
-    currentX = scrollLeft + walk
-    
-    const maxScroll = -(wrapper.scrollWidth - container.offsetWidth)
-    currentX = Math.max(maxScroll, Math.min(0, currentX))
-    
-    gsap.to(wrapper, {
-      x: currentX,
-      duration: 0.1,
-      ease: 'none'
-    })
-  }
-  
-  const handleTouchEnd = () => {
-    isDragging = false
-  }
-  
-  container.addEventListener('mousedown', handleMouseDown)
-  document.addEventListener('mouseup', handleMouseUp)
-  document.addEventListener('mouseleave', handleMouseUp)
-  document.addEventListener('mousemove', handleMouseMove)
-  
-  container.addEventListener('touchstart', handleTouchStart, { passive: false })
-  container.addEventListener('touchmove', handleTouchMove, { passive: false })
-  container.addEventListener('touchend', handleTouchEnd)
-  
-  dragHandlers = {
-    container,
-    handleMouseDown,
-    handleMouseUp,
-    handleMouseMove,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd
-  }
+  })
+  .to(topRow, {
+    x: topRowEndX,
+    duration: GALLERY_SCROLL_ANIMATION_DURATION,
+    ease: GALLERY_SCROLL_ANIMATION_EASE
+  }, 0)
+  .to(bottomRow, {
+    x: bottomRowEndX,
+    duration: GALLERY_SCROLL_ANIMATION_DURATION,
+    ease: GALLERY_SCROLL_ANIMATION_EASE
+  }, 0)
 }
 
 onUnmounted(() => {
@@ -330,26 +225,6 @@ onUnmounted(() => {
       trigger.kill()
     }
   })
-
-  if (fancyboxInstance) {
-    fancyboxInstance.destroy()
-    fancyboxInstance = null
-  }
-  
-  if (dragHandlers) {
-    const { container, handleMouseDown, handleMouseUp, handleMouseMove, handleTouchStart, handleTouchMove, handleTouchEnd } = dragHandlers
-    
-    container.removeEventListener('mousedown', handleMouseDown)
-    document.removeEventListener('mouseup', handleMouseUp)
-    document.removeEventListener('mouseleave', handleMouseUp)
-    document.removeEventListener('mousemove', handleMouseMove)
-    
-    container.removeEventListener('touchstart', handleTouchStart)
-    container.removeEventListener('touchmove', handleTouchMove)
-    container.removeEventListener('touchend', handleTouchEnd)
-    
-    dragHandlers = null
-  }
 })
 </script>
 
@@ -389,14 +264,9 @@ onUnmounted(() => {
 .gallery-scroll-container {
   width: 100%;
   overflow: hidden;
-  cursor: grab;
   padding: 0 var(--body-horizontal-padding);
   user-select: none;
   -webkit-user-select: none;
-}
-
-.gallery-scroll-container:active {
-  cursor: grabbing;
 }
 
 .gallery-scroll-wrapper {
@@ -425,7 +295,23 @@ onUnmounted(() => {
   flex-shrink: 0;
   border-radius: 16px;
   overflow: hidden;
-  width: 380px;
+  width: 29vw;
+}
+
+.gallery-scroll-track.top-row .gallery-scroll-item:nth-child(odd) {
+  width: 40vw;
+}
+
+.gallery-scroll-track.top-row .gallery-scroll-item:nth-child(even) {
+  width: 35vw;
+}
+
+.gallery-scroll-track.bottom-row .gallery-scroll-item:nth-child(odd) {
+  width: 20vw;
+}
+
+.gallery-scroll-track.bottom-row .gallery-scroll-item:nth-child(even) {
+  width: 29vw;
 }
 
 .gallery-scroll-image {
@@ -455,7 +341,7 @@ onUnmounted(() => {
 
 @media (max-width: 1024px) {
   .gallery-scroll-item {
-    width: 320px;
+    width: 60vw;
   }
 }
 
@@ -465,7 +351,7 @@ onUnmounted(() => {
   }
   
   .gallery-scroll-item {
-    width: 280px;
+    width: 70vw;
   }
 }
 
@@ -475,7 +361,7 @@ onUnmounted(() => {
   }
   
   .gallery-scroll-item {
-    width: 240px;
+    width: 80vw;
   }
   
   .images-grid {
