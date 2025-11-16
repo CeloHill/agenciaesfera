@@ -462,7 +462,7 @@ onUnmounted(() => {
 
 .header-menu-item {
   text-decoration: none;
-  color: #fff;
+  color: #000;
   font-size: 20px;
   font-weight: 300;
   transition: color 0.3s ease;
@@ -475,7 +475,7 @@ onUnmounted(() => {
     left: 0;
     width: 0%;
     height: 1px;
-    background-color: #FFF;
+    background-color: #000;
     transition: width 0.3s ease;
   }
 }
@@ -485,6 +485,7 @@ onUnmounted(() => {
 
   &::after {
     width: 100%;
+    background-color: var(--color-yellow);
   }
 }
 
@@ -497,20 +498,20 @@ onUnmounted(() => {
 .social-media-item {
   width: 40px;
   height: 40px;
-  border: 1px solid #FFFFFF;
+  border: 1px solid #000;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #FFFFFF;
+  color: #000;
   text-decoration: none;
   transition: all 0.3s ease;
 }
 
 .social-media-item:hover {
-  background-color: var(--color-white);
-  color: var(--color-black);
-  border-color: var(--color-white);
+  background-color: var(--color-yellow);
+  color: var(--color-white);
+  border-color: var(--color-yellow);
 }
 
 .header {
@@ -538,11 +539,19 @@ onUnmounted(() => {
 
 .header.has-dark-bg .header-menu-item {
   color: #fff;
+
+  &::after {
+    background-color: #fff;
+  }
 }
 
 .header.has-dark-bg .social-media-item {
   border-color: #fff;
   color: #fff;
+}
+
+.header.has-dark-bg .social-media-item:hover {
+  border-color: var(--color-yellow);
 }
 
 .header.has-dark-bg .social-media-item:hover svg{
