@@ -6,6 +6,17 @@
       @video-flip-request="onVideoFlipRequest"
     />
     <div class="container-fluid locked-container">
+      <div class="row" v-if="!showIntroAnimation">
+        <div class="col-12 col-video-full-width">
+          <div class="video-full-width-overlay">
+            <div class="text-1">Somos uma</div>
+            <div class="text-2">agência 360</div>
+          </div>
+          <div class="video-full-width-container">
+            <video src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
+          </div>
+        </div>  
+      </div>  
       <div class="row">
         <div class="col-12">
         <section class="full-banner">
@@ -2260,6 +2271,68 @@ const setupPortfolioGalleryReveal = () => {
   }
 }
 
+.col-video-full-width {
+  padding: 0;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2;
+  }
+}
+
+.video-full-width-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80vh;
+  z-index: 3;
+  color: #FFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-direction: column;
+  font-size: 40px;
+  font-family: 'Antonio';
+  text-transform: uppercase;
+  text-align: center;
+
+  .text-1 {
+    font-size: 8vh;
+    font-weight: 200;
+  }
+  
+  .text-2 {
+    font-size: 15vh;
+    font-weight: 500;
+    color: var(--color-yellow);
+    margin-top: -3vh;
+  }
+}
+
+.video-full-width-container {
+  width: 100%;
+  height: 80vh;
+  position: relative;
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+}
+
 .section-numbers-text-container {
   margin-top: 60px;
   background-color: #1D1D1B;
@@ -2296,6 +2369,14 @@ const setupPortfolioGalleryReveal = () => {
 }
 
 @media (max-width: 768px) {
+  .video-full-width-overlay .text-1 {
+    font-size: 10vw;
+  }
+  .video-full-width-overlay .text-2 {
+    font-size: 15vw;
+    margin-top: -1vh;
+  }
+
   .full-banner {
     margin-top: 100px;
     gap: 60px;

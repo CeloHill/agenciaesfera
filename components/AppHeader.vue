@@ -276,6 +276,13 @@ const handleScroll = () => {
   }
 }
 
+const route = useRoute()
+watch(() => route.path, (newPath) => {
+  if (newPath === '/') {
+    hasDarkBg.value = true
+  }
+}, { immediate: true })
+
 
 onMounted(() => {
   if (process.client && gsap && ScrollTrigger) {
@@ -284,7 +291,7 @@ onMounted(() => {
       checkMobile()
       
       const route = useRoute()
-      if (route.path === '/projetos' || route.path === '/projeto' || route.path === '/projeto2') {
+      if (route.path === '/' || route.path === '/projetos' || route.path === '/projeto' || route.path === '/projeto2') {
         hasDarkBg.value = true
       }
       
@@ -310,14 +317,20 @@ onMounted(() => {
       })
       
       window.addEventListener('introAnimationComplete', () => {
-        hasDarkBg.value = false
+        const currentRoute = useRoute()
+        if (currentRoute.path !== '/') {
+          hasDarkBg.value = false
+        }
       })
       
       window.addEventListener('colorTransitionUpdate', (event) => {
+        const currentRoute = useRoute()
         if (event.detail && event.detail.progress > 0.8) {
           hasDarkBg.value = true
         } else {
-          hasDarkBg.value = false
+          if (currentRoute.path !== '/') {
+            hasDarkBg.value = false
+          }
         }
       })
       
@@ -326,7 +339,10 @@ onMounted(() => {
       })
       
       window.addEventListener('pageBackgroundLight', () => {
-        hasDarkBg.value = false
+        const currentRoute = useRoute()
+        if (currentRoute.path !== '/') {
+          hasDarkBg.value = false
+        }
       })
       
       window.addEventListener('appLoaderAnimationComplete', () => {
@@ -341,7 +357,7 @@ onMounted(() => {
       
       window.addEventListener('pageVisibleImmediately', () => {
         const currentRoute = useRoute()
-        if (currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2') {
+        if (currentRoute.path !== '/' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2') {
           hasDarkBg.value = false
         }
         gsap.to(headerRef.value, {
