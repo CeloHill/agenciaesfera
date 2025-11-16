@@ -150,6 +150,17 @@ const sectionRef = ref(null)
   margin-bottom: 20px;
 }
 
+@media (max-width: 992px) {
+  .portfolio-text-label {
+    height: initial;
+    margin-bottom: 5vh;
+  }
+
+  .clean-area.light-mode {
+    padding-top: 50% !important;
+  }
+}
+
 @media (max-width: 576px) {
   .portfolio-text-description {
     font-size: 16px;

@@ -522,20 +522,34 @@ const project = ref({
   color: #000;
 }
 
+@media (max-width: 1200px) {
+  .project-hero-content-description {
+    max-width: 40%;
+  }
+}
+
+@media (max-width: 992px) {
+  .project-hero-content-description {
+    max-width: 50%;
+  }
+}
+
 @media (max-width: 768px) {
   .project-hero {
     height: 70vh;
     padding-bottom: 60px;
   }
-  
+
   .project-hero-overlay {
     padding-bottom: 60px;
     padding-top: 140px;
     gap: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
   
   .project-hero-content-description {
-    max-width: 50%;
+    max-width: 80%;
   }
   
   .project-hero-content-data {
@@ -553,8 +567,7 @@ const project = ref({
 
 @media (max-width: 576px) {
   .project-hero {
-    height: auto;
-    min-height: 100vh;
+    min-height: 80vh;
     padding-bottom: 40px;
   }
   

@@ -161,6 +161,10 @@ onUnmounted(() => {
   .portfolio-image-element {
     padding-top: 50%;
   }
+
+  .clean-area.light-mode {
+    padding-top: 50% !important;
+  }
 }
 
 @media (max-width: 576px) {

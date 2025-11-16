@@ -56,7 +56,10 @@ const props = defineProps({
 
 .container-fluid {
   padding: 0 var(--body-horizontal-padding);
-  padding-left: 0;
+
+  .row {
+    margin-left: -7vw;
+  }
 }
 
 .image-wrapper {
@@ -66,6 +69,7 @@ const props = defineProps({
   overflow: hidden;
   position: relative;
   background-color: #000;
+  padding-left: 0;
 }
 
 .image {
@@ -127,12 +131,27 @@ const props = defineProps({
   }
 
   .content-wrapper {
-    padding-left: 0;
+    padding-left: 60px;
+    padding-right: 60px;
     margin-top: 40px;
+  }
+
+  .container-fluid {
+    overflow: hidden;
+    .row {
+      margin-left: -9vw;
+      margin-right: -9vw;
+    }
   }
 }
 
 @media (max-width: 576px) {
+  .content-wrapper {
+    padding-left: 33px;
+    padding-right: 33px;
+    margin-top: 40px;
+  }
+
   .portfolio-image-text {
     padding: 60px 0;
   }
