@@ -45,6 +45,13 @@ import { useScrollLock } from '~/composables/useScrollLock'
 const { gsap } = useGsap()
 const { lockScroll, unlockScroll } = useScrollLock()
 
+const props = defineProps({
+  fullIntro: {
+    type: Boolean,
+    default: true
+  }
+})
+
 const emit = defineEmits(['intro-complete', 'video-flip-request'])
 
 const showIntro = ref(false)
@@ -74,6 +81,17 @@ const hideIntro = () => {
 }
 const startSequentialAnimation = () => {
   const isMobile = window.innerWidth <= 768
+  
+  if (props.fullIntro === false) {
+    unlockScroll()
+    animateTextSlider()
+    if (process.client) {
+      window.dispatchEvent(new CustomEvent('videoExpandStart'))
+      emit('video-flip-request', true)
+    }
+    return
+  }
+  
   mainTimeline = gsap.timeline()
   
   if (isMobile) {
@@ -381,6 +399,16 @@ onMounted(() => {
     window.addEventListener('startAppIntro', () => {
       startIntro()
     })
+    
+    window.addEventListener('pageVisibleImmediately', () => {
+      if (props.fullIntro === false) {
+        showIntro.value = true
+        nextTick(() => {
+          startSequentialAnimation()
+        })
+      }
+    })
+    
     window.addEventListener('resetIntroTextSlider', () => {
       if (textSliderTimeline) {
         textSliderTimeline.pause(0)
@@ -390,6 +418,13 @@ onMounted(() => {
       gsap.set([".slide-1", ".slide-2"], { clearProps: "all" })
       animateTextSlider()
     })
+    
+    if (props.fullIntro === false) {
+      showIntro.value = true
+      nextTick(() => {
+        startSequentialAnimation()
+      })
+    }
   }
 })
 

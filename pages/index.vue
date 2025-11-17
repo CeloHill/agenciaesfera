@@ -1,22 +1,12 @@
 <template>
   <div>
     <AppIntro 
-      v-show="showIntroAnimation" 
       @intro-complete="onIntroComplete"
       @video-flip-request="onVideoFlipRequest"
+      :full-intro="shouldShowIntro"
     />
     <div class="container-fluid locked-container">
-      <div class="row" v-if="!showIntroAnimation">
-        <div class="col-12 col-video-full-width">
-          <div class="video-full-width-overlay">
-            <div class="text-1">Somos uma</div>
-            <div class="text-2">agência 360</div>
-          </div>
-          <div class="video-full-width-container">
-            <video src="/videos/video-intro-esfera.mp4" autoplay loop muted playsinline></video>
-          </div>
-        </div>  
-      </div>  
+
       <div class="row">
         <div class="col-12">
         <section class="full-banner">
@@ -290,8 +280,8 @@ const { gsap, ScrollTrigger } = useGsap()
 const {  checkDirectNavigation, resetFirstVisit, forceLoader } = useFirstVisit()
 const { animateNumbers } = useAnimateNumbers()
 
+const shouldShowIntro = ref(import.meta.client ? checkDirectNavigation() : false)
 const showIntroAnimation = ref(false)
-const shouldShowIntro = ref(false)
 
 // Check if we should show intro based on AppLoader logic
 const checkIfShouldShowIntro = () => {
@@ -346,9 +336,7 @@ if (import.meta.client) {
   })
   
   window.addEventListener('startAppIntro', () => {
-    if (shouldShowIntro.value) {
-      showIntroAnimation.value = true
-    }
+    showIntroAnimation.value = shouldShowIntro.value
   })
   
   window.addEventListener('pageVisibleImmediately', () => {
@@ -498,6 +486,7 @@ const onVideoFlipRequest = (introElement) => {
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         if (self.progress >= 0.05 && !flipScrollTrigger._homeAnimationsStarted) {
+          console.log('Scroll progress >= 0.05, starting home animations')
           flipScrollTrigger._homeAnimationsStarted = true
           startHomeAnimations()
         }
@@ -560,7 +549,7 @@ const onIntroComplete = () => {
   startHomeAnimations()
 }
 
-const INITIAL_SCALE = 4
+const INITIAL_SCALE = 2.5
 const FINAL_SCALE = 1
 const INITIAL_X_OFFSET = '100%'
 const MIDDLE_X_OFFSET = '50%'
@@ -994,21 +983,31 @@ const setupColorTransitions = () => {
   scrollColorTrigger._resizeHandler = handleColorResize
   
   const forceInitialState = () => {
-    gsap.set("h1:not(.no-color-change):not(.intro-overlay h1), h2:not(.no-color-change):not(.intro-overlay h2)", {
-      color: "#000000"
-    })
-    gsap.set(".full-banner-content p:not(.no-color-change):not(.intro-overlay p), .full-banner-content span:not(.no-color-change):not(.intro-overlay span)", {
-      color: "#000000"
-    })
-    gsap.set(".color-change-text:not(.no-color-change):not(.intro-overlay .color-change-text)", {
-      color: "#000000"
-    })
-    gsap.set(".big-number.color-change-text, .big-number-plus.color-change-text", {
-      color: "#000000"
-    })
-    gsap.set(".clients-title:not(.no-color-change)", {
-      color: "#000000"
-    })
+    const h1h2 = document.querySelectorAll("h1:not(.no-color-change):not(.intro-overlay h1), h2:not(.no-color-change):not(.intro-overlay h2)")
+    if (h1h2.length > 0) {
+      gsap.set(h1h2, { color: "#000000" })
+    }
+    
+    const bannerContent = document.querySelectorAll(".full-banner-content p:not(.no-color-change):not(.intro-overlay p), .full-banner-content span:not(.no-color-change):not(.intro-overlay span)")
+    if (bannerContent.length > 0) {
+      gsap.set(bannerContent, { color: "#000000" })
+    }
+    
+    const colorChangeText = document.querySelectorAll(".color-change-text:not(.no-color-change):not(.intro-overlay .color-change-text)")
+    if (colorChangeText.length > 0) {
+      gsap.set(colorChangeText, { color: "#000000" })
+    }
+    
+    const bigNumbers = document.querySelectorAll(".big-number.color-change-text, .big-number-plus.color-change-text")
+    if (bigNumbers.length > 0) {
+      gsap.set(bigNumbers, { color: "#000000" })
+    }
+    
+    const clientsTitle = document.querySelectorAll(".clients-title:not(.no-color-change)")
+    if (clientsTitle.length > 0) {
+      gsap.set(clientsTitle, { color: "#000000" })
+    }
+    
     if (!introWasShown) {
       window.dispatchEvent(new CustomEvent('colorTransitionUpdate', {
         detail: { progress: 0 }
