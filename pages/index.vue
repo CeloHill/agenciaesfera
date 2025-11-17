@@ -354,7 +354,7 @@ const baseClients = [
   '/images/clients/agrishow.png',
   '/images/clients/JD_WG.png',
   '/images/clients/CortevaBio.png',
-  '/images/clients/Electrolux.png',
+  '/images/clients/electrolux.png',
 ]
 const baseClients2 = [
   '/images/clients/credaluga.png',
@@ -599,42 +599,46 @@ const animateNumbersSection = () => {
 const startHomeAnimations = () => {
   if (import.meta.client) {
     nextTick(() => {
-      initClientsMarquee()
-      animateTitleLines()
-      animateVideoImage()
-      animateAwards()
-      animateMissionTyping()
-      setupPortfolioGalleryReveal()
-      animateNumbers()
-      animateNumbersSection()
-      setupColorTransitions()
-      animateBoardLoop()
-      
-      // Refresh ScrollTrigger on resize for responsiveness (but not gallery)
-      const handleMainResize = () => {
-        // Only refresh non-gallery ScrollTriggers
-        const allTriggers = ScrollTrigger.getAll()
-        allTriggers.forEach(trigger => {
-          if (!trigger.vars || !trigger.vars.trigger) {
-            trigger.refresh()
-            return
+      if (typeof document !== 'undefined') {
+        initClientsMarquee()
+        if (gsap) {
+          animateTitleLines()
+          animateVideoImage()
+          animateAwards()
+          animateMissionTyping()
+          setupPortfolioGalleryReveal()
+          animateNumbers()
+          animateNumbersSection()
+          setupColorTransitions()
+          animateBoardLoop()
+          
+          // Refresh ScrollTrigger on resize for responsiveness (but not gallery)
+          const handleMainResize = () => {
+            // Only refresh non-gallery ScrollTriggers
+            const allTriggers = ScrollTrigger.getAll()
+            allTriggers.forEach(trigger => {
+              if (!trigger.vars || !trigger.vars.trigger) {
+                trigger.refresh()
+                return
+              }
+              
+              // Check if trigger element is the gallery section
+              const triggerElement = typeof trigger.vars.trigger === 'string' 
+                ? document.querySelector(trigger.vars.trigger) 
+                : trigger.vars.trigger
+                
+              if (!triggerElement || !triggerElement.classList || !triggerElement.classList.contains('section-portfolio-gallery')) {
+                trigger.refresh()
+              }
+            })
           }
           
-          // Check if trigger element is the gallery section
-          const triggerElement = typeof trigger.vars.trigger === 'string' 
-            ? document.querySelector(trigger.vars.trigger) 
-            : trigger.vars.trigger
-            
-          if (!triggerElement || !triggerElement.classList || !triggerElement.classList.contains('section-portfolio-gallery')) {
-            trigger.refresh()
-          }
-        })
+          window.addEventListener('resize', handleMainResize)
+          
+          // Store main resize handler for cleanup
+          window._mainResizeHandler = handleMainResize
+        }
       }
-      
-      window.addEventListener('resize', handleMainResize)
-      
-      // Store main resize handler for cleanup
-      window._mainResizeHandler = handleMainResize
     })
   }
 }
@@ -660,16 +664,23 @@ onMounted(() => {
 let showedLoader = false
 
 onUnmounted(() => {
-  if (marqueeResizeHandler) {
-    window.removeEventListener('resize', marqueeResizeHandler)
-  }
-  if (marqueeTl) {
-    marqueeTl.kill()
-    marqueeTl = null
-  }
-  if (tickerAdded) {
-    gsap.ticker.remove(tickerStep)
-    tickerAdded = false
+  if (import.meta.client) {
+    if (marqueeResizeHandler && typeof window !== 'undefined') {
+      window.removeEventListener('resize', marqueeResizeHandler)
+    }
+    if (marqueeTl && marqueeTl.kill) {
+      marqueeTl.kill()
+      marqueeTl = null
+    }
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId)
+      rafId = null
+    }
+    if (tickerAdded && gsap && gsap.ticker) {
+      gsap.ticker.remove(tickerStep)
+      tickerAdded = false
+    }
+    marqueeInstances = []
   }
   
   if (import.meta.client) {
@@ -721,13 +732,64 @@ const marqueeTrack = ref(null)
 let marqueeTl = null
 let marqueeResizeHandler = null
 let tickerAdded = false
+let rafId = null
+let lastTime = 0
 const marqueeSpeed = 40
 let marqueeInstances = []
 
 const initClientsMarquee = () => {
+  if (!import.meta.client) return
+  if (typeof window === 'undefined') return
+  
   const containers = document.querySelectorAll('.new-carousel-section .marquee')
   if (!containers || containers.length === 0) return
+  
+  if (rafId !== null) {
+    cancelAnimationFrame(rafId)
+    rafId = null
+  }
+  
+  if (tickerAdded && gsap && gsap.ticker) {
+    gsap.ticker.remove(tickerStep)
+    tickerAdded = false
+  }
+  
   marqueeInstances = []
+
+  const startAnimation = () => {
+    if (marqueeInstances.length === 0) return
+    
+    lastTime = performance.now()
+    
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId)
+      rafId = null
+    }
+    
+    if (tickerAdded && gsap && gsap.ticker) {
+      try {
+        gsap.ticker.remove(tickerStep)
+      } catch (e) {}
+      tickerAdded = false
+    }
+    
+    if (gsap && gsap.ticker && typeof gsap.ticker.add === 'function') {
+      try {
+        if (!tickerAdded) {
+          gsap.ticker.add(tickerStep)
+          tickerAdded = true
+        }
+      } catch (e) {
+        if (rafId === null) {
+          rafLoop()
+        }
+      }
+    } else {
+      if (rafId === null) {
+        rafLoop()
+      }
+    }
+  }
 
   const setupMarquee = (container, index) => {
     const track = container.querySelector('.marquee-track')
@@ -745,6 +807,7 @@ const initClientsMarquee = () => {
         pending -= 1
         if (pending <= 0) {
           setupMarquee(container, index)
+          startAnimation()
         }
       }
       imgs.forEach(img => {
@@ -757,8 +820,13 @@ const initClientsMarquee = () => {
 
     let seqWidth = 0
     for (let i = 0; i < baseCount; i++) {
-      seqWidth += items[i].getBoundingClientRect().width
+      const rect = items[i].getBoundingClientRect()
+      if (rect.width > 0) {
+        seqWidth += rect.width
+      }
     }
+
+    if (seqWidth === 0) return false
 
     const containerWidth = container.getBoundingClientRect().width
 
@@ -774,46 +842,150 @@ const initClientsMarquee = () => {
       baseNodesForClone.forEach(node => track.appendChild(node.cloneNode(true)))
       contentWidth += seqWidth
     }
+    
+    if (contentWidth === 0 || seqWidth === 0) return false
 
-    gsap.set(track, { x: 0, willChange: 'transform', transform: 'translate3d(0,0,0)' })
+    if (gsap && typeof gsap !== 'undefined') {
+      gsap.set(track, { x: 0, willChange: 'transform', transform: 'translate3d(0,0,0)' })
+    } else {
+      track.style.transform = 'translate3d(0,0,0)'
+      track.style.willChange = 'transform'
+    }
+    
     const dir = index === 0 ? 1 : -1
     marqueeInstances.push({ track, wrapWidth: seqWidth, pos: 0, dir })
     return true
   }
 
   const setup = () => {
-    containers.forEach((container, index) => {
-      setupMarquee(container, index)
-    })
+    if (!import.meta.client) return
+    if (typeof window === 'undefined') return
+    
+    let setupCount = 0
+    const maxRetries = 5
+    
+    const attemptSetup = () => {
+      setupCount++
+      
+      containers.forEach((container, index) => {
+        setupMarquee(container, index)
+      })
 
-    if (marqueeInstances.length === 0) return
-    if (!tickerAdded) {
-      gsap.ticker.add(tickerStep)
-      tickerAdded = true
+      if (marqueeInstances.length === 0 && setupCount < maxRetries) {
+        setTimeout(() => {
+          attemptSetup()
+        }, 100)
+        return
+      }
+
+      if (marqueeInstances.length > 0) {
+        startAnimation()
+      }
     }
+    
+    attemptSetup()
   }
 
-  requestAnimationFrame(() => requestAnimationFrame(setup))
+  if (typeof requestAnimationFrame === 'undefined') {
+    setTimeout(setup, 0)
+  } else {
+    requestAnimationFrame(() => {
+      requestAnimationFrame(setup)
+    })
+  }
+  
   if (marqueeResizeHandler) {
     window.removeEventListener('resize', marqueeResizeHandler)
   }
   marqueeResizeHandler = () => {
     initClientsMarquee()
   }
-  window.addEventListener('resize', marqueeResizeHandler)
+  if (import.meta.client && typeof window !== 'undefined') {
+    window.addEventListener('resize', marqueeResizeHandler)
+  }
+}
+
+const rafLoop = () => {
+  if (!import.meta.client) {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId)
+      rafId = null
+    }
+    return
+  }
+  
+  if (!marqueeInstances || marqueeInstances.length === 0) {
+    if (rafId !== null) {
+      cancelAnimationFrame(rafId)
+      rafId = null
+    }
+    return
+  }
+  
+  const currentTime = performance.now()
+  let deltaTime = currentTime - lastTime
+  
+  if (deltaTime > 1000 || lastTime === 0) {
+    deltaTime = 1000 / 60
+  }
+  
+  lastTime = currentTime
+  
+  const deltaRatio = deltaTime / (1000 / 60)
+  
+  marqueeInstances.forEach((inst) => {
+    if (!inst || !inst.track) return
+    
+    try {
+      inst.pos += (marqueeSpeed * inst.dir) * (deltaRatio / 60)
+      const w = inst.wrapWidth
+      if (!w || w <= 0) return
+      
+      const wrapped = ((inst.pos % w) + w) % w
+      const x = -wrapped
+      
+      if (gsap && typeof gsap !== 'undefined') {
+        gsap.set(inst.track, { x })
+      } else {
+        inst.track.style.transform = `translate3d(${x}px, 0, 0)`
+      }
+    } catch (e) {
+      return
+    }
+  })
+  
+  rafId = requestAnimationFrame(rafLoop)
 }
 
 const tickerStep = () => {
+  if (!import.meta.client) return
   if (!marqueeInstances || marqueeInstances.length === 0) return
-  const dr = gsap.ticker.deltaRatio()
-  marqueeInstances.forEach((inst) => {
-    inst.pos += (marqueeSpeed * inst.dir) * (dr / 60)
-    const w = inst.wrapWidth
-    if (!w) return
-    const wrapped = ((inst.pos % w) + w) % w
-    const x = -wrapped
-    gsap.set(inst.track, { x })
-  })
+  
+  if (gsap && gsap.ticker) {
+    const dr = gsap.ticker.deltaRatio()
+    if (dr === 0 || isNaN(dr) || !isFinite(dr)) {
+      if (rafId === null) {
+        lastTime = performance.now()
+        rafLoop()
+      }
+      return
+    }
+    
+    marqueeInstances.forEach((inst) => {
+      if (!inst || !inst.track) return
+      inst.pos += (marqueeSpeed * inst.dir) * (dr / 60)
+      const w = inst.wrapWidth
+      if (!w) return
+      const wrapped = ((inst.pos % w) + w) % w
+      const x = -wrapped
+      gsap.set(inst.track, { x })
+    })
+  } else {
+    if (rafId === null) {
+      lastTime = performance.now()
+      rafLoop()
+    }
+  }
 }
 
 
