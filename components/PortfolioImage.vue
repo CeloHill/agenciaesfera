@@ -39,76 +39,36 @@ const props = defineProps({
 const sectionRef = ref(null)
 const imageRef = ref(null)
 const cleanAreaRef = ref(null)
-let imageTrigger = null
-
-const getPaddingPercent = (element) => {
-  const styles = window.getComputedStyle(element)
-  const paddingTopPx = parseFloat(styles.paddingTop)
-  const width = element.offsetWidth || element.getBoundingClientRect().width || 1
-  return (paddingTopPx / width) * 100
-}
 
 onMounted(() => {
   if (process.client && gsap && ScrollTrigger && props.image) {
     nextTick(() => {
       const imageElement = imageRef.value
-      const sectionElement = sectionRef.value
       const cleanAreaElement = cleanAreaRef.value
 
-      if (!imageElement || !sectionElement || !cleanAreaElement) {
+      if (!imageElement || !cleanAreaElement) {
         return
       }
 
-      const initialImagePercent = getPaddingPercent(imageElement)
-      const initialCleanPercent = getPaddingPercent(cleanAreaElement)
-
       const targetImagePercent = 60
-      const diffPercent = targetImagePercent - initialImagePercent
-      const targetCleanPercent = Math.max(initialCleanPercent, initialCleanPercent + diffPercent - 10)
+      const targetCleanPercent = 60
 
-      imageTrigger = ScrollTrigger.create({
-        trigger: imageElement,
-        start: 'top 80%',
-        once: true,
-        onEnter: () => {
-          gsap.to(imageElement, {
-            paddingTop: `${targetImagePercent}%`,
-            duration: 1.5,
-            ease: 'power2.out'
-          })
-
-          gsap.to(cleanAreaElement, {
-            paddingTop: `${targetCleanPercent}%`,
-            duration: 1.5,
-            ease: 'power2.out'
-          })
-
-          if (props.darkMode) {
-            gsap.to(sectionElement, {
-              duration: 1.5,
-              ease: 'power2.out'
-            })
-          }
-        }
-      })
+      imageElement.style.paddingTop = `${targetImagePercent}%`
+      cleanAreaElement.style.paddingTop = `${targetCleanPercent}%`
     })
   }
 })
 
 onUnmounted(() => {
-  if (imageTrigger) {
-    imageTrigger.kill()
-    imageTrigger = null
-  }
+  
 })
 </script>
 
 <style scoped>
 .clean-area {
-  padding-top: 20%;
+  padding-top: 60%;
   width: 100%;
   background-color: #FFF;
-  transition: padding-top 1.5s ease;
 }
 
 .clean-area.dark-mode {
@@ -143,12 +103,11 @@ onUnmounted(() => {
 
 .portfolio-image-element {
   width: 100%;
-  padding-top: 14%;
+  padding-top: 60%;
   background-size: cover;
   background-position: center;
   border-radius: 8px;
   margin-top: 60px;
-  transition: padding-top 1.5s ease;
   position: absolute;
 }
 

@@ -25,39 +25,55 @@
       </div>
     </div>
     
-    <div v-else class="gallery-scroll-container" ref="scrollContainerRef">
-      <div class="gallery-scroll-wrapper" ref="scrollTrackRef">
-        <div class="gallery-scroll-track top-row">
-          <div 
-            v-for="(image, index) in topRowImages" 
-            :key="`top-${index}`"
-            :class="['gallery-scroll-item', getTopRowClass(index)]"
+    <div v-else class="inner-section marquee" ref="marqueeRef">
+      <div class="marquee-line left" ref="leftRowRef">
+        <div 
+          v-for="(image, index) in topRowImages" 
+          :key="`top-${index}`"
+          class="media"
+        >
+          <img
+            v-if="image && !isVideo(image)"
+            :src="image"
+            :alt="`Marquee image ${index}`"
+            class="cover"
+          />
+          <video
+            v-else-if="image && isVideo(image)"
+            autoplay
+            playsinline
+            muted
+            loop
+            :src="image"
+            class="cover"
           >
-            <div
-              class="gallery-scroll-link"
-            >
-              <div 
-                class="gallery-scroll-image" 
-                :style="{ backgroundImage: `url(${image})` }"
-              ></div>
-            </div>
-          </div>
+            <source :src="image" type="video/mp4">
+          </video>
         </div>
-        <div class="gallery-scroll-track bottom-row">
-          <div 
-            v-for="(image, index) in bottomRowImages" 
-            :key="`bottom-${index}`"
-            :class="['gallery-scroll-item', getBottomRowClass(index)]"
+      </div>
+      <div class="marquee-line right" ref="rightRowRef">
+        <div 
+          v-for="(image, index) in bottomRowImages" 
+          :key="`bottom-${index}`"
+          class="media"
+        >
+          <img
+            v-if="image && !isVideo(image)"
+            :src="image"
+            :alt="`Marquee image ${index}`"
+            class="cover"
+          />
+          <video
+            v-else-if="image && isVideo(image)"
+            autoplay
+            playsinline
+            muted
+            loop
+            :src="image"
+            class="cover"
           >
-            <div
-              class="gallery-scroll-link"
-            >
-              <div 
-                class="gallery-scroll-image" 
-                :style="{ backgroundImage: `url(${image})` }"
-              ></div>
-            </div>
-          </div>
+            <source :src="image" type="video/mp4">
+          </video>
         </div>
       </div>
     </div>
@@ -66,11 +82,6 @@
 
 <script setup>
 const { gsap, ScrollTrigger } = useGsap()
-
-const GALLERY_SCROLL_ANIMATION_DURATION = 1.5
-const GALLERY_SCROLL_ANIMATION_EASE = 'power2.out'
-const GALLERY_SCROLL_TRIGGER_START = 'top 70%'
-const GALLERY_SCROLL_TRIGGER_END = 'bottom 30%'
 
 const props = defineProps({
   images: {
@@ -82,8 +93,9 @@ const props = defineProps({
 const galleryRef = ref(null)
 const imagesGridRef = ref(null)
 const imageItemsRef = ref([])
-const scrollContainerRef = ref(null)
-const scrollTrackRef = ref(null)
+const marqueeRef = ref(null)
+const leftRowRef = ref(null)
+const rightRowRef = ref(null)
 
 const isGalleryMode = computed(() => props.images.length > 7)
 
@@ -98,6 +110,12 @@ const bottomRowImages = computed(() => {
   const half = Math.ceil(props.images.length / 2)
   return props.images.slice(half)
 })
+
+const isVideo = (url) => {
+  if (!url) return false
+  return url.includes('.mp4') || url.includes('.webm') || url.includes('.mov')
+}
+
 const getImageClass = (index) => {
   const total = props.images.length
   
@@ -121,23 +139,13 @@ const getImageClass = (index) => {
   return 'col-12'
 }
 
-const getTopRowClass = (index) => {
-  const heights = ['tall', 'small', 'medium', 'tall', 'small', 'medium', 'small']
-  return heights[index % heights.length]
-}
-
-const getBottomRowClass = (index) => {
-  const heights = ['small', 'medium', 'tall', 'small', 'medium', 'tall', 'small']
-  return heights[index % heights.length]
-}
-
 onMounted(() => {
   if (process.client && gsap && ScrollTrigger) {
     nextTick(() => {
       if (!isGalleryMode.value) {
         animateGridImages()
       } else {
-        setupGalleryScroll()
+        setupMarquee()
       }
     })
   }
@@ -171,57 +179,43 @@ const animateGridImages = () => {
   })
 }
 
-const setupGalleryScroll = () => {
-  if (!scrollContainerRef.value || !scrollTrackRef.value) return
+const setupMarquee = () => {
+  if (!marqueeRef.value || !leftRowRef.value || !rightRowRef.value) return
   
-  const wrapper = scrollTrackRef.value
-  const container = scrollContainerRef.value
-  const topRow = wrapper.querySelector('.gallery-scroll-track.top-row')
-  const bottomRow = wrapper.querySelector('.gallery-scroll-track.bottom-row')
+  const leftRow = leftRowRef.value
+  const rightRow = rightRowRef.value
   
-  if (!topRow || !bottomRow) return
-  
-  const containerWidth = container.offsetWidth
-  const topRowWidth = topRow.scrollWidth
-  const bottomRowWidth = bottomRow.scrollWidth
-
-  const topRowStartX = 0
-  const topRowEndX = containerWidth - topRowWidth
-
-  const bottomRowStartX = containerWidth - bottomRowWidth
-  const bottomRowEndX = 0
-  
-  gsap.set(topRow, {
-    x: topRowStartX
-  })
-  
-  gsap.set(bottomRow, {
-    x: bottomRowStartX
-  })
-  
-  gsap.timeline({
+  gsap.fromTo(leftRow, {
+    x: 0
+  }, {
+    x: '-15vw',
     scrollTrigger: {
-      trigger: galleryRef.value,
-      start: GALLERY_SCROLL_TRIGGER_START,
-      end: GALLERY_SCROLL_TRIGGER_END,
+      trigger: marqueeRef.value,
+      start: '-10% 110%',
+      end: '110% -10%',
       scrub: true
     }
   })
-  .to(topRow, {
-    x: topRowEndX,
-    duration: GALLERY_SCROLL_ANIMATION_DURATION,
-    ease: GALLERY_SCROLL_ANIMATION_EASE
-  }, 0)
-  .to(bottomRow, {
-    x: bottomRowEndX,
-    duration: GALLERY_SCROLL_ANIMATION_DURATION,
-    ease: GALLERY_SCROLL_ANIMATION_EASE
-  }, 0)
+  
+  gsap.fromTo(rightRow, {
+    x: '-15vw'
+  }, {
+    x: '0',
+    scrollTrigger: {
+      trigger: marqueeRef.value,
+      start: '-10% 110%',
+      end: '110% -10%',
+      scrub: true
+    }
+  })
 }
 
 onUnmounted(() => {
   ScrollTrigger.getAll().forEach(trigger => {
     if (trigger.vars && trigger.vars.trigger === galleryRef.value) {
+      trigger.kill()
+    }
+    if (trigger.vars && trigger.vars.trigger === marqueeRef.value) {
       trigger.kill()
     }
   })
@@ -261,107 +255,169 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-.gallery-scroll-container {
-  width: 100%;
-  overflow: hidden;
-  padding: 0 var(--body-horizontal-padding);
-  user-select: none;
-  -webkit-user-select: none;
+.inner-section.marquee {
+  position: relative;
 }
 
-.gallery-scroll-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  will-change: transform;
-  width: max-content;
+.marquee-line {
+  display: inline-flex;
 }
 
-.gallery-scroll-track {
-  display: flex;
-  gap: 16px;
-  width: max-content;
-}
-
-.gallery-scroll-track.top-row {
+.marquee-line:first-child {
   align-items: flex-end;
+  margin-bottom: 4vw;
 }
 
-.gallery-scroll-track.bottom-row {
+@media (min-width: 1024px) {
+  .marquee-line:first-child {
+    margin-bottom: 2vw;
+  }
+}
+
+.marquee-line:first-child .media:nth-child(2) {
+  width: 60vw;
+  padding-bottom: 31.55vw;
+}
+
+@media (min-width: 1024px) {
+  .marquee-line:first-child .media:nth-child(2) {
+    width: 40vw;
+    padding-bottom: 21vw;
+  }
+}
+
+.marquee-line:first-child .media:nth-child(3) {
+  width: 35vw;
+  padding-bottom: 19.69vw;
+}
+
+@media (min-width: 1024px) {
+  .marquee-line:first-child .media:nth-child(3) {
+    width: 29vw;
+    padding-bottom: 16.31vw;
+  }
+}
+
+.marquee-line:first-child .media:last-child {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .marquee-line:first-child .media:last-child {
+    display: block;
+  }
+}
+
+.marquee-line:last-child {
   align-items: flex-start;
 }
 
-.gallery-scroll-item {
-  flex-shrink: 0;
-  border-radius: 16px;
-  overflow: hidden;
-  width: 29vw;
-}
-
-.gallery-scroll-track.top-row .gallery-scroll-item:nth-child(odd) {
-  width: 40vw;
-}
-
-.gallery-scroll-track.top-row .gallery-scroll-item:nth-child(even) {
+.marquee-line:last-child .media:nth-child(2) {
   width: 35vw;
+  padding-bottom: 19.69vw;
 }
 
-.gallery-scroll-track.bottom-row .gallery-scroll-item:nth-child(odd) {
-  width: 20vw;
+@media (min-width: 1024px) {
+  .marquee-line:last-child .media:nth-child(2) {
+    width: 29vw;
+    padding-bottom: 16.31vw;
+  }
 }
 
-.gallery-scroll-track.bottom-row .gallery-scroll-item:nth-child(even) {
-  width: 29vw;
+.marquee-line:last-child .media:nth-child(3) {
+  width: 60vw;
+  padding-bottom: 31.55vw;
 }
 
-.gallery-scroll-image {
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
+@media (min-width: 1024px) {
+  .marquee-line:last-child .media:nth-child(3) {
+    width: 40vw;
+    padding-bottom: 21vw;
+  }
 }
 
-.gallery-scroll-link {
+.marquee-line:last-child .media:last-child {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .marquee-line:last-child .media:last-child {
+    display: block;
+  }
+}
+
+.marquee-line .media {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  height: 0;
+  margin-right: 4vw;
+  border-radius: 6px;
+}
+
+@media (min-width: 1024px) {
+  .marquee-line .media {
+    margin-right: 2vw;
+  }
+}
+
+.marquee-line .media:first-child,
+.marquee-line .media:last-child {
+  width: 25vw;
+  padding-bottom: 14.06vw;
+}
+
+@media (min-width: 1024px) {
+  .marquee-line .media:first-child,
+  .marquee-line .media:last-child {
+    width: 20vw;
+    padding-bottom: 11.25vw;
+  }
+}
+
+.marquee-line .media:nth-child(3) {
+  margin-right: 0;
+}
+
+@media (min-width: 1024px) {
+  .marquee-line .media:nth-child(3) {
+    margin-right: 2vw;
+  }
+}
+
+.marquee-line .media:last-child {
+  margin-right: 0;
+}
+
+.marquee-line .media img,
+.marquee-line .media video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
   display: block;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
 }
 
-.gallery-scroll-item.small .gallery-scroll-image {
-  padding-top: 75%;
-}
-
-.gallery-scroll-item.medium .gallery-scroll-image {
-  padding-top: 100%;
-}
-
-.gallery-scroll-item.tall .gallery-scroll-image {
-  padding-top: 130%;
-}
-
-@media (max-width: 1024px) {
-  .gallery-scroll-item {
-    width: 60vw;
-  }
+.marquee-line .media img.cover,
+.marquee-line .media video.cover {
+  object-fit: cover;
 }
 
 @media (max-width: 768px) {
   .portfolio-image {
     padding-top: 100%;
   }
-  
-  .gallery-scroll-item {
-    width: 70vw;
-  }
 }
 
 @media (max-width: 576px) {
   .portfolio-image {
     padding-top: 120%;
-  }
-  
-  .gallery-scroll-item {
-    width: 80vw;
   }
   
   .images-grid {
@@ -373,4 +429,3 @@ onUnmounted(() => {
   }
 }
 </style>
-

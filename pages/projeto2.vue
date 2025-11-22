@@ -64,6 +64,8 @@
       :label-top="true"
     />
 
+    <PortfolioImageOpen :images="project.impactImages" />
+
     <PortfolioImageText 
       :title="project.eventTitle"
       :description="project.eventDescription"
@@ -159,7 +161,15 @@ const project = ref({
   specialImage: '/images/projects/sample/agrinho1.jpg',
   impactTitle: 'Mover o mundo, conectar pessoas',
   impactDescription: 'Cada projeto da Multilog carrega a missão de integrar tecnologia e eficiência ao cotidiano da cadeia logística. Com sistemas de automação avançados, conectividade inovadora e um portfólio robusto de soluções, a empresa se consolida como uma referência indispensável no segmento logístico da América Latina.',
-  impactImage: '/images/cases-background-02.jpg',
+  impactImages: [
+    '/images/cases-background-02.jpg',
+    '/images/case-folder-01.jpg',
+    '/images/case-folder-02.jpg',
+    '/images/case-folder-03.jpg',
+    '/images/projects/sample/cover2.jpg',
+    '/images/projects/sample/cover3.jpg',
+    '/images/projects/sample/cover5.jpg'
+  ],
   
   nextProjectTitle: 'Bosch Service 2025',
   nextProjectImage: '/images/cases-background-03.jpg',
