@@ -1542,6 +1542,7 @@ onUnmounted(() => {
 
 .mission-container {
   padding-top: 250px;
+  padding-bottom: 100px;
 }
 
 .services-content {
