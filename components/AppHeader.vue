@@ -31,7 +31,7 @@
         <NuxtLink to="/sobre" class="header-menu-item">
           <span class="header-menu-item-text">Sobre</span>
         </NuxtLink>
-        <NuxtLink to="/projetos" class="header-menu-item">
+        <NuxtLink to="/sobre#services-list" class="header-menu-item">
           <span class="header-menu-item-text">Serviços</span>
         </NuxtLink>
         <NuxtLink to="/projetos" class="header-menu-item">
@@ -278,8 +278,10 @@ const handleScroll = () => {
 
 const route = useRoute()
 watch(() => route.path, (newPath) => {
-  if (newPath === '/') {
+  if (newPath === '/' || newPath === '/sobre' || newPath === '/projetos' || newPath === '/projeto' || newPath === '/projeto2') {
     hasDarkBg.value = true
+  } else if (newPath === '/contatos') {
+    hasDarkBg.value = false
   }
 }, { immediate: true })
 
@@ -291,8 +293,10 @@ onMounted(() => {
       checkMobile()
       
       const route = useRoute()
-      if (route.path === '/' || route.path === '/projetos' || route.path === '/projeto' || route.path === '/projeto2') {
+      if (route.path === '/' || route.path === '/projetos' || route.path === '/projeto' || route.path === '/projeto2' || route.path === '/sobre') {
         hasDarkBg.value = true
+      } else if (route.path === '/contatos') {
+        hasDarkBg.value = false
       }
       
       window.scrollTo(0, 0)
@@ -318,7 +322,7 @@ onMounted(() => {
       
       window.addEventListener('introAnimationComplete', () => {
         const currentRoute = useRoute()
-        if (currentRoute.path !== '/') {
+        if (currentRoute.path !== '/' && currentRoute.path !== '/sobre' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2') {
           hasDarkBg.value = false
         }
       })
@@ -328,7 +332,7 @@ onMounted(() => {
         if (event.detail && event.detail.progress > 0.8) {
           hasDarkBg.value = true
         } else {
-          if (currentRoute.path !== '/') {
+          if (currentRoute.path !== '/' && currentRoute.path !== '/sobre' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2') {
             hasDarkBg.value = false
           }
         }
@@ -340,7 +344,9 @@ onMounted(() => {
       
       window.addEventListener('pageBackgroundLight', () => {
         const currentRoute = useRoute()
-        if (currentRoute.path !== '/') {
+        if (currentRoute.path === '/contatos') {
+          hasDarkBg.value = false
+        } else if (currentRoute.path !== '/' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2' && currentRoute.path !== '/sobre') {
           hasDarkBg.value = false
         }
       })
@@ -357,7 +363,9 @@ onMounted(() => {
       
       window.addEventListener('pageVisibleImmediately', () => {
         const currentRoute = useRoute()
-        if (currentRoute.path !== '/' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2') {
+        if (currentRoute.path === '/contatos') {
+          hasDarkBg.value = false
+        } else if (currentRoute.path !== '/' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2' && currentRoute.path !== '/sobre') {
           hasDarkBg.value = false
         }
         gsap.to(headerRef.value, {

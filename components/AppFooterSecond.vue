@@ -3,7 +3,7 @@
     <div class="footer-top">
       <nav class="footer-nav">
         <NuxtLink to="/sobre" class="nav-link">SOBRE</NuxtLink>
-        <NuxtLink to="/servicos" class="nav-link">SERVIÇOS</NuxtLink>
+        <NuxtLink to="/sobre#services-list" class="nav-link">SERVIÇOS</NuxtLink>
         <NuxtLink to="/projetos" class="nav-link">PORTFÓLIO</NuxtLink>
         <NuxtLink to="/contatos" class="nav-link">CONTATO</NuxtLink>
       </nav>
