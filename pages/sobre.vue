@@ -23,11 +23,11 @@
             <div class="event-connection-content-header">
               Nossos eventos conectam pessoas, ideias e marcas
             </div>
-            <div class="event-connection-content-inner">
-              <div class="left-title col-lg-4">
+            <div class="event-connection-content-inner row">
+              <div class="left-title col-md-4">
                 Quem somos
               </div>
-              <div class="right-content col-lg-8">
+              <div class="right-content col-md-8">
                 Com serviços integrados de ponta a ponta, a gente gera valor com inteligência e entrega uma experiência sempre completa.
                 <br>
                 E então, <b>vamos criar uma nova história juntos?</b>
@@ -48,205 +48,22 @@
               <div class="services-line">Tudo para sua marca ser lembrada.</div>
             </div>
             <div class="services-content row">
-              <div class="service-block col-lg-4">
+              <div 
+                v-for="(service, index) in services" 
+                :key="index"
+                class="service-block col-lg-4 col-md-6"
+              >
                 <div class="service-block-content">
                   <div class="service-block-title">
                     <div class="service-block-number">
-                      01
+                      {{ service.number }}
                     </div>
                     <div class="service-block-title-content">
                       <div class="service-block-title-icon">
-                        <img src="/services/01.svg" alt="Eventos Corporativos">
+                        <img :src="service.icon" :alt="service.title">
                       </div>
                       <div class="service-block-title-text">
-                        Eventos Corporativos
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      02
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/02.svg" alt="Eventos Presenciais, Híbridos & Online">
-                      </div>
-                      <div class="service-block-title-text">
-                        Eventos Presenciais, Híbridos & Online
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      03
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/03.svg" alt="Eventos Internacionais">
-                      </div>
-                      <div class="service-block-title-text">
-                        Eventos Internacionais
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      04
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/04.svg" alt="Operação de Campo">
-                      </div>
-                      <div class="service-block-title-text">
-                        Operação de Campo
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      05
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/05.svg" alt="Live Marketing">
-                      </div>
-                      <div class="service-block-title-text">
-                        Live Marketing
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      06
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/06.svg" alt="Ativações de Marca">
-                      </div>
-                      <div class="service-block-title-text">
-                        Ativações de Marca
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      07
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/07.svg" alt="Relacionamento & Lançamentos">
-                      </div>
-                      <div class="service-block-title-text">
-                        Relacionamento & Lançamentos
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      08
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/08.svg" alt="Congresso & Conveções">
-                      </div>
-                      <div class="service-block-title-text">
-                        Congresso & Conveções
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      09
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/09.svg" alt="Capacitações & Workshops">
-                      </div>
-                      <div class="service-block-title-text">
-                        Capacitações & Workshops
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      10
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/10.svg" alt="Feiras & Stands">
-                      </div>
-                      <div class="service-block-title-text">
-                        Feiras & Stands
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      11
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/11.svg" alt="Viagens de Incentivo">
-                      </div>
-                      <div class="service-block-title-text">
-                        Viagens de Incentivo
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="service-block col-lg-4">
-                <div class="service-block-content">
-                  <div class="service-block-title">
-                    <div class="service-block-number">
-                      12
-                    </div>
-                    <div class="service-block-title-content">
-                      <div class="service-block-title-icon">
-                        <img src="/services/12.svg" alt="Experiências Web & Mobile Exclusivas">
-                      </div>
-                      <div class="service-block-title-text">
-                        Experiências Web & Mobile Exclusivas
+                        {{ service.title }}
                       </div>
                     </div>
                   </div>
@@ -257,7 +74,7 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid dark-background">
+    <div class="container-fluid dark-background video-section-container-full">
       <div class="row">
         <div class="col-12">
           <section class="video-section" ref="videoSectionRef">
@@ -296,6 +113,50 @@
                     <div class="yellow-panel-number">4</div>
                     <div class="yellow-panel-text">Diagnóstico pós-evento</div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid dark-background video-section-container-mobile">
+      <div class="row">
+        <div class="col-12">
+          <section class="video-section-mobile" ref="videoSectionMobileRef">
+            <div class="video-section-mobile-content" ref="videoContentMobileRef">
+              <video src="/videos/sobre-esfera.mp4" autoplay loop muted playsinline></video>
+              <div class="video-overlay-mobile"></div>
+              <div class="video-text-mobile" ref="videoTextMobileRef">Mais do que fazer, é <br />fazer do jeito certo.</div>
+              <div class="video-text-2-mobile" ref="videoText2MobileRef">
+                <div class="video-title-mobile">Como Fazemos</div>
+                <div class="video-description-mobile">
+                  Mais do que fazer, é <br /><span class="highlight">fazer do jeito certo.</span>
+                </div>
+                <div class="video-description-2-mobile">
+                  E como a gente transforma teoria em prática?
+                  <br>
+                  <span>Com processos estruturados, liderados por frentes que se revezam em perfeita sincronia.</span>
+                </div>
+              </div>
+            </div>
+            <div class="video-yellow-panel-mobile">
+              <div class="yellow-panel-content-mobile">
+                <div class="yellow-panel-item-mobile">
+                  <div class="yellow-panel-number-mobile">1</div>
+                  <div class="yellow-panel-text-mobile">Atendimento e planejamento estratégico</div>
+                </div>
+                <div class="yellow-panel-item-mobile">
+                  <div class="yellow-panel-number-mobile">2</div>
+                  <div class="yellow-panel-text-mobile">Criação, comunicação e soluções web</div>
+                </div>
+                <div class="yellow-panel-item-mobile">
+                  <div class="yellow-panel-number-mobile">3</div>
+                  <div class="yellow-panel-text-mobile">Organização e produção</div>
+                </div>
+                <div class="yellow-panel-item-mobile">
+                  <div class="yellow-panel-number-mobile">4</div>
+                  <div class="yellow-panel-text-mobile">Diagnóstico pós-evento</div>
                 </div>
               </div>
             </div>
@@ -521,6 +382,10 @@ const videoContentRef = ref(null)
 const videoTextRef = ref(null)
 const videoText2Ref = ref(null)
 const yellowPanelRef = ref(null)
+const videoSectionMobileRef = ref(null)
+const videoContentMobileRef = ref(null)
+const videoTextMobileRef = ref(null)
+const videoText2MobileRef = ref(null)
 const triadSectionRef = ref(null)
 const triadItem1Ref = ref(null)
 const triadItem2Ref = ref(null)
@@ -610,6 +475,69 @@ const testimonials = [
   }
 ]
 
+const services = [
+  {
+    number: '01',
+    icon: '/services/01.svg',
+    title: 'Eventos Corporativos'
+  },
+  {
+    number: '02',
+    icon: '/services/02.svg',
+    title: 'Eventos Presenciais, Híbridos & Online'
+  },
+  {
+    number: '03',
+    icon: '/services/03.svg',
+    title: 'Eventos Internacionais'
+  },
+  {
+    number: '04',
+    icon: '/services/04.svg',
+    title: 'Operação de Campo'
+  },
+  {
+    number: '05',
+    icon: '/services/05.svg',
+    title: 'Live Marketing'
+  },
+  {
+    number: '06',
+    icon: '/services/06.svg',
+    title: 'Ativações de Marca'
+  },
+  {
+    number: '07',
+    icon: '/services/07.svg',
+    title: 'Relacionamento & Lançamentos'
+  },
+  {
+    number: '08',
+    icon: '/services/08.svg',
+    title: 'Congresso & Conveções'
+  },
+  {
+    number: '09',
+    icon: '/services/09.svg',
+    title: 'Capacitações & Workshops'
+  },
+  {
+    number: '10',
+    icon: '/services/10.svg',
+    title: 'Feiras & Stands'
+  },
+  {
+    number: '11',
+    icon: '/services/11.svg',
+    title: 'Viagens de Incentivo'
+  },
+  {
+    number: '12',
+    icon: '/services/12.svg',
+    title: 'Experiências Web & Mobile Exclusivas'
+  }
+]
+
 const awards = [
   {
     title: 'PREMIAÇÃO ENCONTRO COM FORNECEDORES',
@@ -662,6 +590,76 @@ const toggleAward = (index) => {
     openAwardIndex.value = index
   }
 }
+
+const debounce = (func, wait) => {
+  let timeout
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout)
+      func(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
+
+const equalizeServiceBlockTitles = () => {
+  if (!process.client) return
+  
+  const serviceBlocks = document.querySelectorAll('.service-block')
+  if (serviceBlocks.length === 0) return
+  
+  // Reset heights first
+  serviceBlocks.forEach(block => {
+    const title = block.querySelector('.service-block-title')
+    if (title) {
+      title.style.height = 'auto'
+    }
+  })
+  
+  // Group blocks by row based on their top position
+  const rows = []
+  const tolerance = 10 // pixels tolerance for considering same row
+  
+  serviceBlocks.forEach(block => {
+    const rect = block.getBoundingClientRect()
+    const top = rect.top
+    
+    // Find existing row or create new one
+    let row = rows.find(r => Math.abs(r.top - top) <= tolerance)
+    if (!row) {
+      row = { top, blocks: [] }
+      rows.push(row)
+    }
+    row.blocks.push(block)
+  })
+  
+  // Equalize heights within each row
+  rows.forEach(row => {
+    let maxHeight = 0
+    
+    // Find max height
+    row.blocks.forEach(block => {
+      const title = block.querySelector('.service-block-title')
+      if (title) {
+        const height = title.offsetHeight
+        if (height > maxHeight) {
+          maxHeight = height
+        }
+      }
+    })
+    
+    // Apply max height to all titles in the row
+    row.blocks.forEach(block => {
+      const title = block.querySelector('.service-block-title')
+      if (title) {
+        title.style.height = `${maxHeight}px`
+      }
+    })
+  })
+}
+
+let serviceTitlesResizeHandler = null
 
 const startSobreAnimation = () => {
   if (!process.client || !gsap || !teamSectionRef.value || animationStarted) return
@@ -855,6 +853,53 @@ const initVideoAnimation = () => {
         duration: 1,
         ease: 'power2.inOut'
       }, '-=0.8')
+    }
+  })
+
+  ScrollTrigger.refresh()
+}
+
+const initVideoAnimationMobile = () => {
+  if (!process.client || !gsap || !ScrollTrigger || !videoSectionMobileRef.value || !videoContentMobileRef.value || !videoTextMobileRef.value || !videoText2MobileRef.value) {
+    return
+  }
+
+  gsap.set(videoTextMobileRef.value, {
+    opacity: 1,
+    y: 0
+  })
+
+  gsap.set(videoText2MobileRef.value, {
+    opacity: 0,
+    y: 50
+  })
+
+  let videoAnimationMobilePlayed = false
+
+  ScrollTrigger.create({
+    trigger: videoSectionMobileRef.value,
+    start: 'top 75%',
+    end: 'bottom 25%',
+    markers: false,
+    once: true,
+    onEnter: () => {
+      if (videoAnimationMobilePlayed) return
+      videoAnimationMobilePlayed = true
+      
+      const tl = gsap.timeline({ delay: 1 })
+      
+      tl.to(videoTextMobileRef.value, {
+        opacity: 0,
+        y: -50,
+        duration: 0.8,
+        ease: 'power2.in'
+      })
+      .to(videoText2MobileRef.value, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power2.out'
+      }, '-=0.4')
     }
   })
 
@@ -1493,11 +1538,36 @@ onMounted(() => {
     nextTick(() => {
       setTimeout(() => {
         initVideoAnimation()
+        initVideoAnimationMobile()
         initTriadAnimation()
         animateNumbers()
         animateNumbersSection()
         initClientsMarquee()
         initTestimonialsCarousel()
+        // Equalize titles after a short delay to ensure layout is complete
+        setTimeout(() => {
+          equalizeServiceBlockTitles()
+        }, 100)
+        
+        // Handle resize to re-equalize on layout changes
+        serviceTitlesResizeHandler = debounce(() => {
+          equalizeServiceBlockTitles()
+        }, 250)
+        window.addEventListener('resize', serviceTitlesResizeHandler)
+        
+        // Also re-equalize when window finishes loading
+        if (document.readyState === 'complete') {
+          setTimeout(() => {
+            equalizeServiceBlockTitles()
+          }, 500)
+        } else {
+          window.addEventListener('load', () => {
+            setTimeout(() => {
+              equalizeServiceBlockTitles()
+            }, 500)
+          })
+        }
+        
         if (gsap && gsap.ScrollTrigger) {
           gsap.ScrollTrigger.refresh()
         }
@@ -1523,6 +1593,11 @@ onUnmounted(() => {
   if (process.client) {
     window.removeEventListener('appLoaderAnimationComplete', startSobreAnimation)
     window.removeEventListener('pageVisibleImmediately', startSobreAnimation)
+    
+    if (serviceTitlesResizeHandler) {
+      window.removeEventListener('resize', serviceTitlesResizeHandler)
+      serviceTitlesResizeHandler = null
+    }
     
     if (videoScrollTrigger) {
       videoScrollTrigger.kill()
@@ -1590,7 +1665,6 @@ onUnmounted(() => {
 .awards-description {
   font-size: 20px;
   padding: 0 var(--body-horizontal-padding);
-  margin-bottom: 130px;
   margin-top: 5px;
 }
 .sphere-happens-text-2 {
@@ -1629,7 +1703,7 @@ onUnmounted(() => {
 }
 
 .our-mission-text {
-  font-size: 20px;
+  font-size: 25px;
   padding: 0 30vw;
 }
 
@@ -1640,10 +1714,10 @@ onUnmounted(() => {
   margin-top: 30px;
 
   .triad-text-item {
-    font-size: 60px;
+    font-size: 3.2vw;
     font-weight: 600;
     margin-bottom: 10px;
-    height: 90px;
+    height: 100px;
     overflow: hidden;
 
     span {
@@ -1672,8 +1746,8 @@ onUnmounted(() => {
 }
 
 .service-block-title-icon {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   margin-bottom: 25px;
   img {
     width: 100%;
@@ -1682,16 +1756,16 @@ onUnmounted(() => {
   }
 }
 .service-block-number {
-  font-size: 100px;
-    font-weight: 600;
-    color: #1D1D1B;
-    padding: 10px;
-    border-radius: 4px;
-    position: absolute;
-    z-index: 1;
-    left: -16px;
-    top: -20px;
-    opacity: 0.05;
+  font-size: 130px;
+  font-weight: 600;
+  color: #1D1D1B;
+  padding: 10px;
+  border-radius: 4px;
+  position: absolute;
+  z-index: 1;
+  left: -16px;
+  top: -35px;
+  opacity: 0.05;
 }
 
 .service-block-content {
@@ -1709,6 +1783,8 @@ onUnmounted(() => {
   min-height: 100px;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+  transition: height 0.3s ease;
 }
 
 .service-block-title-text {
@@ -1842,6 +1918,36 @@ onUnmounted(() => {
   width: 100%;
 }
 
+/* Control visibility of full and mobile versions */
+.video-section-container-full {
+  display: block;
+}
+
+.video-section-container-mobile {
+  display: none;
+}
+
+/* Mobile version visibility control */
+@media (max-width: 767px) {
+  .video-section-container-full {
+    display: none !important;
+  }
+  
+  .video-section-container-mobile {
+    display: block !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .video-section-container-full {
+    display: block !important;
+  }
+  
+  .video-section-container-mobile {
+    display: none !important;
+  }
+}
+
 .video-section {
   display: flex;
   flex-direction: column;
@@ -1882,7 +1988,7 @@ onUnmounted(() => {
   border-radius: 30px;
 }
 
-.video-overlay {
+.video-overlay, .video-overlay-mobile {
   position: absolute;
   top: 0;
   left: 0;
@@ -1893,7 +1999,11 @@ onUnmounted(() => {
   border-radius: 30px;
 }
 
-.video-text {
+.video-overlay-mobile {
+  border-radius: 20px;
+}
+
+.video-text, .video-text-mobile {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1906,7 +2016,7 @@ onUnmounted(() => {
   white-space: nowrap;
 }
 
-.video-text-2 {
+.video-text-2, .video-text-2-mobile {
   position: absolute;
   top: 0;
   left: 0;
@@ -1920,6 +2030,9 @@ onUnmounted(() => {
   z-index: 2;
   color: #FFF;
   opacity: 0;
+}
+.video-text-2-mobile {
+  padding: 11vw;
 }
 
 .video-title {
@@ -1949,7 +2062,7 @@ onUnmounted(() => {
   margin-top: 20px;
 }
 
-.video-yellow-panel {
+.video-yellow-panel, .video-yellow-panel-mobile {
   width: 50vw;
   height: 40vw;
   background-color: var(--color-yellow);
@@ -1962,7 +2075,12 @@ onUnmounted(() => {
   margin-left: 47vw;
 }
 
-.yellow-panel-content {
+.video-yellow-panel-mobile {
+  width: 100%;
+  margin-left: 0;
+}
+
+.yellow-panel-content, .yellow-panel-content-mobile {
   width: 100%;
   height: 100%;
   display: grid;
@@ -1971,26 +2089,26 @@ onUnmounted(() => {
   gap: 0;
 }
 
-.yellow-panel-item {
+.yellow-panel-item, .yellow-panel-item-mobile {
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 1vw;
   position: relative;
   padding-bottom: 0px;
   padding-top: 0px;
 }
 
-.yellow-panel-item::after {
+.yellow-panel-item::after, .yellow-panel-item-mobile::after {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 30px;
-  width: calc(100% - 60px);
+  left: 1vw;
+  width: calc(100% - 2vw);
   height: 1px;
   background-color: #000;
 }
 
-.yellow-panel-number {
+.yellow-panel-number, .yellow-panel-number-mobile {
   font-size: 1.5vw;
   font-weight: 300;
   color: #000;
@@ -1998,12 +2116,98 @@ onUnmounted(() => {
   border-top: 1px solid #000;
 }
 
-.yellow-panel-text {
+.yellow-panel-text, .yellow-panel-text-mobile {
   font-size: 1.7vw;
   font-weight: 600;
   color: #000;
   line-height: 1.2;
   margin-top: 1vw;
+}
+
+.yellow-panel-text-mobile {
+  height: 22vw;
+  font-size: 4vw;
+}
+
+.yellow-panel-number-mobile {
+  font-size: 3vw;
+}
+
+.video-section-mobile {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0 var(--body-horizontal-padding);
+}
+
+.video-yellow-panel-mobile {
+  width: 100%;
+  margin-left: 0;
+  border-radius: 0 0 20px 20px;
+  margin-bottom: 70px;
+  height: initial;
+  position: relative;
+  z-index: 1;
+}
+
+.video-section-mobile-content {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: -20px;
+  z-index: 0;
+}
+
+.video-section-mobile-content video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+
+.video-title-mobile {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-yellow);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  font-family: 'Antonio';
+}
+
+.video-description-mobile {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.video-description-2-mobile {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  margin-top: 15px;
+}
+
+@media (max-width: 576px) {
+  .video-section-mobile-content {
+    height: 40vh;
+    min-height: 250px;
+  }
+  
+  .video-text-mobile {
+    font-size: 20px;
+  }
+  
+  .video-description-mobile {
+    font-size: 20px;
+  }
 }
 
 .sphere-happens-numbers .section-numbers-content {
@@ -2377,6 +2581,10 @@ onUnmounted(() => {
   .award-description {
     font-size: 13px;
   }
+
+  .sphere-happens-text-title {
+    font-size: 35px;
+  }
 }
 
 .corporate-responsibility-banner {
@@ -2387,7 +2595,7 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 80px;
-  align-items: center;
+  align-items: start;
   margin-left: -50px !important;
   margin-right: -50px !important;
   width: calc(100% + 100px) !important;
@@ -2442,7 +2650,40 @@ onUnmounted(() => {
   color: #ffffff;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1399px) {
+  .video-section {
+    min-height: 700px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .mission-container {
+    padding-top: 180px;
+    padding-bottom: 80px;
+  }
+
+  .our-mission-text {
+    padding: 0 20vw;
+  }
+
+  .triad-text {
+    padding: 0 20vw;
+  }
+
+  .triad-text-item {
+    font-size: 6.2vw !important;    
+  }
+
+  .team-text {
+    font-size: 50px !important;
+  }
+
+  .video-section {
+    min-height: 660px;
+  }
+}
+
+@media (max-width: 991px) {
   .corporate-responsibility-banner {
     grid-template-columns: 1fr;
     gap: 50px;
@@ -2456,9 +2697,38 @@ onUnmounted(() => {
   .corporate-responsibility-button {
     align-self: center;
   }
+
+  .event-connection-content-header {
+    padding: 0 20vw !important;
+  }
+
+  .event-connection-content-inner {
+    padding: 0 20vw !important;
+  }
+
+  .left-title {
+    margin-bottom: 16px;
+  }
+
+  .video-section {
+    min-height: 550px;
+  }
+
+  .video-text-2 {
+    padding: 50px;
+  }
+
+  .video-description-2 {
+    font-size: 1.5vw;
+  }
+
 }
 
 @media (max-width: 768px) {
+  .triad-text-item {
+    height: 65px !important;
+  }
+
   .corporate-responsibility-section {
     padding: 60px var(--body-horizontal-padding);
   }
@@ -2480,5 +2750,79 @@ onUnmounted(() => {
     width: 100%;
     padding: 14px 32px;
   }
+
+  .mission-container {
+    padding-top: 150px;
+    padding-bottom: 80px;
+  }
+
+  .our-mission-text {
+    padding: 0 16vw;
+  }
+
+  .triad-text {
+    padding: 0 16vw;
+  }
+
+  .team-text {
+    font-size: 30px !important;
+  }
+
+  .team-text-2 {
+    font-size: 16px !important;
+  }
+
+  .page-title {
+    font-size: 20px !important;
+  }
+
+  .services-header-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .video-section {
+    min-height: 550px;
+  }
+
+  .testimonial-block {
+    width: 80vw;
+    height: 280px;
+  }
+
+  .testimonial-quote {
+    margin-top: 60px;
+  }
+
+  .corporate-responsibility-banner {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .corporate-responsibility-section {
+    padding-bottom: 0;
+  }
+
+}
+
+@media (max-width: 576px) {
+  .team-text {
+    font-size: 25px !important;
+  }
+
+  .team-text-2 {
+    font-size: 14px !important;
+    width: 50% !important;
+  }
+
+  .event-connection-content-header {
+    font-size: 30px !important;
+  }
+
+  .sphere-happens-text-2 {
+    font-size: 18px;
+  }
+
 }
 </style>
