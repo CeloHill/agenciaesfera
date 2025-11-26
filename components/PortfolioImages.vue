@@ -27,11 +27,11 @@
     
     <div v-else class="inner-section marquee" ref="marqueeRef">
       <div class="marquee-line left" ref="leftRowRef">
-        <div 
-          v-for="(image, index) in topRowImages" 
-          :key="`top-${index}`"
+          <div 
+            v-for="(image, index) in topRowImages" 
+            :key="`top-${index}`"
           class="media"
-        >
+          >
           <img
             v-if="image && !isVideo(image)"
             :src="image"
@@ -52,11 +52,11 @@
         </div>
       </div>
       <div class="marquee-line right" ref="rightRowRef">
-        <div 
-          v-for="(image, index) in bottomRowImages" 
-          :key="`bottom-${index}`"
+          <div 
+            v-for="(image, index) in bottomRowImages" 
+            :key="`bottom-${index}`"
           class="media"
-        >
+          >
           <img
             v-if="image && !isVideo(image)"
             :src="image"
@@ -141,13 +141,13 @@ const getImageClass = (index) => {
 
 onMounted(() => {
   if (process.client && gsap && ScrollTrigger) {
-    nextTick(() => {
-      if (!isGalleryMode.value) {
-        animateGridImages()
-      } else {
+      nextTick(() => {
+        if (!isGalleryMode.value) {
+          animateGridImages()
+        } else {
         setupMarquee()
-      }
-    })
+        }
+      })
   }
 })
 

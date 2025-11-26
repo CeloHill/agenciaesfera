@@ -323,7 +323,7 @@ onMounted(() => {
       window.addEventListener('introAnimationComplete', () => {
         const currentRoute = useRoute()
         if (currentRoute.path !== '/' && currentRoute.path !== '/sobre' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2') {
-          hasDarkBg.value = false
+        hasDarkBg.value = false
         }
       })
       
@@ -333,7 +333,7 @@ onMounted(() => {
           hasDarkBg.value = true
         } else {
           if (currentRoute.path !== '/' && currentRoute.path !== '/sobre' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2') {
-            hasDarkBg.value = false
+          hasDarkBg.value = false
           }
         }
       })
@@ -347,7 +347,7 @@ onMounted(() => {
         if (currentRoute.path === '/contatos') {
           hasDarkBg.value = false
         } else if (currentRoute.path !== '/' && currentRoute.path !== '/projetos' && currentRoute.path !== '/projeto' && currentRoute.path !== '/projeto2' && currentRoute.path !== '/sobre') {
-          hasDarkBg.value = false
+        hasDarkBg.value = false
         }
       })
       

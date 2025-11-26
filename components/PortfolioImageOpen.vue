@@ -217,7 +217,7 @@ onUnmounted(() => {
   ScrollTrigger.getAll().forEach(trigger => {
     if (trigger.vars && trigger.vars.trigger === expandingGridRef.value) {
       trigger.kill()
-    }
+  }
   })
 })
 </script>
@@ -336,14 +336,14 @@ onUnmounted(() => {
   left: 43.05556vw;
   width: 20.13889vw;
   height: 25vh;
-}
-
+  }
+  
 @media (min-width: 1024px) {
   .inner-section.expanding-grid .elements .position .element.element-05 {
     top: 65vh;
     height: 30vh;
   }
-}
+  }
 
 .inner-section.expanding-grid .elements .position .element.element-06 {
   top: 58.25vh;

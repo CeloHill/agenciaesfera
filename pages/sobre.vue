@@ -446,6 +446,60 @@
         </div>
       </div>
     </div>
+    <div class="container-fluid awards-container dark-background">
+      <div class="row">
+        <div class="col-4">
+          <div class="sphere-happens-text">
+            <div class="sphere-happens-text-title"><span class="highlight">Prêmios</span></div>
+            <div class="awards-description">
+              Grandes conquistas que fazem toda a diferença
+            </div>
+          </div>
+        </div>
+        <div class="col-8">
+          <section>
+            <div class="awards-content">
+              <div 
+                v-for="(award, index) in awards" 
+                :key="index"
+                class="award-item"
+                :class="{ 'is-open': openAwardIndex === index }"
+              >
+                <div 
+                  class="award-header"
+                  @click="toggleAward(index)"
+                >
+                  <span class="award-title">{{ award.title }}</span>
+                  <span class="award-icon">+</span>
+                </div>
+                <div class="award-description-wrapper">
+                  <div class="award-description">
+                    {{ award.description }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 corporate-responsibility-container">
+          <section class="corporate-responsibility-section">
+            <div class="corporate-responsibility-banner">
+              <div class="corporate-responsibility-left">
+                <h2 class="corporate-responsibility-title">RESPONSABILIDADE CORPORATIVA</h2>
+              </div>
+              <div class="corporate-responsibility-right">
+                <p class="corporate-responsibility-text">
+                  <b>A conquista do ISO9001</b> reforça nosso compromisso com a qualidade, a eficiência e a melhoria contínua em todos os nossos processos. Mais do que um selo, é o reconhecimento do nosso esforço diário em oferecer excelência e confiança a cada projeto e cliente.
+                </p>
+                <button class="corporate-responsibility-button">saiba mais</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -555,6 +609,59 @@ const testimonials = [
     image: '/images/projects/sample/link-cupola.png'
   }
 ]
+
+const awards = [
+  {
+    title: 'PREMIAÇÃO ENCONTRO COM FORNECEDORES',
+    description: 'Reconhecimento pela excelência na comunicação e relacionamento com fornecedores, destacando a qualidade dos serviços prestados e o compromisso com parcerias estratégicas.'
+  },
+  {
+    title: 'RECONHECIMENTO PARCERIA AGRISHOW 2018',
+    description: 'Premiação concedida pela parceria de sucesso na organização e execução da Agrishow 2018, reconhecendo o trabalho em equipe e os resultados alcançados.'
+  },
+  {
+    title: 'PRÊMIO ACHIEVING EXCELLENCE',
+    description: 'Distinção internacional que reconhece empresas que alcançam excelência em seus segmentos, destacando inovação, qualidade e resultados excepcionais.'
+  },
+  {
+    title: '20º MOSTRA DE COMUNICAÇÃO DO AGRO ABMRA',
+    description: 'Reconhecimento na 20ª edição da Mostra de Comunicação do Agronegócio pela ABMRA, destacando campanhas e estratégias de comunicação inovadoras no setor.'
+  },
+  {
+    title: 'PRÊMIO LIVE 2021',
+    description: 'Premiação que reconhece as melhores práticas em eventos e comunicação ao vivo, destacando a criatividade e eficácia das ações desenvolvidas em 2021.'
+  },
+  {
+    title: 'PRÊMIO CAIO 2019',
+    description: 'Reconhecimento pelo trabalho excepcional em comunicação e marketing, destacando campanhas criativas e resultados significativos alcançados em 2019.'
+  },
+  {
+    title: 'PRÊMIO CAIO 2020',
+    description: 'Distinção concedida pela excelência em comunicação e marketing, reconhecendo projetos inovadores e resultados destacados no ano de 2020.'
+  },
+  {
+    title: 'PRÊMIO CAIO 2021',
+    description: 'Premiação que celebra as melhores práticas em comunicação e marketing, destacando a inovação e os resultados excepcionais alcançados em 2021.'
+  },
+  {
+    title: 'PRÊMIO CAIO 2022',
+    description: 'Reconhecimento pela excelência em comunicação e marketing, destacando campanhas criativas, estratégias inovadoras e resultados significativos em 2022.'
+  },
+  {
+    title: 'PRÊMIO CAIO 2023',
+    description: 'Distinção concedida pela qualidade e inovação em comunicação e marketing, reconhecendo projetos que se destacaram pela criatividade e resultados em 2023.'
+  }
+]
+
+const openAwardIndex = ref(null)
+
+const toggleAward = (index) => {
+  if (openAwardIndex.value === index) {
+    openAwardIndex.value = null
+  } else {
+    openAwardIndex.value = index
+  }
+}
 
 const startSobreAnimation = () => {
   if (!process.client || !gsap || !teamSectionRef.value || animationStarted) return
@@ -1479,6 +1586,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+.awards-description {
+  font-size: 20px;
+  padding: 0 var(--body-horizontal-padding);
+  margin-bottom: 130px;
+  margin-top: 5px;
+}
 .sphere-happens-text-2 {
   font-size: 25px;
   padding: 0 var(--body-horizontal-padding);
@@ -2162,5 +2276,209 @@ onUnmounted(() => {
   border-radius: 2px;
   will-change: width, left;
   transition: opacity 0.3s ease;
+}
+
+.awards-container {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.awards-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 72px var(--body-horizontal-padding);
+}
+
+.award-item {
+  border-top: 1px solid rgba(255, 255, 255, 1);
+  overflow: hidden;
+  transition: opacity 0.3s ease;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.award-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: opacity 0.3s ease;
+}
+
+.award-header:hover {
+  opacity: 0.8;
+}
+
+.award-title {
+  font-size: 16px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  flex: 1;
+  padding-right: 20px;
+}
+
+.award-icon {
+  font-size: 20px;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.award-item.is-open .award-icon {
+  transform: rotate(45deg);
+}
+
+.award-description-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease;
+}
+
+.award-item.is-open .award-description-wrapper {
+  max-height: 500px;
+}
+
+.award-item.is-open {
+  opacity: 1;
+}
+
+.award-description {
+  padding: 0 0 20px 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 768px) {
+  .awards-container .row {
+    flex-direction: column;
+  }
+  
+  .awards-container .col-4,
+  .awards-container .col-8 {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .award-title {
+    font-size: 14px;
+  }
+  
+  .award-description {
+    font-size: 13px;
+  }
+}
+
+.corporate-responsibility-banner {
+  background-color: var(--color-yellow);
+  border: 2px solid #000000;
+  border-radius: 12px;
+  padding: 60px 80px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 80px;
+  align-items: center;
+  margin-left: -50px !important;
+  margin-right: -50px !important;
+  width: calc(100% + 100px) !important;
+}
+
+.corporate-responsibility-left {
+  display: flex;
+  align-items: center;
+}
+
+.corporate-responsibility-title {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 700;
+  color: #000000;
+  line-height: 1.1;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  font-family: 'Antonio';
+}
+
+.corporate-responsibility-right {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.corporate-responsibility-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #000000;
+  margin: 0;
+}
+
+.corporate-responsibility-button {
+  background-color: #ffffff;
+  border-radius: 50px;
+  border: none;
+  padding: 12px 32px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000000;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  font-family: inherit;
+}
+
+.corporate-responsibility-button:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+@media (max-width: 1024px) {
+  .corporate-responsibility-banner {
+    grid-template-columns: 1fr;
+    gap: 50px;
+    padding: 50px 60px;
+  }
+  
+  .corporate-responsibility-title {
+    text-align: center;
+  }
+  
+  .corporate-responsibility-button {
+    align-self: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .corporate-responsibility-section {
+    padding: 60px var(--body-horizontal-padding);
+  }
+  
+  .corporate-responsibility-banner {
+    padding: 40px 30px;
+    gap: 40px;
+  }
+  
+  .corporate-responsibility-title {
+    font-size: 28px;
+  }
+  
+  .corporate-responsibility-text {
+    font-size: 14px;
+  }
+  
+  .corporate-responsibility-button {
+    width: 100%;
+    padding: 14px 32px;
+  }
 }
 </style>
