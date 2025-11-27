@@ -6,10 +6,11 @@
 </template>
 
 <script setup>
-    import { ref, onMounted, onBeforeUnmount } from 'vue'
+    import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
 
     const { gsap } = useGsap()
     const mouseRef = ref(null)
+    const route = useRoute()
 
     let hoverHandlers = []
     let leaveHandlers = []
@@ -27,9 +28,25 @@
     }
 
     const setupCursorInteractions = () => {
+        // Clean up any existing handlers first to avoid duplicates
+        cleanupLinkHandlers()
+        
         const links = document.querySelectorAll('a, button')
         
+        if (links.length === 0) {
+            // If no links found, try again after a short delay
+            setTimeout(() => {
+                setupCursorInteractions()
+            }, 100)
+            return
+        }
+        
         links.forEach((link) => {
+            // Skip if already has handler (safety check)
+            if (hoverHandlers.some(h => h.element === link)) {
+                return
+            }
+            
             const hoverHandler = () => {
                 if (!mouseRef.value) return
                 gsap.to(mouseRef.value, {
@@ -58,7 +75,7 @@
         })
     }
 
-    const cleanupEventListeners = () => {
+    const cleanupLinkHandlers = () => {
         hoverHandlers.forEach(({ element, handler }) => {
             element.removeEventListener('mouseover', handler)
         })
@@ -67,12 +84,17 @@
             element.removeEventListener('mouseleave', handler)
         })
         
+        hoverHandlers = []
+        leaveHandlers = []
+    }
+
+    const cleanupEventListeners = () => {
+        cleanupLinkHandlers()
+        
         if (mouseMoveHandler) {
             window.removeEventListener('mousemove', mouseMoveHandler)
         }
         
-        hoverHandlers = []
-        leaveHandlers = []
         mouseMoveHandler = null
     }
 
@@ -82,12 +104,16 @@
         mouseMoveHandler = moveCircle
         window.addEventListener('mousemove', mouseMoveHandler)
         
-        // If using Nuxt's page transitions or dynamic content,
-        // you might want to re-setup on route changes
-        // useRouter().afterEach(() => {
-        // 	cleanupEventListeners()
-        // 	setupCursorInteractions()
-        // })
+        // Watch for route changes and re-setup cursor interactions
+        watch(() => route.path, () => {
+            // Wait for page transition to complete (1s) and DOM to be ready
+            nextTick(() => {
+                // Wait for transition to complete before re-setting up
+                setTimeout(() => {
+                    setupCursorInteractions()
+                }, 1100) // Slightly longer than transition duration (1s)
+            })
+        })
     })
 
     onBeforeUnmount(() => {

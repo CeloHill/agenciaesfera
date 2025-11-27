@@ -90,29 +90,31 @@
           
           <!-- Seção do Mapa - Fundo Escuro -->
           <section class="map-section">
-      <div 
-        class="map-container" 
-        :class="{ 'expanded': isMapExpanded }"
-        @click="toggleMap"
-      >
-              <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.1234567890!2d-49.234567890123!3d-25.456789012345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDI3JzI0LjQiUyA0OcKwMTQnMDQuNCJX!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
-                width="100%" 
-          height="100%" 
-                style="border:0;" 
-                allowfullscreen="" 
-                loading="lazy" 
-                referrerpolicy="no-referrer-when-downgrade">
-              </iframe>
-            </div>
+      <div class="map-container">
+        <div class="map-wrapper">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3602.4276507325194!2d-49.291549323895126!3d-25.457391833977333!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94dce385f11942c7%3A0x2bb39b9ff1afef0f!2sAg%C3%AAncia%20Esfera!5e0!3m2!1spt-BR!2sbr!4v1764272968028!5m2!1spt-BR!2sbr"
+            width="100%" 
+            height="100%" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
           </section>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+
 definePageMeta({
   layout: 'default'
 })
+
+const { gsap, ScrollTrigger } = useGsap()
 
 // Form data
 const form = ref({
@@ -123,11 +125,7 @@ const form = ref({
   aceito: true
 })
 
-const isMapExpanded = ref(false)
-
-const toggleMap = () => {
-  isMapExpanded.value = !isMapExpanded.value
-}
+let mapScrollTrigger = null
 
 // Submit form
 const submitForm = () => {
@@ -144,6 +142,54 @@ const submitForm = () => {
     aceito: true
   }
 }
+
+// Setup map scroll animation
+const setupMapScrollAnimation = () => {
+  if (!import.meta.client || !gsap || !ScrollTrigger) return
+  
+  nextTick(() => {
+    const mapWrapper = document.querySelector('.map-wrapper')
+    const mapSection = document.querySelector('.map-section')
+    
+    if (!mapWrapper || !mapSection) return
+    
+    // Set initial clip-path to show only 20% (center reveal) with rounded corners
+    // clip-path: inset(0% 40% 0% 40% round 12px) shows center 20% with rounded corners
+    gsap.set(mapWrapper, {
+      clipPath: 'inset(0% 40% 0% 40% round 12px)'
+    })
+    
+    // Create ScrollTrigger animation
+    mapScrollTrigger = ScrollTrigger.create({
+      trigger: mapSection,
+      start: 'top 90%',
+      end: 'bottom 105%',
+      scrub: 2,
+      onUpdate: (self) => {
+        const progress = self.progress
+        // Animate clip-path from 40% inset (showing 20%) to 0% inset (showing 100%)
+        // Progress 0 = 40% inset (20% visible)
+        // Progress 1 = 0% inset (100% visible)
+        // Include rounded corners in the animation
+        const insetValue = 40 - (progress * 40) // Goes from 40% to 0%
+        gsap.set(mapWrapper, {
+          clipPath: `inset(0% ${insetValue}% 0% ${insetValue}% round 12px)`
+        })
+      }
+    })
+  })
+}
+
+onMounted(() => {
+  setupMapScrollAnimation()
+})
+
+onBeforeUnmount(() => {
+  if (mapScrollTrigger) {
+    mapScrollTrigger.kill()
+    mapScrollTrigger = null
+  }
+})
 </script>
 
 <style scoped>
@@ -374,7 +420,7 @@ const submitForm = () => {
 
 .submit-btn {
   background-color: var(--color-yellow);
-  border: 1px solid #000;
+  border: none;
   color: #000;
   padding: 14px 40px;
   border-radius: 30px;
@@ -394,39 +440,43 @@ const submitForm = () => {
 /* Seção do Mapa - Fundo Escuro */
 .map-section {
   background-color: #1d1d1b;
-  padding: 50px 0;
+  padding: 50px;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.map-container {
+  width: 100%;
+  min-height: 70vh;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.map-container {
-  width: 400px;
-  height: 500px;
+.map-wrapper {
+  width: 100%;
+  height: 100%;
   position: relative;
-  border-radius: 12px;
   overflow: hidden;
-  cursor: pointer;
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.map-container.expanded {
-  width: 90vw;
-  max-width: 1200px;
-  height: 600px;
 }
 
 .map-container iframe {
   width: 100%;
   height: 100%;
   border: 0;
-  border-radius: 12px;
-  pointer-events: none;
-}
-
-.map-container.expanded iframe {
   pointer-events: auto;
+  display: block;
+  filter: grayscale(1);
+  transition: filter 0.3s ease;
+
+  &:hover {
+    filter: grayscale(0);
+  }
 }
 
 /* Responsividade Bootstrap */
@@ -464,10 +514,6 @@ const submitForm = () => {
   
   .contact-description {
     font-size: 14px;
-  }
-  
-  .map-container {
-    height: 300px;
   }
 }
 </style>

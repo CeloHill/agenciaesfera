@@ -134,17 +134,15 @@ main {
 /* Page transitions */
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.3s ease-in-out;
+  transition: opacity 1s ease-in-out;
 }
 
 .page-enter-from {
   opacity: 0;
-  transform: translateY(20px);
 }
 
 .page-leave-to {
   opacity: 0;
-  transform: translateY(-20px);
 }
 
 /* Layout transitions */
@@ -162,16 +160,14 @@ main {
 /* Custom fade-slide transition for index page */
 .fade-slide-enter-active,
 .fade-slide-leave-active {
-  transition: all 0.4s ease-out;
+  transition: opacity 1s ease-in-out;
 }
 
 .fade-slide-enter-from {
   opacity: 0;
-  transform: translateY(30px) scale(0.95);
 }
 
 .fade-slide-leave-to {
   opacity: 0;
-  transform: translateY(-30px) scale(1.05);
 }
 </style>

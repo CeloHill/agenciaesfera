@@ -482,20 +482,26 @@ const onVideoFlipRequest = (introElement) => {
       pinSpacing: true,
       scrub: 2,
       //markers: true,
-      animation: flipTimeline,
       invalidateOnRefresh: true,
       onUpdate: (self) => {
-        if (self.progress >= 0.05 && !flipScrollTrigger._homeAnimationsStarted) {
-          console.log('Scroll progress >= 0.05, starting home animations')
-          flipScrollTrigger._homeAnimationsStarted = true
-          startHomeAnimations()
-        }
+        // Map scroll progress 0-0.8 to timeline progress 0-1
+        // This makes the animation complete at 80% of the scroll
+        const scrollProgress = self.progress
+        const timelineProgress = Math.min(scrollProgress / 0.8, 1)
+        flipTimeline.progress(timelineProgress)
         
-        if (self.progress >= 0.99 && !flipScrollTrigger._completed) {
+        // Animation completes at 80% scroll (near the end of the pin)
+        if (self.progress >= 0.8 && !flipScrollTrigger._completed) {
           flipScrollTrigger._completed = true
           
           if (initialVideo) {
             initialVideo.style.display = 'none'
+          }
+          
+          // Start home animations only after flip animation completes
+          if (!flipScrollTrigger._homeAnimationsStarted) {
+            flipScrollTrigger._homeAnimationsStarted = true
+            startHomeAnimations()
           }
           
           window.dispatchEvent(new CustomEvent('introAnimationComplete'))
@@ -1264,17 +1270,30 @@ const animateBoardLoop = () => {
     transformOrigin: 'bottom right'
   })
 
-  gsap.to(boardFirst, {
+  const boardTimeline = gsap.to(boardFirst, {
     y: '0%',
     rotateZ: 0,
     transformOrigin: 'bottom right',
     ease: "power2.inOut",
-    scrollTrigger: {
-      trigger: boardSecond,
-      start: 'top 70%',
-      end: 'bottom 70%',
-      scrub: 2,
-      //markers: true
+    paused: true
+  })
+
+  ScrollTrigger.create({
+    trigger: boardSecond,
+    start: 'top 70%',
+    end: 'bottom 70%',
+    scrub: 2,
+    //markers: true,
+    onUpdate: (self) => {
+      // Only animate if flip animation has completed (>= 80% progress)
+      if (flipScrollTrigger && flipScrollTrigger.progress < 0.8) {
+        // Flip animation hasn't completed yet, keep board at initial state
+        boardTimeline.progress(0)
+        return
+      }
+      
+      // Flip animation has completed, proceed with board animation
+      boardTimeline.progress(self.progress)
     }
   })
 }
